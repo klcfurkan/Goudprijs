@@ -11,15 +11,15 @@
 <style>
 /* Layout: HUD-scherm. Bovenaan meetwaarden, links de twee hoofdprijzen, rechts de levende ring, onderaan de historie. */
 :root{
-  --bg:#05070e;                 /* diepe nacht */
-  --panel:rgba(8,13,26,.62);
-  --rule:rgba(140,190,255,.14);
-  --ice:#e8f2ff;                /* cijfers */
-  --muted:#7d90b0;
-  --cyan:#4cc9ff;               /* hoofdaccent */
-  --amber:#ffb547;              /* tweede accent, meetwaarden */
-  --up:#4ee0a0;
-  --down:#ff6b81;
+  --bg:#000000;                 /* puur zwart */
+  --panel:rgba(12,12,12,.7);
+  --rule:rgba(255,255,255,.16);
+  --ice:#ffffff;                /* tekst en lijnen */
+  --muted:#a3a3a3;
+  --cyan:#ffffff;               /* lijnwerk */
+  --amber:#ff7a00;              /* signaalkleur */
+  --up:#31e981;
+  --down:#ff3366;
   --font-display:"Sora","Manrope",system-ui,sans-serif;
   --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-data:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
@@ -29,9 +29,9 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0}
 body{background-color:var(--bg);color:var(--ice);font-family:var(--font-body);font-size:14px;-webkit-font-smoothing:antialiased;
-  background-image:radial-gradient(rgba(120,170,255,.07) 1px,transparent 1.2px);background-size:26px 26px}
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:26px 26px}
 #scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;pointer-events:none}
-.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 90% at 60% 45%,transparent 45%,rgba(2,3,8,.8) 100%)}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 90% at 60% 45%,transparent 45%,rgba(0,0,0,.85) 100%)}
 .app{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;gap:clamp(12px,1.8vh,22px);
   padding-block:clamp(14px,2.4vh,28px);
   padding-left:max(16px,env(safe-area-inset-left,0px),2.6vw);padding-right:max(16px,env(safe-area-inset-right,0px),2.6vw)}
@@ -41,7 +41,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px 24
 .hl{display:flex;align-items:center;gap:clamp(14px,2.4vw,36px);flex-wrap:wrap}
 .brandwrap{display:flex;flex-direction:column;gap:3px}
 .brand{font-family:var(--font-display);font-weight:700;font-size:clamp(21px,1.9vw,28px);letter-spacing:.005em;margin:0;line-height:1.05}
-.brand span{color:var(--cyan)}
+.brand span{color:var(--amber)}
 .by{font:500 11px var(--font-data);letter-spacing:.12em;color:var(--muted)}
 nav{display:flex;gap:4px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.02)}
 nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;padding:8px 16px;border-radius:999px;transition:color .2s,background .2s}
@@ -52,7 +52,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .live{display:inline-flex;align-items:center;gap:8px;font:500 11px var(--font-data);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--up);animation:ping 2s infinite}
 .live.err .dot{background:var(--down);animation:none}
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(78,224,160,.55)}70%{box-shadow:0 0 0 11px rgba(78,224,160,0)}100%{box-shadow:0 0 0 0 rgba(78,224,160,0)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(49,233,129,.55)}70%{box-shadow:0 0 0 11px rgba(49,233,129,0)}100%{box-shadow:0 0 0 0 rgba(49,233,129,0)}}
 .clock{font-family:var(--font-data);font-size:clamp(14px,1.2vw,17px);letter-spacing:.06em;font-variant-numeric:tabular-nums}
 .ring{width:28px;height:28px;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:2.5}
@@ -60,7 +60,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .ring .prog{stroke:var(--amber);stroke-linecap:round}
 .btn{appearance:none;border:1px solid var(--rule);background:rgba(255,255,255,.03);color:var(--ice);font:600 12px var(--font-body);
   letter-spacing:.06em;padding:9px 14px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s}
-.btn:hover{background:rgba(76,201,255,.1);border-color:rgba(76,201,255,.45)}
+.btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
 
 /* HUD frame with corner brackets */
 .hud{position:relative;border:1px solid var(--rule);background:var(--panel);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
@@ -80,25 +80,41 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 /* stats strip */
 .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0 clamp(12px,1.6vw,24px)}
 .stat{padding:6px 0 10px;border-bottom:1px solid var(--rule);min-width:0}
-.stat .v{font:500 clamp(15px,1.35vw,20px) var(--font-data);color:var(--amber);margin-top:6px;white-space:nowrap;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
+.stat .v{font:500 clamp(15px,1.35vw,20px) var(--font-data);color:var(--ice);margin-top:6px;white-space:nowrap;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
 .stat .v.up{color:var(--up)} .stat .v.down{color:var(--down)}
 
 /* middle */
 .mid{display:grid;grid-template-columns:minmax(300px,.85fr) 1.5fr;gap:clamp(12px,2vw,28px);flex:1 1 auto;min-height:clamp(500px,58vh,720px)}
 .heroes{display:flex;flex-direction:column;gap:clamp(12px,1.6vh,18px);min-width:0}
 .hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:clamp(16px,2vw,28px);min-width:0;overflow:hidden;transition:border-color .8s}
-.hero.up{border-color:rgba(78,224,160,.5)} .hero.down{border-color:rgba(255,107,129,.5)}
+.hero.up{border-color:rgba(49,233,129,.5)} .hero.down{border-color:rgba(255,51,102,.5)}
 .htop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .hsub{color:var(--muted);font-weight:500;font-size:clamp(13px,1.05vw,15px)}
 .chip{font:500 12px var(--font-data);padding:5px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.chip.up{color:var(--up);border-color:rgba(78,224,160,.35);background:rgba(78,224,160,.07)}
-.chip.down{color:var(--down);border-color:rgba(255,107,129,.35);background:rgba(255,107,129,.07)}
+.chip.up{color:var(--up);border-color:rgba(49,233,129,.35);background:rgba(49,233,129,.07)}
+.chip.down{color:var(--down);border-color:rgba(255,51,102,.35);background:rgba(255,51,102,.07)}
 .stage{position:relative;min-width:0;min-height:300px}
+.heroes{justify-content:center}
+.hero.solo{flex:0 0 auto;padding:clamp(6px,1vw,14px) 0;gap:14px;border:0;background:none}
+.price.xl{font-size:clamp(52px,6vw,116px)}
+.price.hit{animation:hit 1.2s ease-out}
+@keyframes hit{0%{text-shadow:0 0 0 rgba(255,122,0,0)}22%{text-shadow:0 0 42px rgba(255,122,0,.85)}100%{text-shadow:0 0 34px rgba(255,255,255,.12)}}
+.minis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;margin-top:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.mv{font:500 clamp(16px,1.4vw,21px) var(--font-data);margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mv.up{color:var(--up)} .mv.down{color:var(--down)}
+.mkt{display:inline-flex;align-items:center;gap:8px;font:500 11px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  padding:6px 11px;border:1px solid var(--rule);border-radius:999px;white-space:nowrap}
+.mkt .mdot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.mkt.open{color:var(--up);border-color:rgba(49,233,129,.4)} .mkt.open .mdot{background:var(--up)}
+.mkt.closed{color:var(--amber);border-color:rgba(255,122,0,.45)} .mkt.closed .mdot{background:var(--amber)}
+.mkt.big{font:600 14px var(--font-body);letter-spacing:.01em;text-transform:none;padding:8px 14px;white-space:normal}
+body.focus .stats, body.focus .chartbox, body.focus .minis{display:none}
+body.focus .mid{min-height:calc(100vh - 150px)}
 
 /* rolling price */
 .price{display:flex;align-items:baseline;font-family:var(--font-display);font-weight:600;line-height:1;white-space:nowrap;
-  font-size:clamp(38px,4.3vw,80px);letter-spacing:-.02em;font-variant-numeric:tabular-nums;min-width:0;text-shadow:0 0 34px rgba(76,201,255,.18)}
-.cur{font-size:.42em;color:var(--cyan);margin-right:.22em;align-self:flex-start;margin-top:.2em}
+  font-size:clamp(38px,4.3vw,80px);letter-spacing:-.02em;font-variant-numeric:tabular-nums;min-width:0;text-shadow:0 0 34px rgba(255,255,255,.18)}
+.cur{font-size:.42em;color:var(--amber);margin-right:.22em;align-self:flex-start;margin-top:.2em}
 .roll{display:inline-block;height:1em;overflow:hidden;width:.66em;text-align:center;
   -webkit-mask:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
 .roll>span{display:flex;flex-direction:column;transition:transform .6s cubic-bezier(.25,.8,.25,1),color .8s ease}
@@ -107,7 +123,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .roll>span>i{font-style:normal;height:1em;line-height:1em}
 .sep{display:inline-block;width:.24em;text-align:center}
 .dec{font-size:.48em;color:var(--muted)}
-.skeleton{color:rgba(232,242,255,.22)}
+.skeleton{color:rgba(255,255,255,.22)}
 
 /* chart */
 .chartbox{display:flex;flex-direction:column;gap:12px;padding:clamp(14px,1.6vw,22px);height:clamp(260px,34vh,420px);min-width:0}
@@ -118,7 +134,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .seg button{appearance:none;border:0;background:transparent;color:var(--muted);font:500 12px var(--font-data);padding:7px 11px;cursor:pointer;transition:color .2s,background .2s}
 .seg button+button{border-left:1px solid var(--rule)}
 .seg button:hover{color:var(--ice)}
-.seg button[aria-pressed="true"]{background:rgba(76,201,255,.16);color:var(--cyan)}
+.seg button[aria-pressed="true"]{background:rgba(255,255,255,.16);color:var(--cyan)}
 .cwrap{position:relative;flex:1;min-height:150px}
 .cwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:pan-y}
 
@@ -177,12 +193,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       </nav>
     </div>
     <div class="hr">
+      <span class="mkt" id="mkt"><span class="mdot"></span><span id="mktText">Markt …</span></span>
       <span class="live" id="live"><span class="dot"></span><span id="liveText">Verbinden</span></span>
       <span class="clock" id="clock">--:--:--</span>
       <svg class="ring" viewBox="0 0 28 28" aria-label="Tijd tot volgende update">
         <circle class="track" cx="14" cy="14" r="11"></circle>
         <circle class="prog" id="ringProg" cx="14" cy="14" r="11" stroke-dasharray="69.1" stroke-dashoffset="69.1"></circle>
       </svg>
+      <button class="btn" id="focusBtn" type="button" aria-pressed="false">Focus</button>
       <button class="btn" id="fsBtn" type="button">Volledig scherm</button>
     </div>
   </header>
@@ -190,25 +208,26 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   <!-- DASHBOARD -->
   <section id="viewDash" style="display:flex;flex-direction:column;gap:clamp(12px,1.8vh,22px);flex:1">
     <div class="stats">
+      <div class="stat"><div class="lbl">XAU / USD · oz</div><div class="v" id="sOz">—</div></div>
       <div class="stat"><div class="lbl">Gram / EUR</div><div class="v" id="sGram">—</div></div>
       <div class="stat"><div class="lbl">Çeyrek / EUR</div><div class="v" id="sCeyrek">—</div></div>
       <div class="stat"><div class="lbl">EUR / USD</div><div class="v" id="sFx">—</div></div>
-      <div class="stat"><div class="lbl">24u hoog / oz</div><div class="v" id="sHi">—</div></div>
-      <div class="stat"><div class="lbl">24u laag / oz</div><div class="v" id="sLo">—</div></div>
-      <div class="stat"><div class="lbl">24u Δ / oz</div><div class="v" id="sChg">—</div></div>
+      <div class="stat"><div class="lbl">EUR / TRY</div><div class="v" id="sTry">—</div></div>
+      <div class="stat"><div class="lbl">24u Δ / kg</div><div class="v" id="sChg">—</div></div>
     </div>
 
     <div class="mid">
       <div class="heroes">
-        <div class="hero hud" id="hOz">
-          <div class="htop"><span class="lbl"><b>A</b> / XAU · Spot</span><span class="chip" id="cOz">24u · —</span></div>
-          <div class="hsub">Goud per troy ounce in dollars</div>
-          <div class="price" id="priceOz"><span class="cur">$</span><span class="skeleton">—</span></div>
-        </div>
-        <div class="hero hud" id="hKg">
-          <div class="htop"><span class="lbl"><b>B</b> / Fijngoud · 1 kg</span><span class="chip" id="cKg">24u · —</span></div>
-          <div class="hsub">Goud per kilo in euro's</div>
-          <div class="price" id="priceKg"><span class="cur">€</span><span class="skeleton">—</span></div>
+        <div class="hero solo" id="hKg">
+          <div class="htop"><span class="lbl"><b>NU</b> · Goud per kilo · EUR</span><span class="chip" id="cKg">24u · —</span></div>
+          <div class="price xl" id="priceKg"><span class="cur">€</span><span class="skeleton">—</span></div>
+          <div class="hsub">1 kilo fijngoud, 24 karaat</div>
+          <div class="minis">
+            <div><div class="lbl">24u hoog</div><div class="mv" id="mHi">—</div></div>
+            <div><div class="lbl">24u laag</div><div class="mv" id="mLo">—</div></div>
+            <div><div class="lbl">1 week</div><div class="mv" id="mW">—</div></div>
+            <div><div class="lbl">1 maand</div><div class="mv" id="mM">—</div></div>
+          </div>
         </div>
       </div>
       <div class="stage" id="stage" aria-hidden="true"></div>
@@ -216,11 +235,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 
     <div class="chartbox hud">
       <div class="chead">
-        <div class="ctitle"><span class="lbl"><b>C</b> / Historie · <span id="cName">XAU · USD per oz</span></span><span class="chip" id="cRange">—</span></div>
+        <div class="ctitle"><span class="lbl"><b>C</b> / Historie · <span id="cName">Goud · EUR per kg</span></span><span class="chip" id="cRange">—</span></div>
         <div class="ctrl">
           <div class="seg" id="seriesSeg" role="group" aria-label="Eenheid">
-            <button type="button" data-s="oz">$ / oz</button>
             <button type="button" data-s="kg">€ / kg</button>
+            <button type="button" data-s="oz">$ / oz</button>
           </div>
           <div class="seg" id="rangeSeg" role="group" aria-label="Periode">
             <button type="button" data-r="1U">1U</button>
@@ -243,6 +262,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       <div>
         <h2 data-t="title"></h2>
         <p class="lead" data-t="lead"></p>
+        <p class="lead"><span class="mkt big" id="homeMkt"><span class="mdot"></span><span id="homeMktText"></span></span></p>
       </div>
       <div class="seg lang" id="langSeg" role="group" aria-label="Taal / Dil">
         <button type="button" data-l="tr">Türkçe</button>
@@ -291,7 +311,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   const nf2 = new Intl.NumberFormat("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
   const nf0 = new Intl.NumberFormat("nl-NL",{maximumFractionDigits:0});
   const pct = p => (p>0?"+":"") + p.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2}) + "%";
-  const C = { ice:"#e8f2ff", muted:"#7d90b0", cyan:"76,201,255", amber:"255,181,71", up:"78,224,160", down:"255,107,129" };
+  const C = { ice:"#ffffff", muted:"#a3a3a3", cyan:"255,255,255", amber:"255,122,0", up:"49,233,129", down:"255,51,102" };
 
   const H = 3600e3, D = 864e5;
   const RANGES = {
@@ -306,7 +326,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 
   // ---------- state ----------
   const S = { oz:null, fx:null, src:"—", ok:false, nextAt:Date.now()+GOLD_EVERY, pulse:null,
-              range:"1D", series:"oz", cache:{}, loading:true, histErr:false, day:null, live:[], hover:null };
+              range:"1D", series:"kg", cache:{}, loading:true, histErr:false, day:null, live:[], hover:null };
   try { const p = JSON.parse(localStorage.getItem("goudpuls-pref")||"{}");
         if (RANGES[p.range]) S.range = p.range; if (p.series==="oz"||p.series==="kg") S.series = p.series; } catch(e){}
   try { S.live = JSON.parse(localStorage.getItem("goudpuls-live")||"[]").filter(p=>p[0]>Date.now()-D); } catch(e){}
@@ -326,12 +346,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     { name:"Binance PAXG", get: async()=> +(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=PAXGUSDT")).price },
   ];
   const fxSources = [
-    async()=> +(await getJSON("https://api.frankfurter.app/latest?from=USD&to=EUR")).rates.EUR,
-    async()=> +(await getJSON("https://open.er-api.com/v6/latest/USD")).rates.EUR,
-    async()=> 1/(+(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=EURUSDT")).price),
+    async()=>{ const r = (await getJSON("https://api.frankfurter.app/latest?from=EUR&to=USD,TRY")).rates; return { usd:+r.USD, try:+r.TRY }; },
+    async()=>{ const r = (await getJSON("https://open.er-api.com/v6/latest/EUR")).rates; return { usd:+r.USD, try:+r.TRY }; },
+    async()=>({ usd:+(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=EURUSDT")).price, try:null }),
   ];
   async function updateFx(){
-    for (const f of fxSources){ try { const v = await f(); if (v>0.3 && v<3){ S.fx=v; renderStats(); return; } } catch(e){} }
+    for (const f of fxSources){ try { const v = await f(); if (v.usd>0.3 && v.usd<3){ S.fx = 1/v.usd; if (v.try>1) S.try = v.try; renderStats(); return; } } catch(e){} }
   }
   async function updateGold(){
     let price=null, src=null;
@@ -449,20 +469,27 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
   function renderStats(){
     const k = kgNow();
+    if (S.oz!=null) $("sOz").textContent = "$ " + nf2.format(S.oz);
     if (k!=null){
       $("sGram").textContent = "€ " + nf2.format(k/1000);
       $("sCeyrek").textContent = "€ " + nf2.format(k/1000*CEYREK_G);
     }
     if (S.fx) $("sFx").textContent = (1/S.fx).toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4});
-    if (S.day && S.day.length && S.oz!=null){
-      const r = cal(S.day).oz;
-      let hi = Math.max(S.oz, ...S.day.map(p=>p.h*r)), lo = Math.min(S.oz, ...S.day.map(p=>p.l*r));
-      $("sHi").textContent = "$ " + nf2.format(hi); $("sLo").textContent = "$ " + nf2.format(lo);
+    if (S.try) $("sTry").textContent = S.try.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
+    if (S.day && S.day.length && k!=null){
+      const r = cal(S.day).kg;
+      const hi = Math.max(k, ...S.day.map(p=>p.h*(p.kg/p.oz)*r)), lo = Math.min(k, ...S.day.map(p=>p.l*(p.kg/p.oz)*r));
+      $("mHi").textContent = "€ " + nf0.format(hi); $("mLo").textContent = "€ " + nf0.format(lo);
     }
-    const pOz = change24("oz"), pKg = change24("kg");
+    for (const [id, d] of [["mW",7],["mM",30]]){
+      const a = agoKg(d), el = $(id); el.classList.remove("up","down");
+      if (a==null || k==null){ el.textContent = "—"; continue; }
+      const pc = (k/a-1)*100; el.textContent = (pc>0?"▲ ":pc<0?"▼ ":"") + pct(pc); if (pc) el.classList.add(pc>0?"up":"down");
+    }
+    const pKg = change24("kg");
     const sc = $("sChg"); sc.classList.remove("up","down");
-    if (pOz!=null){ sc.textContent = pct(pOz); if (pOz) sc.classList.add(pOz>0?"up":"down"); }
-    setChip($("cOz"), pOz, "24u ·"); setChip($("cKg"), pKg, "24u ·");
+    if (pKg!=null){ sc.textContent = pct(pKg); if (pKg) sc.classList.add(pKg>0?"up":"down"); }
+    setChip($("cKg"), pKg, "24u ·");
     renderHome();
   }
   const I18N = {
@@ -470,12 +497,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       kgN:"Kilo altın", kgD:"1 kilo saf altın, 24 ayar", cN:"Çeyrek altın", cD:"1,75 gram, 22 ayar · 1,60 gram saf altın",
       gN:"Gram altın", gD:"1 gram saf altın, 24 ayar", upd:"Son güncelleme",
       note:"Bu, borsa fiyatına göre altının kendi değeridir. Kuyumcuda veya bankada alırken genellikle daha fazla ödersiniz, satarken ise genellikle biraz daha az alırsınız.",
+      mOpen:"Piyasa açık · fiyat canlı değişiyor", mClosed:w=>`Piyasa kapalı · açılış: ${w}`,
       period:"Ne zaman", then:"O zaman", diff:"Fark", p1:"1 gün önce", p7:"1 hafta önce", p30:"1 ay önce", p365:"1 yıl önce", pctf:a=>`%${a}`,
       up:a=>`▲ Son 24 saatte %${a} yükseldi`, down:a=>`▼ Son 24 saatte %${a} düştü`, flat:"Son 24 saatte değişmedi", none:"Son 24 saat —" },
     nl: { html:"nl", title:"Goudprijs vandaag", lead:"In euro's · ververst vanzelf elke 10 seconden",
       kgN:"Kilo goud", kgD:"1 kilo puur goud, 24 karaat", cN:"Çeyrek altın", cD:"1,75 gram, 22 karaat · 1,60 gram puur goud",
       gN:"Gram goud", gD:"1 gram puur goud, 24 karaat", upd:"Laatst bijgewerkt",
       note:"Dit is de waarde van het goud zelf, berekend uit de beursprijs. Bij de juwelier of bank betaal je bij aankoop meestal meer, en krijg je bij verkoop meestal iets minder.",
+      mOpen:"Markt open · de prijs verandert live", mClosed:w=>`Markt gesloten · opent ${w}`,
       period:"Wanneer", then:"Toen", diff:"Verschil", p1:"1 dag geleden", p7:"1 week geleden", p30:"1 maand geleden", p365:"1 jaar geleden", pctf:a=>`${a}%`,
       up:a=>`▲ ${a}% gestegen in 24 uur`, down:a=>`▼ ${a}% gedaald in 24 uur`, flat:"Gelijk gebleven in 24 uur", none:"24 uur —" },
   };
@@ -486,7 +515,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent = L[el.dataset.t]; });
     document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.l===lang)));
     $("viewHome").lang = L.html;
-    renderStats();
+    renderStats(); renderMarket();
   }
   function agoKg(days){
     if (days===1){ if (!S.day || !S.day.length) return null; return S.day[0].kg * cal(S.day).kg; }
@@ -511,6 +540,22 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       $(id).innerHTML = html;
     }
   }
+  function nyParts(d){
+    const p = new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"numeric",hour12:false}).formatToParts(d);
+    let h = +p.find(x=>x.type==="hour").value; if (h===24) h = 0;
+    return { wd: p.find(x=>x.type==="weekday").value, h };
+  }
+  // goudmarkt: zondag 18:00 t/m vrijdag 17:00 New Yorkse tijd, dagelijkse pauze 17:00-18:00
+  function marketOpen(d){ const {wd,h} = nyParts(d); if (wd==="Sat") return false; if (wd==="Sun") return h>=18; if (wd==="Fri") return h<17; return h!==17; }
+  function nextOpen(){ let d = new Date(); d.setMinutes(0,0,0); for (let i=0;i<24*4;i++){ d = new Date(d.getTime()+3600e3); if (marketOpen(d)) return d; } return null; }
+  function renderMarket(){
+    const open = marketOpen(new Date()), nx = open ? null : nextOpen(), L = I18N[lang];
+    const when = loc => nx ? nx.toLocaleString(loc,{weekday:"long",hour:"2-digit",minute:"2-digit"}) : "";
+    $("mkt").className = "mkt " + (open ? "open" : "closed");
+    $("mktText").textContent = open ? "Markt open" : "Markt dicht · opent " + when("nl-NL");
+    $("homeMkt").className = "mkt big " + (open ? "open" : "closed");
+    $("homeMktText").textContent = open ? L.mOpen : L.mClosed(when(lang==="tr" ? "tr-TR" : "nl-NL"));
+  }
   function updateRangeChip(){
     const pts = displayPts(), el = $("cRange");
     if (!pts || pts.length<2){ setChip(el, null, S.range+" ·"); return; }
@@ -518,7 +563,6 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
   function renderLive(prev){
     const k = kgNow();
-    setRoller($("priceOz"), "$", S.oz);
     setRoller($("priceKg"), "€", k);
     if (k!=null){
       setRoller($("homeKg"), "€", k);
@@ -526,10 +570,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       setRoller($("homeGram"), "€", k/1000);
     }
     const dir = prev==null ? null : S.oz>prev ? "up" : S.oz<prev ? "down" : null;
-    for (const id of ["hOz","hKg"]){ const el=$(id); el.classList.remove("up","down"); if (dir){ el.classList.add(dir); setTimeout(()=>el.classList.remove(dir), 2200); } }
+    setTimeout(()=>{ const el = $("priceKg"); el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); }, FLOW_MS);
     const t0 = performance.now(), fxTxt = S.fx ? S.fx.toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4}) : null;
     S.flow = { t0, path: (typeof pickPath==="function") ? pickPath() : null,
-      labels: [ "Bron: " + S.src, "$ " + nf2.format(S.oz) + " per oz", "× 32,1507 = $ " + nf0.format(S.oz*OZ_PER_KG) + " per kg", fxTxt ? `× ${fxTxt} = € ${nf0.format(k)} per kg` : "EUR/USD laden…" ] };
+      labels: [ "Bron: " + S.src, "$ " + nf2.format(S.oz) + " per oz", "× 32,1507 = $ " + nf0.format(S.oz*OZ_PER_KG) + " per kg", fxTxt ? `× ${fxTxt} = € ${nf0.format(k)} per kg` : "EUR/USD laden…" ],
+      short: [ S.src, "$ " + nf0.format(S.oz) + "/oz", "× 32,15 = $/kg", fxTxt ? `× ${fxTxt} = €/kg` : "€ …" ] };
     S.pulse = { t: t0 + FLOW_MS, dir: dir || "flat" };
     buildRing(); renderStats(); updateRangeChip();
   }
@@ -567,20 +612,20 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     // grid
     g.textBaseline="middle"; g.textAlign="left";
     for (let i=0;i<=4;i++){ const v = lo+(hi-lo)*i/4, y = Y(v);
-      g.strokeStyle="rgba(140,190,255,.07)"; g.beginPath(); g.moveTo(0,y); g.lineTo(cw,y); g.stroke();
+      g.strokeStyle="rgba(255,255,255,.07)"; g.beginPath(); g.moveTo(0,y); g.lineTo(cw,y); g.stroke();
       if (i>0 && i<4){ g.fillStyle=C.muted; g.fillText(fmtV(v), cw+10, y); } }
     const nT = isSmall() ? 3 : 6; g.textBaseline="top"; g.textAlign="center";
     for (let i=0;i<nT;i++){ const tt = t0+(t1-t0)*(i+.5)/nT, x = X(tt);
-      g.strokeStyle="rgba(140,190,255,.05)"; g.beginPath(); g.moveTo(x,padT); g.lineTo(x,padT+ch); g.stroke();
+      g.strokeStyle="rgba(255,255,255,.05)"; g.beginPath(); g.moveTo(x,padT); g.lineTo(x,padT+ch); g.stroke();
       g.fillStyle=C.muted; g.fillText(new Date(tt).toLocaleString("nl-NL",R.fmt), x, padT+ch+7); }
 
     // line + area
     const path = new Path2D();
     pts.forEach((p,i)=>{ const x=X(p[0]), y=Y(p[1]); i ? path.lineTo(x,y) : path.moveTo(x,y); });
     const area = new Path2D(path); area.lineTo(X(pts[pts.length-1][0]), padT+ch); area.lineTo(X(pts[0][0]), padT+ch); area.closePath();
-    const ag = g.createLinearGradient(0,padT,0,padT+ch); ag.addColorStop(0,`rgba(${C.cyan},.26)`); ag.addColorStop(1,`rgba(${C.cyan},0)`);
+    const ag = g.createLinearGradient(0,padT,0,padT+ch); ag.addColorStop(0,`rgba(${C.cyan},.16)`); ag.addColorStop(1,`rgba(${C.cyan},0)`);
     g.fillStyle = ag; g.fill(area);
-    g.save(); g.shadowColor=`rgba(${C.cyan},.9)`; g.shadowBlur=12; g.strokeStyle="#8fdcff"; g.lineWidth=1.8; g.lineJoin="round"; g.stroke(path); g.restore();
+    g.save(); g.shadowColor=`rgba(${C.cyan},.9)`; g.shadowBlur=12; g.strokeStyle="#ffffff"; g.lineWidth=1.8; g.lineJoin="round"; g.stroke(path); g.restore();
 
     // current price tag
     const last = pts[pts.length-1], ex = X(last[0]), ey = Y(last[1]);
@@ -590,19 +635,19 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     g.fillStyle="#1a1204"; g.textAlign="left"; g.textBaseline="middle"; g.fillText(tag, cw+10, ey+.5);
     const pulse = reduced ? 0 : (t/1500)%1;
     g.fillStyle=`rgba(${C.amber},${.4*(1-pulse)})`; g.beginPath(); g.arc(ex,ey,4+pulse*15,0,Math.PI*2); g.fill();
-    g.fillStyle="#fff2dc"; g.beginPath(); g.arc(ex,ey,3.8,0,Math.PI*2); g.fill();
+    g.fillStyle="#ffffff"; g.beginPath(); g.arc(ex,ey,3.8,0,Math.PI*2); g.fill();
 
     // hover crosshair
     if (S.hover!=null && S.hover>=0 && S.hover<=cw){
       const tt = t0 + S.hover/cw*(t1-t0);
       let best = pts[0]; for (const p of pts) if (Math.abs(p[0]-tt) < Math.abs(best[0]-tt)) best = p;
       const hx = X(best[0]), hy = Y(best[1]);
-      g.strokeStyle="rgba(232,242,255,.35)"; g.beginPath(); g.moveTo(hx,padT); g.lineTo(hx,padT+ch); g.moveTo(0,hy); g.lineTo(cw,hy); g.stroke();
+      g.strokeStyle="rgba(255,255,255,.35)"; g.beginPath(); g.moveTo(hx,padT); g.lineTo(hx,padT+ch); g.moveTo(0,hy); g.lineTo(cw,hy); g.stroke();
       g.fillStyle=C.ice; g.beginPath(); g.arc(hx,hy,4,0,Math.PI*2); g.fill();
       const l1 = (key==="oz"?"$ ":"€ ") + nf2.format(best[1]), l2 = new Date(best[0]).toLocaleString("nl-NL",R.tip);
       g.font="500 12px 'JetBrains Mono', monospace"; const bw = Math.max(g.measureText(l1).width, g.measureText(l2).width)+20;
       let bx = hx+12; if (bx+bw>cw) bx = hx-12-bw; const by = Math.max(padT, Math.min(hy-48, padT+ch-46));
-      g.fillStyle="rgba(5,9,20,.92)"; g.strokeStyle=`rgba(${C.cyan},.5)`; g.fillRect(bx,by,bw,44); g.strokeRect(bx+.5,by+.5,bw-1,43);
+      g.fillStyle="rgba(0,0,0,.92)"; g.strokeStyle=`rgba(${C.cyan},.5)`; g.fillRect(bx,by,bw,44); g.strokeRect(bx+.5,by+.5,bw-1,43);
       g.textAlign="left"; g.textBaseline="top"; g.fillStyle=C.ice; g.fillText(l1,bx+10,by+8); g.fillStyle=C.muted; g.font="11px 'JetBrains Mono', monospace"; g.fillText(l2,bx+10,by+26);
     }
   }
@@ -613,7 +658,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   const rng = seed => () => { seed = (seed*1664525 + 1013904223) >>> 0; return seed/4294967296; };
   const edge = (o,P,Q,dx=0,dy=0) => { o.moveTo(P.x+dx,P.y+dy); o.quadraticCurveTo(P.x+(Q.x-P.x)*.15+dx, P.y-(P.y-Q.y)*.65+dy, Q.x+dx, Q.y+dy); };
   const qpt = (P,Q,s) => { const kx=P.x+(Q.x-P.x)*.15, ky=P.y-(P.y-Q.y)*.65, m=1-s; return [m*m*P.x+2*m*s*kx+s*s*Q.x, m*m*P.y+2*m*s*ky+s*s*Q.y]; };
-  const glow = (g,x,y,r,a) => { const gr=g.createRadialGradient(x,y,0,x,y,r); gr.addColorStop(0,`rgba(255,255,255,${a})`); gr.addColorStop(.3,`rgba(190,230,255,${a*.45})`); gr.addColorStop(1,"rgba(190,230,255,0)"); g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,TAU); g.fill(); };
+  const glow = (g,x,y,r,a) => { const gr=g.createRadialGradient(x,y,0,x,y,r); gr.addColorStop(0,`rgba(255,255,255,${a})`); gr.addColorStop(.3,`rgba(255,255,255,${a*.45})`); gr.addColorStop(1,"rgba(255,255,255,0)"); g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,TAU); g.fill(); };
   const FAN_NAMES = ["GOLD-API · LIVE","ECB · EUR/USD","BINANCE · HISTORIE","BINANCE · PAXG"];
   let TREE = null;
 
@@ -643,14 +688,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const dpr = Math.min(devicePixelRatio||1, 2), oc = document.createElement("canvas");
     oc.width = Math.round(w*dpr); oc.height = Math.round(h*dpr);
     const o = oc.getContext("2d"); o.setTransform(dpr,0,0,dpr,0,0); o.lineWidth = .6;
-    trees.forEach((lv,k)=>{ o.strokeStyle = k===0 ? "rgba(200,225,255,.15)" : "rgba(170,200,255,.08)"; o.beginPath();
+    trees.forEach((lv,k)=>{ o.strokeStyle = k===0 ? "rgba(255,255,255,.15)" : "rgba(255,255,255,.08)"; o.beginPath();
       for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(o, n.p, n); o.stroke(); });
-    o.fillStyle = "rgba(220,235,255,.4)";
+    o.fillStyle = "rgba(255,255,255,.4)";
     for (const lv of trees[0]) for (const n of lv) if (n.l>1 && n.i%3===0) o.fillRect(n.x-1, n.y-1, 2, 2);
-    o.strokeStyle = "rgba(200,225,255,.2)"; o.beginPath();
+    o.strokeStyle = "rgba(255,255,255,.2)"; o.beginPath();
     for (const lv of fans) for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(o, n.p, n);
     o.stroke();
-    o.strokeStyle = "rgba(140,190,255,.28)"; o.beginPath(); o.moveTo(6, rootY+.5); o.lineTo(w-6, rootY+.5); o.stroke();
+    o.strokeStyle = "rgba(255,255,255,.28)"; o.beginPath(); o.moveTo(6, rootY+.5); o.lineTo(w-6, rootY+.5); o.stroke();
     TREE = { key:"", w, h, D, trees, fans, fanX, stars, img: oc, rootY };
   }
   function pickPath(){
@@ -663,8 +708,8 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     return { chain, samples, at, steps };
   }
   function buildRing(){
-    if (!S.day || !S.day.length || S.oz==null) return;
-    const r = cal(S.day).oz, vals = S.day.map(p=>p.oz*r); vals.push(S.oz);
+    const k = kgNow(); if (!S.day || !S.day.length || k==null) return;
+    const r = cal(S.day).kg, vals = S.day.map(p=>p.kg*r); vals.push(k);
     let lo = Infinity, hi = -Infinity, hiI = 0;
     let loI = 0; vals.forEach((v,i)=>{ if (v<lo){ lo = v; loI = i; } if (v>hi){ hi = v; hiI = i; } });
     S.ring = { vals, lo, hi, hiI, loI };
@@ -699,10 +744,10 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     cg.addColorStop(0,`rgba(${C.cyan},${(.07 + (pLive ? .12*(1-age/2.6) : 0))*dim})`); cg.addColorStop(1,`rgba(${C.cyan},0)`);
     g.fillStyle = cg; g.fillRect(cx-size*1.7, cy-size*1.7, size*3.4, size*3.4);
     const gr = size*1.6, rot = t*.00006;
-    g.strokeStyle = `rgba(140,190,255,${.09*dim})`; g.lineWidth = 1; g.beginPath(); g.arc(cx,cy,gr,0,TAU); g.stroke();
+    g.strokeStyle = `rgba(255,255,255,${.09*dim})`; g.lineWidth = 1; g.beginPath(); g.arc(cx,cy,gr,0,TAU); g.stroke();
     g.beginPath();
     for (let i=0;i<120;i++){ const an = i/120*TAU + rot, l = i%10===0 ? 9 : 4; g.moveTo(cx+Math.cos(an)*gr, cy+Math.sin(an)*gr); g.lineTo(cx+Math.cos(an)*(gr+l), cy+Math.sin(an)*(gr+l)); }
-    g.strokeStyle = `rgba(140,190,255,${.15*dim})`; g.stroke();
+    g.strokeStyle = `rgba(255,255,255,${.15*dim})`; g.stroke();
     g.strokeStyle = `rgba(${C.amber},${.5*dim})`; g.lineWidth = 1.5;
     g.beginPath(); g.arc(cx,cy,gr+15,-rot*3,-rot*3+.5); g.stroke();
     g.beginPath(); g.arc(cx,cy,gr+15,-rot*3+Math.PI,-rot*3+Math.PI+.22); g.stroke();
@@ -713,7 +758,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const rCache = new Float32Array(SEG+1), RCache = new Float32Array(SEG+1), bCache = new Float32Array(SEG+1);
     for (let i=0;i<=SEG;i++){ const u = i/SEG*TAU; bCache[i] = bumpAt(u); RCache[i] = Rf(u); rCache[i] = rf(u)*(1+.38*bCache[i]); }
     for (let s=0; s<NS; s++){
-      const amber = s%7===0, tw = amber ? -2 : 3, v0 = s/NS*TAU, dp = amber ? -ph*1.3 : ph;
+      const amber = s%9===0, tw = amber ? -2 : 3, v0 = s/NS*TAU, dp = amber ? -ph*1.3 : ph;
       let prev = null;
       for (let i=0; i<=SEG; i++){
         const u = i/SEG*TAU, R = RCache[i], r = rCache[i], v = v0 + tw*u + dp;
@@ -723,7 +768,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         prev = P;
       }
     }
-    const al = [.16,.32,.6]; g.lineWidth = .7;
+    const al = [.1,.22,.48]; g.lineWidth = .7;
     for (let k=0;k<3;k++){ g.strokeStyle = `rgba(${C.cyan},${al[k]*dim})`; g.stroke(paths.c[k]); g.strokeStyle = `rgba(${C.amber},${al[k]*.95*dim})`; g.stroke(paths.a[k]); }
     g.lineWidth = 1.1; g.strokeStyle = `rgba(${pcol},${.95*dim})`; g.stroke(paths.hot);
 
@@ -733,25 +778,25 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       g.strokeStyle = `rgba(${col},${alpha*dim})`; g.lineWidth = lw; g.stroke();
     };
     const drift = reduced ? 0 : t*.00018;
-    for (let k=0;k<12;k++) ringAt(k/12*TAU + drift, 1.45, .2, "200,225,255", .8);
-    ringAt(TAU-.002, 1.75, .95, "240,248,255", 1.5);                // naad = NU
-    ringAt(reduced ? 1 : (t*.00042)%TAU, 1.6, .5, "240,248,255", 1);  // scanner
+    for (let k=0;k<12;k++) ringAt(k/12*TAU + drift, 1.45, .2, "255,255,255", .8);
+    ringAt(TAU-.002, 1.75, .95, "255,255,255", 1.5);                // naad = NU
+    ringAt(reduced ? 1 : (t*.00042)%TAU, 1.6, .5, "255,255,255", 1);  // scanner
     if (pLive) ringAt(front, 1.95, .9*(1-age/2.6), pcol, 2);
     g.globalCompositeOperation = "source-over";
 
     const anchor = u => { const R = Rf(u); return proj(R*Math.cos(u), R*Math.sin(u), 0); };
     if (G && !small && S.oz!=null && ring){
-      const ox = G.r.left, oy = G.r.top, n = ring.vals.length, p24 = (S.oz/ring.vals[0]-1)*100;
+      const ox = G.r.left, oy = G.r.top, n = ring.vals.length, p24 = (ring.vals[n-1]/ring.vals[0]-1)*100;
       const items = [
-        { u:TAU-.03, x:ox+G.w-8, y:oy+16, side:"r", k:"NU · 24U "+(p24>=0?"▲ ":"▼ ")+pct(p24), v:"$ "+nf2.format(S.oz), col:p24>=0?C.up:C.down },
-        { u:ring.hiI/(n-1)*TAU, x:ox+G.w-8, y:oy+cy-oy-size*.2, side:"r", k:"24U HOOG", v:"$ "+nf2.format(ring.hi), col:C.amber },
-        { u:ring.loI/(n-1)*TAU, x:ox+8, y:oy+cy-oy-size*.2, side:"l", k:"24U LAAG", v:"$ "+nf2.format(ring.lo), col:C.amber },
+        { u:TAU-.03, x:ox+G.w-8, y:oy+16, side:"r", k:"NU · 24U "+(p24>=0?"▲ ":"▼ ")+pct(p24), v:"€ "+nf0.format(ring.vals[n-1])+" /kg", col:p24>=0?C.up:C.down },
+        { u:ring.hiI/(n-1)*TAU, x:ox+G.w-8, y:oy+cy-oy-size*.2, side:"r", k:"24U HOOG", v:"€ "+nf0.format(ring.hi), col:C.amber },
+        { u:ring.loI/(n-1)*TAU, x:ox+8, y:oy+cy-oy-size*.2, side:"l", k:"24U LAAG", v:"€ "+nf0.format(ring.lo), col:C.amber },
       ];
       for (const it of items){
         const A = anchor(Math.min(TAU-.03, Math.max(.03, it.u))), ex = it.side==="r" ? it.x-140 : it.x+140;
-        g.strokeStyle = "rgba(200,225,255,.35)"; g.lineWidth = 1; g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(ex, it.y+6); g.lineTo(it.x, it.y+6); g.stroke();
+        g.strokeStyle = "rgba(255,255,255,.35)"; g.lineWidth = 1; g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(ex, it.y+6); g.lineTo(it.x, it.y+6); g.stroke();
         g.fillStyle = `rgba(${C.amber},.95)`; g.beginPath(); g.arc(A[0],A[1],2.6,0,TAU); g.fill();
-        g.strokeStyle = "rgba(220,235,255,.6)"; g.beginPath(); g.arc(A[0],A[1],7,0,TAU); g.stroke();
+        g.strokeStyle = "rgba(255,255,255,.6)"; g.beginPath(); g.arc(A[0],A[1],7,0,TAU); g.stroke();
         g.textAlign = it.side==="r" ? "right" : "left";
         g.font = "500 10.5px 'JetBrains Mono', monospace"; g.textBaseline = "bottom"; g.fillStyle = C.muted; g.fillText(it.k, it.x, it.y+2);
         g.font = "500 13px 'JetBrains Mono', monospace"; g.textBaseline = "top"; g.fillStyle = `rgb(${it.col})`; g.fillText(it.v, it.x, it.y+11);
@@ -772,7 +817,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     if (oy > h || oy + G.h < 0) return;
 
     g.drawImage(TREE.img, ox, oy, G.w, G.h);
-    for (const s of TREE.stars){ const a = .12 + .5*Math.sin(t*.0011 + s.ph)**2; g.fillStyle = `rgba(220,235,255,${a})`; g.fillRect(ox+s.x, oy+s.y, s.s, s.s); }
+    for (const s of TREE.stars){ const a = .12 + .5*Math.sin(t*.0011 + s.ph)**2; g.fillStyle = `rgba(255,255,255,${a})`; g.fillRect(ox+s.x, oy+s.y, s.s, s.s); }
 
     // bronnen onderaan: actieve bron licht op
     const act = [S.src==="gold-api.com", !!S.fx, !!S.day, S.src==="Binance PAXG"];
@@ -801,6 +846,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     // de witte route van de laatste update
     const F = S.flow;
     glow(g, ox+G.cx, oy+TREE.rootY, 20, .55 + .25*Math.sin(t*.003));
+    if (S.pulse && !reduced){
+      const age = (performance.now()-S.pulse.t)/1000;
+      if (age >= 0 && age < 1.6){
+        const nu = R.anchor(TAU-.002), col = S.pulse.dir==="down" ? C.down : S.pulse.dir==="up" ? C.up : C.amber, maxR = Math.hypot(w,h)*.75;
+        for (const [lag, lw] of [[0,2.2],[.18,1.2]]){ const a2 = age-lag; if (a2 < 0) continue;
+          g.strokeStyle = `rgba(${col},${.45*(1-a2/1.6)})`; g.lineWidth = lw; g.beginPath(); g.arc(nu[0], nu[1], 10 + a2/1.6*maxR, 0, TAU); g.stroke(); }
+      }
+    }
     if (F){
       if (!F.path) F.path = pickPath();
       const P = F.path, el = performance.now()-F.t0, p = Math.min(1, el/FLOW_MS), tp = Math.min(1, p/.8);
@@ -808,7 +861,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       const nu = R.anchor(TAU-.002), leaf = P.samples[n-1];
       const fade = p < 1 ? 1 : Math.max(.35, 1 - (el-FLOW_MS)/3000*.65);
       g.save(); g.globalAlpha = fade;
-      g.shadowColor = "rgba(190,230,255,.95)"; g.shadowBlur = 12; g.strokeStyle = "#ffffff"; g.lineWidth = 2.2; g.lineJoin = "round"; g.lineCap = "round";
+      g.shadowColor = "rgba(255,255,255,.95)"; g.shadowBlur = 12; g.strokeStyle = "#ffffff"; g.lineWidth = 2.2; g.lineJoin = "round"; g.lineCap = "round";
       g.beginPath(); g.moveTo(ox+P.samples[0][0], oy+P.samples[0][1]);
       for (let i=1; i<=upto; i++) g.lineTo(ox+P.samples[i][0], oy+P.samples[i][1]);
       let head = [ox+P.samples[upto][0], oy+P.samples[upto][1]];
@@ -823,13 +876,13 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       g.save(); g.globalAlpha = Math.max(.6, fade);
       P.steps.forEach((si,k)=>{
         if (si > upto && p < 1) return;
-        const x = ox+P.samples[si][0], y = oy+P.samples[si][1], txt = (k+1) + " · " + F.labels[k], tw = g.measureText(txt).width + 16;
-        g.fillStyle = "#05070e"; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.fill();
+        const x = ox+P.samples[si][0], y = oy+P.samples[si][1], txt = (k+1) + " · " + (isSmall() && F.short ? F.short[k] : F.labels[k]), tw = g.measureText(txt).width + 16;
+        g.fillStyle = "#000000"; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.fill();
         g.strokeStyle = "#ffffff"; g.lineWidth = 1.5; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.stroke();
         g.fillStyle = "#ffffff"; g.beginPath(); g.arc(x,y,2.3,0,TAU); g.fill();
-        const right = x + 30 + tw < ox + G.w - 4, bx = right ? x + 28 : x - 28 - tw;
-        g.strokeStyle = "rgba(232,242,255,.75)"; g.lineWidth = 1; g.beginPath(); g.moveTo(right ? x+7 : x-7, y); g.lineTo(right ? bx : bx+tw, y); g.stroke();
-        g.fillStyle = "rgba(4,7,14,.92)"; g.fillRect(bx, y-11, tw, 22); g.strokeRect(bx+.5, y-10.5, tw-1, 21);
+        const right = x + 30 + tw < ox + G.w - 4, bx = right ? x + 28 : Math.max(ox + 4, x - 28 - tw);
+        g.strokeStyle = "rgba(255,255,255,.75)"; g.lineWidth = 1; g.beginPath(); g.moveTo(right ? x+7 : x-7, y); g.lineTo(right ? bx : bx+tw, y); g.stroke();
+        g.fillStyle = "rgba(0,0,0,.92)"; g.fillRect(bx, y-11, tw, 22); g.strokeRect(bx+.5, y-10.5, tw-1, 21);
         g.fillStyle = C.ice; g.fillText(txt, bx+8, y+.5);
       });
       g.restore();
@@ -844,7 +897,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const now = Date.now();
     ring.setAttribute("stroke-dashoffset", (69.1*Math.max(0,S.nextAt-now)/GOLD_EVERY).toFixed(2));
     const sec = Math.floor(now/1000);
-    if (sec!==lastSec){ lastSec = sec; clock.textContent = new Date(now).toLocaleTimeString("nl-NL"); }
+    if (sec!==lastSec){ lastSec = sec; clock.textContent = new Date(now).toLocaleTimeString("nl-NL"); if (sec%30===0) renderMarket(); }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -878,6 +931,8 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     try { if ("wakeLock" in navigator && !lock){ lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release",()=>lock=null); } } catch(e){}
   });
   document.addEventListener("fullscreenchange",()=>{ $("fsBtn").textContent = document.fullscreenElement ? "Venster" : "Volledig scherm"; });
+  $("focusBtn").addEventListener("click", ()=>{ const on = document.body.classList.toggle("focus");
+    $("focusBtn").setAttribute("aria-pressed", String(on)); $("focusBtn").textContent = on ? "Alles tonen" : "Focus"; });
   document.addEventListener("keydown",e=>{ if ((e.key==="f"||e.key==="F") && !e.ctrlKey && !e.metaKey) $("fsBtn").click(); });
 
   // ---------- start ----------
