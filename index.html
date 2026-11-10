@@ -17,7 +17,7 @@
   --ice:#ffffff;                /* tekst en lijnen */
   --muted:#a3a3a3;
   --cyan:#ffffff;               /* lijnwerk */
-  --amber:#ff7a00;              /* signaalkleur */
+  --amber:#e8b830;              /* goud */
   --up:#31e981;
   --down:#ff3366;
   --font-display:"Sora","Manrope",system-ui,sans-serif;
@@ -98,7 +98,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .hero.solo{flex:0 0 auto;padding:clamp(6px,1vw,14px) 0;gap:14px;border:0;background:none}
 .price.xl{font-size:clamp(52px,6vw,116px)}
 .price.hit{animation:hit 1.2s ease-out}
-@keyframes hit{0%{text-shadow:0 0 0 rgba(255,122,0,0)}22%{text-shadow:0 0 42px rgba(255,122,0,.85)}100%{text-shadow:0 0 34px rgba(255,255,255,.12)}}
+@keyframes hit{0%{text-shadow:0 0 0 rgba(232,184,48,0)}22%{text-shadow:0 0 42px rgba(232,184,48,.85)}100%{text-shadow:0 0 34px rgba(255,255,255,.12)}}
 .minis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;margin-top:8px;padding-top:18px;border-top:1px solid var(--rule)}
 .mv{font:500 clamp(16px,1.4vw,21px) var(--font-data);margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .mv.up{color:var(--up)} .mv.down{color:var(--down)}
@@ -106,7 +106,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
   padding:6px 11px;border:1px solid var(--rule);border-radius:999px;white-space:nowrap}
 .mkt .mdot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
 .mkt.open{color:var(--up);border-color:rgba(49,233,129,.4)} .mkt.open .mdot{background:var(--up)}
-.mkt.closed{color:var(--amber);border-color:rgba(255,122,0,.45)} .mkt.closed .mdot{background:var(--amber)}
+.mkt.closed{color:var(--amber);border-color:rgba(232,184,48,.45)} .mkt.closed .mdot{background:var(--amber)}
 .mkt.big{font:600 14px var(--font-body);letter-spacing:.01em;text-transform:none;padding:8px 14px;white-space:normal}
 body.focus .stats, body.focus .chartbox, body.focus .minis{display:none}
 body.focus .mid{min-height:calc(100vh - 150px)}
@@ -311,7 +311,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   const nf2 = new Intl.NumberFormat("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
   const nf0 = new Intl.NumberFormat("nl-NL",{maximumFractionDigits:0});
   const pct = p => (p>0?"+":"") + p.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2}) + "%";
-  const C = { ice:"#ffffff", muted:"#a3a3a3", cyan:"255,255,255", amber:"255,122,0", up:"49,233,129", down:"255,51,102" };
+  const C = { ice:"#ffffff", muted:"#a3a3a3", cyan:"255,255,255", amber:"232,184,48", up:"49,233,129", down:"255,51,102" };
 
   const H = 3600e3, D = 864e5;
   const RANGES = {
