@@ -1178,7 +1178,6 @@ void main(){ vec4 c = texture2D(tex, uv)*0.227027;
     for (let k=0;k<5;k++) ringAt(k/5*TAU + drift, 1.45, .14, "255,255,255", .8);
     ringAt(TAU-.002, 1.75, .95, "255,255,255", 1.5);                // naad = NU
     ringAt(reduced ? 1 : (t*.00042)%TAU, 1.6, .5, "255,255,255", 1);  // scanner
-    if (pLive) ringAt(front, 1.95, .9*(1-age/2.6), pcol, 2);
     g.globalCompositeOperation = "source-over";
 
     const anchor = u => { const R = Rf(u); return proj(R*Math.cos(u), R*Math.sin(u), 0); };
@@ -1246,14 +1245,6 @@ void main(){ vec4 c = texture2D(tex, uv)*0.227027;
     // de witte route van de laatste update
     const F = S.flow;
     glow(g, ox+G.cx, oy+TREE.rootY, 20, .55 + .25*Math.sin(t*.003));
-    if (S.pulse && !reduced){
-      const age = (performance.now()-S.pulse.t)/1000;
-      if (age >= 0 && age < 1.6){
-        const nu = R.anchor(TAU-.002), col = S.pulse.dir==="down" ? C.down : S.pulse.dir==="up" ? C.up : C.amber, maxR = Math.hypot(w,h)*.75;
-        for (const [lag, lw] of [[0,2.2],[.18,1.2]]){ const a2 = age-lag; if (a2 < 0) continue;
-          g.strokeStyle = `rgba(${col},${.45*(1-a2/1.6)})`; g.lineWidth = lw; g.beginPath(); g.arc(nu[0], nu[1], 10 + a2/1.6*maxR, 0, TAU); g.stroke(); }
-      }
-    }
     if (F){
       if (!F.path) F.path = pickPath();
       const P = F.path, el = performance.now()-F.t0, p = Math.min(1, el/FLOW_MS), tp = Math.min(1, p/.8);
