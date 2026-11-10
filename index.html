@@ -4,7 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GoudPrijs Analytics</title>
-<meta name="description" content="Live goudprijs: troy ounce in dollars, kilo, gram en çeyrek in euro's.">
+<meta name="description" content="Live goudprijs per kilo in euro, gram en çeyrek. Met nieuws, rendement en rekenhulp.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="assets/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GoudPrijs">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GoudPrijs Analytics">
+<meta property="og:description" content="Live goudprijs per kilo in euro, gram en çeyrek. Met nieuws, rendement en rekenhulp.">
+<meta property="og:url" content="https://klcfurkan.github.io/Goudprijs/">
+<meta property="og:image" content="https://klcfurkan.github.io/Goudprijs/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://klcfurkan.github.io/Goudprijs/assets/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -30,7 +47,7 @@
 html,body{height:100%;margin:0}
 body{background-color:var(--bg);color:var(--ice);font-family:var(--font-body);font-size:14px;-webkit-font-smoothing:antialiased;
   background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:26px 26px}
-#scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;pointer-events:none}
+#scene,#sceneGl,#sceneFg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;pointer-events:none}
 .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 90% at 60% 45%,transparent 45%,rgba(0,0,0,.85) 100%)}
 .app{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;gap:clamp(12px,1.8vh,22px);
   padding-block:clamp(14px,2.4vh,28px);
@@ -39,6 +56,9 @@ body{background-color:var(--bg);color:var(--ice);font-family:var(--font-body);fo
 /* header */
 header{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
 .hl{min-width:0;max-width:100%;display:flex;align-items:center;gap:clamp(14px,2.4vw,36px);flex-wrap:wrap}
+.logo{display:flex;flex:none;border-radius:11px}
+.logo img{display:block;width:44px;height:44px}
+.logo:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .brandwrap{display:flex;flex-direction:column;gap:3px}
 .brand{font-family:var(--font-display);font-weight:700;font-size:clamp(21px,1.9vw,28px);letter-spacing:.005em;margin:0;line-height:1.05}
 .brand span{color:var(--amber)}
@@ -279,12 +299,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 </head>
 <body>
 <canvas id="scene" aria-hidden="true"></canvas>
+<canvas id="sceneGl" aria-hidden="true"></canvas>
+<canvas id="sceneFg" aria-hidden="true"></canvas>
 <div class="vignette"></div>
 
 <div class="app">
   <header>
     <div class="hl">
-      <div class="brandwrap"><h1 class="brand">GoudPrijs <span>Analytics</span></h1><div class="by">by Furkan Kilic</div></div>
+      <a class="logo" href="#dashboard" aria-label="Naar het dashboard"><img src="assets/logo.svg" alt="" width="44" height="44"></a><div class="brandwrap"><h1 class="brand">GoudPrijs <span>Analytics</span></h1><div class="by">by Furkan Kilic</div></div>
       <nav aria-label="Weergave">
         <a href="#dashboard" data-v="dashboard">Dashboard</a>
         <a href="#inzicht" data-v="inzicht">Inzicht</a>
@@ -885,7 +907,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
 
   // ---------- scene: databoom (bron -> omrekening) die de 24-uursring voedt ----------
-  const sc = $("scene"), sx = sc.getContext("2d");
+  const sc = $("scene"), sx = sc.getContext("2d"), fc = $("sceneFg"), fx = fc.getContext("2d");
   const TAU = Math.PI*2, FLOW_MS = 2200;
   const rng = seed => () => { seed = (seed*1664525 + 1013904223) >>> 0; return seed/4294967296; };
   const edge = (o,P,Q,dx=0,dy=0) => { o.moveTo(P.x+dx,P.y+dy); o.quadraticCurveTo(P.x+(Q.x-P.x)*.15+dx, P.y-(P.y-Q.y)*.65+dy, Q.x+dx, Q.y+dy); };
@@ -947,6 +969,143 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     S.ring = { vals, lo, hi, hiI, loI };
   }
 
+  // getoonde ringwaarden bewegen geleidelijk naar de nieuwe waarden, zodat de vorm vloeiend meeverandert
+  let RN = null;
+  function ringNorm(){
+    const r = S.ring; if (!r) return null;
+    const len = r.vals.length, n = Math.min(97, len), span = (r.hi-r.lo) || 1;
+    const target = i => (r.vals[Math.round(i/(n-1)*(len-1))] - r.lo)/span;
+    if (!RN || RN.length!==n){ RN = new Float32Array(n); for (let i=0;i<n;i++) RN[i] = target(i); return RN; }
+    for (let i=0;i<n;i++) RN[i] += (target(i)-RN[i])*.05;
+    return RN;
+  }
+
+  // ---------- WebGL: de ring met echte gloed (valt terug op 2D als WebGL ontbreekt) ----------
+  const GLR = (()=>{
+    const off = { ok:false, begin(){}, draw(){} };
+    const cv = $("sceneGl"); let gl = null;
+    try { gl = cv.getContext("webgl", { alpha:true, antialias:true, premultipliedAlpha:true, preserveDrawingBuffer:false }); } catch(e){}
+    if (!gl) return off;
+    try {
+      const VS = `precision highp float;
+attribute vec2 a_p;
+uniform vec2 u_res, u_c; uniform float u_size, u_t, u_ph, u_ns, u_seg, u_dim, u_n;
+uniform vec4 u_rot; uniform vec2 u_rot2; uniform vec3 u_pulse; uniform vec3 u_pcol; uniform float u_gain;
+uniform float u_vals[97];
+varying vec4 v_c;
+const float TAU = 6.2831853;
+float nv(float u){
+  float f = clamp(u/TAU, 0.0, 1.0)*(u_n-1.0), fi = floor(f), a = 0.0, b = 0.0;
+  for (int k=0; k<97; k++){ float kf = float(k); if (kf==fi) a = u_vals[k]; if (kf==min(fi+1.0, u_n-1.0)) b = u_vals[k]; }
+  return mix(a, b, f-fi);
+}
+float Rf(float u){ return 1.0 + 0.14*sin(3.0*u + u_t*0.00031) + 0.04*sin(5.0*u - u_t*0.00047); }
+float rf(float u){
+  float wob = 1.0 + 0.06*sin(3.0*u + u_t*0.0009);
+  if (u_n < 2.0) return 0.30*(1.0 + 0.24*sin(2.0*u - u_t*0.00058))*wob;
+  return (0.12 + 0.26*nv(u))*wob;
+}
+void main(){
+  float s = a_p.x, u = a_p.y/u_seg*TAU;
+  float amber = 1.0 - step(0.5, mod(s, 9.0));
+  float tw = mix(3.0, -2.0, amber), dp = mix(u_ph, -u_ph*1.3, amber);
+  float d = mod(u - u_pulse.x + 3.1415927, TAU) - 3.1415927;
+  float bump = u_pulse.z * u_pulse.y * exp(-(d*2.4)*(d*2.4));
+  float R = Rf(u), r = rf(u)*(1.0 + 0.38*bump), v = s/u_ns*TAU + tw*u + dp;
+  float ox = cos(v)*r, oz = sin(v)*r*0.8;
+  float x = (R+ox)*cos(u), y = (R+ox)*sin(u), z = oz;
+  float X = x*u_rot.x - y*u_rot.y, Y = x*u_rot.y + y*u_rot.x;
+  float Y2 = Y*u_rot.z - z*u_rot.w, Z2 = Y*u_rot.w + z*u_rot.z;
+  float X3 = X*u_rot2.x + Z2*u_rot2.y, Z3 = -X*u_rot2.y + Z2*u_rot2.x;
+  float p = 3.2/(3.2 - Z3);
+  vec2 sp = u_c + vec2(X3, Y2)*u_size*p;
+  vec2 cl = sp/u_res*2.0 - 1.0;
+  gl_Position = vec4(cl.x, -cl.y, 0.0, 1.0);
+  float depth = clamp((Z3 + 1.25)/2.5, 0.0, 1.0);
+  vec3 base = mix(vec3(1.0), vec3(0.91, 0.72, 0.19), amber);
+  float hot = smoothstep(0.12, 0.55, bump);
+  vec3 col = mix(base, u_pcol, hot);
+  float a = (mix(0.016, 0.18, depth*depth)*(1.0 + amber*0.9) + hot*0.55) * u_dim * u_gain;
+  v_c = vec4(col*a, a);
+}`;
+      const FS = `precision mediump float; varying vec4 v_c; void main(){ gl_FragColor = v_c; }`;
+      const QVS = `attribute vec2 a; varying vec2 uv; void main(){ uv = a*0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }`;
+      const BLUR = `precision mediump float; varying vec2 uv; uniform sampler2D tex; uniform vec2 dir;
+void main(){ vec4 c = texture2D(tex, uv)*0.227027;
+  c += (texture2D(tex, uv + dir*1.3846154) + texture2D(tex, uv - dir*1.3846154))*0.3162162;
+  c += (texture2D(tex, uv + dir*3.2307692) + texture2D(tex, uv - dir*3.2307692))*0.0702703;
+  gl_FragColor = c; }`;
+      const COMP = `precision mediump float; varying vec2 uv; uniform sampler2D tex; uniform float k; void main(){ gl_FragColor = texture2D(tex, uv)*k; }`;
+      const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x); if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x)); return x; };
+      const prog = (vs, fs) => { const x = gl.createProgram(); gl.attachShader(x, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(x, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(x);
+        if (!gl.getProgramParameter(x, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(x)); return x; };
+      const P = prog(VS, FS), PB = prog(QVS, BLUR), PC = prog(QVS, COMP);
+      const U = {}; for (const n of ["u_gain","u_res","u_c","u_size","u_t","u_ph","u_ns","u_seg","u_dim","u_n","u_rot","u_rot2","u_pulse","u_pcol","u_vals"]) U[n] = gl.getUniformLocation(P, n);
+      const quad = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, quad); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+      const vbo = gl.createBuffer(), ibo = gl.createBuffer(); let geo = "", count = 0, NS = 0, SEG = 0;
+      function geometry(){
+        const small = isSmall(), key = small ? "s" : "l"; if (geo===key) return; geo = key;
+        NS = small ? 90 : 150; SEG = small ? 180 : 260;
+        const v = new Float32Array(NS*(SEG+1)*2), idx = new Uint16Array(NS*SEG*2); let k = 0, m = 0;
+        for (let s=0; s<NS; s++) for (let i=0; i<=SEG; i++){ v[k++] = s; v[k++] = i; }
+        for (let s=0; s<NS; s++) for (let i=0; i<SEG; i++){ const b = s*(SEG+1)+i; idx[m++] = b; idx[m++] = b+1; }
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW); count = idx.length;
+      }
+      const fbos = []; let fw = 0, fh = 0;
+      function target(i, w, h){
+        if (!fbos[i]){ const t = gl.createTexture(), f = gl.createFramebuffer(); fbos[i] = { t, f }; }
+        const { t, f } = fbos[i];
+        gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        for (const [pn, pv] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR],[gl.TEXTURE_MAG_FILTER, gl.LINEAR],[gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, pn, pv);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+      }
+      const vals = new Float32Array(97);
+      function drawLines(par){
+        gl.useProgram(P);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo); const loc = gl.getAttribLocation(P, "a_p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+        gl.uniform2f(U.u_res, innerWidth, innerHeight); gl.uniform2f(U.u_c, par.cx, par.cy); gl.uniform1f(U.u_size, par.size);
+        gl.uniform1f(U.u_t, par.t); gl.uniform1f(U.u_ph, par.ph); gl.uniform1f(U.u_ns, NS); gl.uniform1f(U.u_seg, SEG); gl.uniform1f(U.u_dim, par.dim); gl.uniform1f(U.u_gain, par.gain==null ? 1 : par.gain);
+        gl.uniform4f(U.u_rot, par.ca, par.sa, par.cb, par.sb); gl.uniform2f(U.u_rot2, par.cc, par.sc);
+        gl.uniform3f(U.u_pulse, par.front, par.strength, par.live); gl.uniform3f(U.u_pcol, par.pcol[0]/255, par.pcol[1]/255, par.pcol[2]/255);
+        const nvv = par.nv; vals.fill(0); if (nvv) vals.set(nvv.subarray(0, 97)); gl.uniform1fv(U.u_vals, vals); gl.uniform1f(U.u_n, nvv ? nvv.length : 0);
+        gl.drawElements(gl.LINES, count, gl.UNSIGNED_SHORT, 0);
+      }
+      function quadPass(pr){ gl.useProgram(pr); gl.bindBuffer(gl.ARRAY_BUFFER, quad); const l = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+      let W = 0, H = 0;
+      return {
+        ok: true,
+        begin(){
+          const dpr = Math.min(devicePixelRatio||1, 1.75), w = Math.round(innerWidth*dpr), h = Math.round(innerHeight*dpr);
+          if (cv.width!==w || cv.height!==h){ cv.width = w; cv.height = h; }
+          W = w; H = h; gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0,0,W,H); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
+        },
+        draw(par){
+          geometry();
+          const bw = Math.max(64, Math.round(W/3)), bh = Math.max(64, Math.round(H/3));
+          if (bw!==fw || bh!==fh){ target(0, bw, bh); target(1, bw, bh); fw = bw; fh = bh; }
+          gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+          // 1) ring klein renderen voor de gloed
+          gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0].f); gl.viewport(0,0,fw,fh); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
+          drawLines(Object.assign({}, par, { gain: 1.4 }));
+          // 2) twee keer horizontaal en verticaal vervagen
+          gl.disable(gl.BLEND);
+          const loc = gl.getUniformLocation(PB, "dir");
+          for (const sp of [1, 2.2]){
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[1].f); gl.bindTexture(gl.TEXTURE_2D, fbos[0].t); gl.useProgram(PB); gl.uniform2f(loc, sp/fw, 0); quadPass(PB);
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0].f); gl.bindTexture(gl.TEXTURE_2D, fbos[1].t); gl.useProgram(PB); gl.uniform2f(loc, 0, sp/fh); quadPass(PB);
+          }
+          // 3) scherpe lijnen + gloed op het scherm
+          gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0,0,W,H);
+          drawLines(par);
+          gl.bindTexture(gl.TEXTURE_2D, fbos[0].t); gl.useProgram(PC); gl.uniform1f(gl.getUniformLocation(PC, "k"), .55 + par.glow); quadPass(PC);
+        }
+      };
+    } catch(e){ console.warn("WebGL-ring uit:", e.message); return off; }
+  })();
+
   // de ring: één rondje = afgelopen 24 uur, dikte van de buis = prijs
   function drawRing(g, cx, cy, size, t, dim, G){
     const a = Math.PI/2 + (reduced ? 0 : .2*Math.sin(t*.00009)), b = 1.0 + (reduced ? 0 : .08*Math.sin(t*.00007)), c = reduced ? 0 : .12*Math.sin(t*.00005);
@@ -958,13 +1117,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       return [cx + X3*size*p, cy + Y2*size*p, Z3];
     };
     const Rf = u => 1 + .14*Math.sin(3*u + t*.00031) + .04*Math.sin(5*u - t*.00047);
-    const ring = S.ring;
+    const ring = S.ring, NV = ringNorm();
     const rf = u => {
       const wob = 1 + .06*Math.sin(3*u + t*.0009);
-      if (!ring) return .30*(1 + .24*Math.sin(2*u - t*.00058))*wob;
-      const n = ring.vals.length, f = Math.min(n-1, Math.max(0, u/TAU*(n-1))), i = Math.floor(f), j = Math.min(n-1, i+1);
-      const v = ring.vals[i] + (ring.vals[j]-ring.vals[i])*(f-i), norm = (v-ring.lo)/((ring.hi-ring.lo)||1);
-      return (.12 + .26*norm)*wob;
+      if (!NV) return .30*(1 + .24*Math.sin(2*u - t*.00058))*wob;
+      const n = NV.length, f = Math.min(n-1, Math.max(0, u/TAU*(n-1))), i = Math.floor(f), j = Math.min(n-1, i+1);
+      return (.12 + .26*(NV[i] + (NV[j]-NV[i])*(f-i)))*wob;
     };
     let age = 9, pcol = C.cyan;
     if (S.pulse){ age = (performance.now()-S.pulse.t)/1000; pcol = S.pulse.dir==="down" ? C.down : S.pulse.dir==="up" ? C.up : C.amber; }
@@ -984,7 +1142,13 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     g.beginPath(); g.arc(cx,cy,gr+15,-rot*3,-rot*3+.5); g.stroke();
     g.beginPath(); g.arc(cx,cy,gr+15,-rot*3+Math.PI,-rot*3+Math.PI+.22); g.stroke();
 
-    const small = isSmall(), NS = small ? 46 : 74, SEG = small ? 140 : 200;
+    const small = isSmall();
+    if (GLR.ok){
+      const pc = pcol.split(",").map(Number);
+      GLR.draw({ cx, cy, size, t, dim, ph: reduced ? 0 : t*.0005, ca, sa, cb, sb, cc, sc: s_c, nv: NV,
+        front, strength: pLive ? 1-age/2.6 : 0, live: pLive ? 1 : 0, pcol: pc, glow: pLive ? .9*(1-age/2.6) : 0 });
+    } else {
+    const NS = small ? 46 : 74, SEG = small ? 140 : 200;
     const paths = { c:[new Path2D(),new Path2D(),new Path2D()], a:[new Path2D(),new Path2D(),new Path2D()], hot:new Path2D() };
     const ph = reduced ? 0 : t*.0005;
     const rCache = new Float32Array(SEG+1), RCache = new Float32Array(SEG+1), bCache = new Float32Array(SEG+1);
@@ -1003,6 +1167,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const al = [.1,.22,.48]; g.lineWidth = .7;
     for (let k=0;k<3;k++){ g.strokeStyle = `rgba(${C.cyan},${al[k]*dim})`; g.stroke(paths.c[k]); g.strokeStyle = `rgba(${C.amber},${al[k]*.95*dim})`; g.stroke(paths.a[k]); }
     g.lineWidth = 1.1; g.strokeStyle = `rgba(${pcol},${.95*dim})`; g.stroke(paths.hot);
+    }
 
     const ringAt = (u, scale, alpha, col, lw) => {
       const R = Rf(u), r = rf(u)*scale; g.beginPath();
@@ -1010,7 +1175,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       g.strokeStyle = `rgba(${col},${alpha*dim})`; g.lineWidth = lw; g.stroke();
     };
     const drift = reduced ? 0 : t*.00018;
-    for (let k=0;k<12;k++) ringAt(k/12*TAU + drift, 1.45, .2, "255,255,255", .8);
+    for (let k=0;k<5;k++) ringAt(k/5*TAU + drift, 1.45, .14, "255,255,255", .8);
     ringAt(TAU-.002, 1.75, .95, "255,255,255", 1.5);                // naad = NU
     ringAt(reduced ? 1 : (t*.00042)%TAU, 1.6, .5, "255,255,255", 1);  // scanner
     if (pLive) ringAt(front, 1.95, .9*(1-age/2.6), pcol, 2);
@@ -1040,8 +1205,10 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   function drawScene(t){
     const dpr = Math.min(devicePixelRatio||1, 1.75), w = innerWidth, h = innerHeight;
     if (sc.width!==Math.round(w*dpr) || sc.height!==Math.round(h*dpr)){ sc.width=Math.round(w*dpr); sc.height=Math.round(h*dpr); }
-    const g = sx; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
-    if ($("viewDash").hidden){ drawRing(g, w*.5, h*.64, Math.min(w,h)*.3, t, .22, null); return; }
+    let g = sx; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
+    if (fc.width!==Math.round(w*dpr) || fc.height!==Math.round(h*dpr)){ fc.width=Math.round(w*dpr); fc.height=Math.round(h*dpr); }
+    fx.setTransform(dpr,0,0,dpr,0,0); fx.clearRect(0,0,w,h); GLR.begin();
+    if ($("viewDash").hidden){ drawRing(fx, w*.5, h*.64, Math.min(w,h)*.3, t, .22, null); return; }
     const G = stageGeom(); if (G.w < 60 || G.h < 60) return;
     const key = `${Math.round(G.w)}x${Math.round(G.h)}`;
     if (!TREE || TREE.key !== key){ buildTree(G); TREE.key = key; if (S.flow) S.flow.path = pickPath(); }
@@ -1073,6 +1240,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       g.fillStyle = `rgba(${C.cyan},${.6*(1-d.s*.5)})`; g.beginPath(); g.arc(ox+pt[0], oy+pt[1], 1.4, 0, TAU); g.fill();
     }
 
+    g = fx;   // vanaf hier op de voorgrond, boven de WebGL-ring
     const R = drawRing(g, ox+G.cx, oy+G.cy, G.size, t, 1, G);
 
     // de witte route van de laatste update
