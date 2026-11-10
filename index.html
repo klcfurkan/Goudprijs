@@ -38,13 +38,13 @@ body{background-color:var(--bg);color:var(--ice);font-family:var(--font-body);fo
 
 /* header */
 header{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
-.hl{display:flex;align-items:center;gap:clamp(14px,2.4vw,36px);flex-wrap:wrap}
+.hl{min-width:0;max-width:100%;display:flex;align-items:center;gap:clamp(14px,2.4vw,36px);flex-wrap:wrap}
 .brandwrap{display:flex;flex-direction:column;gap:3px}
 .brand{font-family:var(--font-display);font-weight:700;font-size:clamp(21px,1.9vw,28px);letter-spacing:.005em;margin:0;line-height:1.05}
 .brand span{color:var(--amber)}
 .by{font:500 11px var(--font-data);letter-spacing:.12em;color:var(--muted)}
-nav{display:flex;gap:4px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.02)}
-nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;padding:8px 16px;border-radius:999px;transition:color .2s,background .2s}
+nav{max-width:100%;overflow-x:auto;scrollbar-width:none;display:flex;gap:4px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.02)}
+nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;padding:8px 14px;white-space:nowrap;border-radius:999px;transition:color .2s,background .2s}
 nav a:hover{color:var(--ice)}
 nav a[aria-current="page"]{color:#04121c;background:var(--cyan)}
 nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
@@ -149,6 +149,7 @@ body.focus .mid{min-height:calc(100vh - 150px)}
 .hname{font-family:var(--font-display);font-weight:700;font-size:clamp(24px,2.3vw,36px)}
 .hdesc{color:var(--muted);font-size:clamp(14px,1.1vw,17px);font-weight:500}
 .hcard .price{font-size:clamp(40px,4.6vw,84px);margin-top:6px}
+.hgrid.lira .price{font-size:clamp(30px,3.2vw,58px)}
 .ptbl{display:grid;grid-template-columns:auto auto auto;justify-content:space-between;gap:10px 14px;margin-top:8px;padding-top:16px;border-top:1px solid var(--rule);
   font-size:clamp(14px,1.05vw,16px);font-weight:500;font-variant-numeric:tabular-nums}
 .ptbl .th{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -158,6 +159,102 @@ body.focus .mid{min-height:calc(100vh - 150px)}
 .ptbl span{font-weight:500;opacity:.85}
 .note{max-width:70ch;color:var(--muted);font-size:clamp(14px,1.1vw,16px);line-height:1.6;margin:0}
 
+/* pages, boxes, forms */
+.page{display:flex;flex-direction:column;gap:clamp(14px,2vh,24px);flex:1}
+.phead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.page h2{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3vw,44px);margin:0;text-wrap:balance}
+.box{padding:clamp(16px,1.8vw,26px);display:flex;flex-direction:column;gap:14px;min-width:0}
+.box h3{margin:0;font-family:var(--font-display);font-size:clamp(18px,1.5vw,22px);font-weight:700}
+.box p{margin:0}
+.bhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.more{color:var(--amber);text-decoration:none;font-size:13px;font-weight:600}
+.more:hover{text-decoration:underline}
+.duo{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(12px,1.6vw,24px)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,24px)}
+.newsgrid{grid-template-columns:1.6fr 1fr}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.field .fl{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+input[type=number],select{appearance:none;-webkit-appearance:none;background:#0d0d0d;border:1px solid var(--rule);color:var(--ice);
+  font:600 16px var(--font-data);padding:10px 12px;border-radius:8px;width:100%;min-width:0}
+select{padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+input:focus,select:focus{outline:2px solid var(--amber);outline-offset:1px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kpi .v{font:600 clamp(17px,1.5vw,23px) var(--font-data);margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .v.up{color:var(--up)} .kpi .v.down{color:var(--down)} .kpi .v.gold{color:var(--amber)}
+.kpi small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.cv{position:relative;height:230px} .cv canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.muted{color:var(--muted)} .small{font-size:13px;line-height:1.55}
+.verdict{font-size:clamp(16px,1.3vw,19px);font-weight:600;line-height:1.45}
+.verdict.up{color:var(--up)} .verdict.down{color:var(--down)} .verdict.gold{color:var(--amber)}
+
+/* rendement */
+.rtbl{display:grid;grid-template-columns:auto auto auto auto;justify-content:space-between;gap:10px 16px;font-variant-numeric:tabular-nums;font-size:15px;align-items:center}
+.rtbl.wide{grid-template-columns:minmax(90px,auto) auto auto auto minmax(80px,1fr);justify-content:stretch}
+.rtbl .th{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.rtbl .r{text-align:right;white-space:nowrap} .rtbl .m{color:var(--muted)}
+.rtbl .up{color:var(--up);font-weight:700} .rtbl .down{color:var(--down);font-weight:700}
+.bar{position:relative;height:8px;background:rgba(255,255,255,.07);border-radius:4px}
+.bar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:rgba(255,255,255,.3)}
+.bar i{position:absolute;top:0;bottom:0;border-radius:4px}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(96px,auto);gap:10px 16px;align-items:center}
+.calc .cn b{display:block;font-weight:600;font-size:15px}
+.calc .cn small{color:var(--muted);font-size:12.5px}
+.calc .cs{text-align:right;font-family:var(--font-data);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.calc .cs.zero{color:var(--muted)}
+.ctotal{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;border-top:1px solid var(--rule);padding-top:14px;flex-wrap:wrap}
+.ctotal .big{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,3vw,46px);color:var(--amber);font-variant-numeric:tabular-nums}
+.linkbtn{appearance:none;background:none;border:0;color:var(--muted);font:600 13px var(--font-body);cursor:pointer;text-decoration:underline;padding:0}
+.ctbl{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px 16px;font-variant-numeric:tabular-nums;align-items:center}
+.ctbl.two{grid-template-columns:minmax(0,1fr) auto}
+.ctbl .th{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ctbl .r{text-align:right;white-space:nowrap;font-family:var(--font-data)} .ctbl small{display:block;color:var(--muted);font-size:12.5px}
+.gauge{position:relative;height:10px;border-radius:5px;margin:10px 0 4px;
+  background:linear-gradient(90deg,var(--up) 0 16%,var(--amber) 16% 40%,var(--down) 40% 100%);opacity:.9}
+.gauge i{position:absolute;top:-6px;width:4px;height:22px;margin-left:-2px;background:#fff;border-radius:2px;box-shadow:0 0 0 2px #000;transition:left .4s}
+.gscale{display:flex;justify-content:space-between;color:var(--muted);font:500 11px var(--font-data)}
+
+/* news */
+.newslist{display:flex;flex-direction:column}
+.ni{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:12px 0;border-top:1px solid var(--rule);color:var(--ice);text-decoration:none}
+.ni:first-child{border-top:0;padding-top:2px}
+.ni:hover .nt,.ni:focus-visible .nt{color:var(--amber)}
+.ni:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.ncat{grid-row:span 2;align-self:start;font:500 10px var(--font-data);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;white-space:nowrap;border:1px solid var(--rule);color:var(--muted);margin-top:2px}
+.c-gold{color:#000;background:var(--amber);border-color:var(--amber)}
+.c-conflict{color:#ff6b8b;border-color:rgba(255,51,102,.55)}
+.c-rates{color:var(--ice);border-color:rgba(255,255,255,.55)}
+.c-currency{color:var(--amber);border-color:rgba(232,184,48,.55)}
+.nt{font-weight:600;font-size:15px;line-height:1.35}
+.nm{color:var(--muted);font-size:12.5px}
+.nm b{color:var(--amber);font-weight:600}
+.newslist.big .nt{font-size:clamp(16px,1.25vw,19px)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{appearance:none;background:transparent;border:1px solid var(--rule);color:var(--muted);font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ice);color:#000;border-color:var(--ice)}
+.legend{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 14px;align-items:start;font-size:14px;line-height:1.5}
+.legend .ncat{grid-row:auto}
+
+/* ticker */
+.tickwrap{display:flex;align-items:center;gap:10px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.ticker{flex:1;overflow:hidden;padding:9px 0;white-space:nowrap;-webkit-mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.ttrack{display:inline-flex;gap:44px;padding-right:44px;animation:tick 80s linear infinite;font:500 12px var(--font-data);letter-spacing:.05em}
+.ttrack span b{color:var(--muted);font-weight:500;margin-right:8px}
+.ttrack span em{font-style:normal;margin-left:6px} .ttrack span em.up{color:var(--up)} .ttrack span em.down{color:var(--down)}
+@keyframes tick{to{transform:translateX(-50%)}}
+.tclose{flex:none;appearance:none;background:none;border:0;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:4px 8px}
+.tclose:hover{color:var(--ice)}
+@media (max-width:1000px){ .duo,.grid2,.newsgrid{grid-template-columns:1fr} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){
+  .ni{grid-template-columns:1fr} .ncat{grid-row:auto;justify-self:start}
+  .calc{grid-template-columns:minmax(0,1fr) 88px} .calc .cs{grid-column:1 / -1;margin-top:-6px;text-align:left;color:var(--muted)}
+  .rtbl.wide{grid-template-columns:auto auto auto auto} .rtbl.wide .bar,.rtbl.wide .bh{display:none}
+  .legend{grid-template-columns:1fr;gap:6px} .legend .ncat{justify-self:start;margin-top:10px}
+}
+@media (prefers-reduced-motion:reduce){ .ttrack{animation:none} }
 footer{display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-variant-numeric:tabular-nums}
 #status.err{color:var(--down)}
@@ -188,8 +285,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     <div class="hl">
       <div class="brandwrap"><h1 class="brand">GoudPrijs <span>Analytics</span></h1><div class="by">by Furkan Kilic</div></div>
       <nav aria-label="Weergave">
-        <a href="#dashboard" id="tabDash">Dashboard</a>
-        <a href="#simpel" id="tabHome">Simpele versie</a>
+        <a href="#dashboard" data-v="dashboard">Dashboard</a>
+        <a href="#inzicht" data-v="inzicht">Inzicht</a>
+        <a href="#rekenen" data-v="rekenen">Rekenen</a>
+        <a href="#nieuws" data-v="nieuws">Nieuws</a>
+        <a href="#simpel" data-v="simpel">Simpele versie</a>
       </nav>
     </div>
     <div class="hr">
@@ -254,6 +354,109 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       </div>
       <div class="cwrap"><canvas id="chart" aria-label="Grafiek van de goudprijs"></canvas></div>
     </div>
+
+    <div class="duo">
+      <div class="hud box">
+        <div class="bhead"><span class="lbl"><b>D</b> / Nieuws dat goud kan raken</span><a class="more" href="#nieuws">Alle nieuws →</a></div>
+        <div class="newslist" id="dashNews"></div>
+      </div>
+      <div class="hud box">
+        <div class="bhead"><span class="lbl"><b>E</b> / Rendement · € per kg</span><a class="more" href="#inzicht">Meer inzicht →</a></div>
+        <div class="rtbl" id="dashRend"></div>
+      </div>
+    </div>
+
+    <div class="tickwrap" id="tickwrap">
+      <div class="ticker" aria-hidden="true"><div class="ttrack" id="ttrack"></div></div>
+      <button class="tclose" id="tclose" type="button" aria-label="Ticker verbergen">×</button>
+    </div>
+  </section>
+
+  <!-- INZICHT -->
+  <section id="viewInsight" class="page" hidden>
+    <div class="phead">
+      <div><h2>Inzicht</h2><p class="lead">Hoe deed goud het, en wat had maandelijks sparen in goud opgeleverd?</p></div>
+    </div>
+
+    <div class="hud box">
+      <div class="bhead"><h3>Rendement</h3><span class="lbl">Goud · € per kilo</span></div>
+      <div class="rtbl wide" id="insRend"></div>
+      <p class="small muted">Prijzen tot 1 jaar terug zijn dagkoersen, daarvoor week- en maandkoersen. Historie gebaseerd op PAXG (1 token = 1 troy ounce goud).</p>
+    </div>
+
+    <div class="hud box">
+      <div class="bhead"><h3>Spaarplan in goud</h3><span class="lbl">Elke maand een vast bedrag</span></div>
+      <div class="ctrls">
+        <div class="field" style="width:150px"><label for="spAmt">Per maand (€)</label><input type="number" id="spAmt" min="10" step="10" value="300" inputmode="decimal"></div>
+        <div class="field" style="width:170px"><label for="spYears">Periode</label>
+          <select id="spYears"><option value="1">Afgelopen 1 jaar</option><option value="3">Afgelopen 3 jaar</option><option value="5" selected>Afgelopen 5 jaar</option><option value="max">Zo lang mogelijk</option></select></div>
+      </div>
+      <div class="kpis" id="spKpis"></div>
+      <div class="cv"><canvas id="spChart" aria-label="Waarde van het spaarplan tegenover de inleg"></canvas></div>
+      <div class="bhead" style="margin-top:6px"><h3 style="font-size:17px">En vooruit? Een rekenvoorbeeld</h3></div>
+      <div class="ctrls">
+        <div class="field" style="width:170px"><label for="fwYears">Looptijd</label>
+          <select id="fwYears"><option value="5">5 jaar</option><option value="10" selected>10 jaar</option><option value="15">15 jaar</option><option value="20">20 jaar</option></select></div>
+        <div class="field" style="width:170px"><label for="fwRate">Groei per jaar (%)</label><input type="number" id="fwRate" step="0.5" min="-20" max="40" inputmode="decimal"></div>
+      </div>
+      <p class="verdict" id="fwOut">—</p>
+      <p class="small muted">Het spaarplan rekent met de goudprijs aan het eind van elke maand, zonder aankoop- of opslagkosten. Het rekenvoorbeeld vooruit is geen voorspelling: de groei staat standaard op het gemiddelde van de afgelopen jaren, maar goud kan ook dalen.</p>
+    </div>
+
+    <div class="hud box">
+      <div class="bhead"><h3>Jaaroverzicht</h3><div class="chips" id="yearChips"></div></div>
+      <div class="kpis" id="yrKpis"></div>
+      <div class="cv"><canvas id="yrChart" aria-label="Goudprijs door het jaar"></canvas></div>
+    </div>
+  </section>
+
+  <!-- REKENEN -->
+  <section id="viewCalc" class="page" hidden>
+    <div class="phead">
+      <div><h2>Rekenen</h2><p class="lead">Wat is je goud waard, en betaal je de juwelier niet te veel?</p></div>
+      <div class="seg lang curSeg" role="group" aria-label="Valuta"><button type="button" data-c="eur">€ Euro</button><button type="button" data-c="try">₺ Lira</button></div>
+    </div>
+    <div class="grid2">
+      <div class="hud box">
+        <div class="bhead"><h3>Wat is mijn goud waard?</h3><button class="linkbtn" type="button" data-clear>Leegmaken</button></div>
+        <div id="calcFull"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1.6vw,24px)">
+        <div class="hud box">
+          <div class="bhead"><h3>Juwelier-check</h3><span class="lbl">Betaal je niet te veel?</span></div>
+          <div class="seg" id="jwMode" role="group" aria-label="Kopen of verkopen" style="align-self:flex-start"><button type="button" data-m="buy">Ik koop</button><button type="button" data-m="sell">Ik verkoop</button></div>
+          <div class="ctrls">
+            <div class="field" style="flex:2 1 180px"><label for="jwItem">Wat</label><select id="jwItem"></select></div>
+            <div class="field" style="flex:1 1 90px"><label for="jwQty" id="jwQtyL">Aantal</label><input type="number" id="jwQty" min="0" step="1" value="1" inputmode="decimal"></div>
+            <div class="field" style="flex:1 1 140px"><label for="jwPrice" id="jwPriceL">Prijs juwelier</label><input type="number" id="jwPrice" min="0" step="1" inputmode="decimal" placeholder="bijv. 200"></div>
+          </div>
+          <div class="gauge" aria-hidden="true"><i id="jwMark" style="left:0"></i></div>
+          <div class="gscale"><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%+</span></div>
+          <p class="verdict" id="jwOut">Vul de prijs van de juwelier in.</p>
+          <p class="small muted" id="jwNote"></p>
+        </div>
+        <div class="hud box">
+          <div class="bhead"><h3>Gouden munten en karaat</h3><span class="lbl">Waarde van het goud</span></div>
+          <div class="ctbl" id="coinTbl"></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Alle bedragen zijn de waarde van het goud zelf, berekend uit de beursprijs. Lira-bedragen gebruiken de dagkoers van de ECB; op de Turkse markt (Kapalıçarşı) kunnen prijzen afwijken.</p>
+  </section>
+
+  <!-- NIEUWS -->
+  <section id="viewNews" class="page" hidden>
+    <div class="phead">
+      <div><h2>Nieuws dat goud kan raken</h2><p class="lead">Alleen belangrijk nieuws over oorlog en spanning, rente, economie, valuta en goud zelf. Elk half uur bijgewerkt.</p></div>
+      <div class="seg lang" id="newsGroupSeg" role="group" aria-label="Regio"><button type="button" data-g="all">Alles</button><button type="button" data-g="intl">Wereld</button><button type="button" data-g="tr">Türkiye</button></div>
+    </div>
+    <div class="chips" id="newsCats"></div>
+    <div class="grid2 newsgrid">
+      <div class="hud box"><div class="newslist big" id="newsFull"></div></div>
+      <div class="hud box"><h3>Waarom belangrijk voor goud?</h3><div class="legend" id="newsLegend"></div>
+        <p class="small muted">Dit is algemene uitleg over hoe goud vaak reageert, geen voorspelling. Bronnen: NOS, BBC, Federal Reserve, ECB, AA, TRT Haber, BBC Türkçe en DW Türkçe.</p></div>
+    </div>
+    <p class="note" id="newsUpd"></p>
   </section>
 
   <!-- SIMPELE VERSIE -->
@@ -264,9 +467,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         <p class="lead" data-t="lead"></p>
         <p class="lead"><span class="mkt big" id="homeMkt"><span class="mdot"></span><span id="homeMktText"></span></span></p>
       </div>
-      <div class="seg lang" id="langSeg" role="group" aria-label="Taal / Dil">
-        <button type="button" data-l="tr">Türkçe</button>
-        <button type="button" data-l="nl">Nederlands</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div class="seg lang curSeg" role="group" aria-label="Para birimi / Valuta"><button type="button" data-c="eur">€</button><button type="button" data-c="try">₺</button></div>
+        <div class="seg lang" id="langSeg" role="group" aria-label="Taal / Dil">
+          <button type="button" data-l="tr">Türkçe</button>
+          <button type="button" data-l="nl">Nederlands</button>
+        </div>
       </div>
     </div>
     <div class="hgrid">
@@ -289,6 +495,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         <div class="ptbl" id="homeGramTbl"></div>
       </div>
     </div>
+    <div class="grid2">
+      <div class="hud box"><h3 data-t="coinsH"></h3><div class="ctbl two" id="homeCoins"></div></div>
+      <div class="hud box"><div class="bhead"><h3 data-t="calcH"></h3><button class="linkbtn" type="button" data-clear data-t="clear"></button></div><div id="homeCalc"></div></div>
+    </div>
+    <div class="hud box"><h3 data-t="newsH"></h3><div class="newslist big" id="homeNews"></div>
+      <h3 style="font-size:16px;margin-top:6px" data-t="why"></h3><div class="legend" id="homeLegend"></div></div>
     <p class="note"><span data-t="upd"></span>: <b id="homeUpd">—</b></p>
     <p class="note" data-t="note"></p>
   </section>
@@ -304,7 +516,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
-  const OZ_PER_KG = 32.1507466, G_PER_OZ = 31.1034768, CEYREK_G = 1.75 * 0.9166;
+  const OZ_PER_KG = 32.1507466, G_PER_OZ = 31.1034768, K22 = 0.9166, CEYREK_G = 1.754 * K22;
   const GOLD_EVERY = 10_000, FX_EVERY = 10 * 60_000;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isSmall = () => innerWidth < 1000;
@@ -351,7 +563,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     async()=>({ usd:+(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=EURUSDT")).price, try:null }),
   ];
   async function updateFx(){
-    for (const f of fxSources){ try { const v = await f(); if (v.usd>0.3 && v.usd<3){ S.fx = 1/v.usd; if (v.try>1) S.try = v.try; renderStats(); return; } } catch(e){} }
+    for (const f of fxSources){ try { const v = await f(); if (v.usd>0.3 && v.usd<3){ S.fx = 1/v.usd; if (v.try>1) S.try = v.try; if (typeof renderAll==='function') renderAll(); return; } } catch(e){} }
   }
   async function updateGold(){
     let price=null, src=null;
@@ -367,17 +579,17 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 
   // history: PAXG (1 token = 1 troy ounce goud) en EUR/USDT van Binance
   const BASES = ["https://data-api.binance.vision","https://api.binance.com"];
-  async function klines(sym, iv, lim){
+  async function klines(sym, iv, lim, extra=""){
     let err;
     for (const b of BASES){
-      try { const j = await getJSON(`${b}/api/v3/klines?symbol=${sym}&interval=${iv}&limit=${lim}`);
+      try { const j = await getJSON(`${b}/api/v3/klines?symbol=${sym}&interval=${iv}&limit=${lim}${extra}`);
         if (Array.isArray(j) && j.length) return j.map(k=>({o:k[0], t:Math.min(k[6],Date.now()), c:+k[4], h:+k[2], l:+k[3]})); }
       catch(e){ err=e; }
     }
     throw err || new Error("geen data");
   }
-  async function series(iv, lim){
-    const [pax, eur] = await Promise.allSettled([klines("PAXGUSDT",iv,lim), klines("EURUSDT",iv,lim)]);
+  async function series(iv, lim, extra=""){
+    const [pax, eur] = await Promise.allSettled([klines("PAXGUSDT",iv,lim,extra), klines("EURUSDT",iv,lim,extra)]);
     if (pax.status!=="fulfilled") throw pax.reason;
     const em = new Map(eur.status==="fulfilled" ? eur.value.map(k=>[k.o,k.c]) : []);
     let lastE = null;
@@ -398,11 +610,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     if (c && Date.now()-c.at < R.ttl) return;
     try { const pts = await series(R.iv, R.lim); S.cache[r] = {pts, at:Date.now()}; if (r===S.range) S.histErr = false; }
     catch(e){ if (!c && r===S.range) S.histErr = true; }
-    finally { if (r===S.range) S.loading = false; updateRangeChip(); if (r==="1J") renderHome(); }
+    finally { if (r===S.range) S.loading = false; updateRangeChip(); renderAll(); }
   }
   async function loadDay(){
     try { S.day = await series("15m", 96); buildRing(); } catch(e){}
-    renderStats();
+    renderAll();
   }
 
   // ---------- derived ----------
@@ -493,14 +705,18 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     renderHome();
   }
   const I18N = {
-    tr: { html:"tr", title:"Bugünkü altın fiyatı", lead:"Euro cinsinden · her 10 saniyede kendiliğinden yenilenir",
+    tr: { html:"tr", title:"Bugünkü altın fiyatı", lead:"Her 10 saniyede kendiliğinden yenilenir",
+      coinsH:"Diğer altınlar", calcH:"Altınım ne kadar eder?", newsH:"Altını etkileyebilecek önemli haberler", why:"Neden önemli?",
+      total:"Toplam", clear:"Temizle", karat:"ayar", perGram:"gram başına", unitSt:"adet", unitG:"gram", noNews:"Şu anda önemli bir haber yok.", newsLoading:"Haberler yükleniyor…", important:"Önemli",
       kgN:"Kilo altın", kgD:"1 kilo saf altın, 24 ayar", cN:"Çeyrek altın", cD:"1,75 gram, 22 ayar · 1,60 gram saf altın",
       gN:"Gram altın", gD:"1 gram saf altın, 24 ayar", upd:"Son güncelleme",
       note:"Bu, borsa fiyatına göre altının kendi değeridir. Kuyumcuda veya bankada alırken genellikle daha fazla ödersiniz, satarken ise genellikle biraz daha az alırsınız.",
       mOpen:"Piyasa açık · fiyat canlı değişiyor", mClosed:w=>`Piyasa kapalı · açılış: ${w}`,
       period:"Ne zaman", then:"O zaman", diff:"Fark", p1:"1 gün önce", p7:"1 hafta önce", p30:"1 ay önce", p365:"1 yıl önce", pctf:a=>`%${a}`,
       up:a=>`▲ Son 24 saatte %${a} yükseldi`, down:a=>`▼ Son 24 saatte %${a} düştü`, flat:"Son 24 saatte değişmedi", none:"Son 24 saat —" },
-    nl: { html:"nl", title:"Goudprijs vandaag", lead:"In euro's · ververst vanzelf elke 10 seconden",
+    nl: { html:"nl", title:"Goudprijs vandaag", lead:"Ververst vanzelf elke 10 seconden",
+      coinsH:"Andere gouden munten", calcH:"Wat is mijn goud waard?", newsH:"Belangrijk nieuws dat goud kan raken", why:"Waarom belangrijk?",
+      total:"Totaal", clear:"Leegmaken", karat:"karaat", perGram:"per gram", unitSt:"stuks", unitG:"gram", noNews:"Op dit moment geen belangrijk nieuws.", newsLoading:"Nieuws laden…", important:"Belangrijk",
       kgN:"Kilo goud", kgD:"1 kilo puur goud, 24 karaat", cN:"Çeyrek altın", cD:"1,75 gram, 22 karaat · 1,60 gram puur goud",
       gN:"Gram goud", gD:"1 gram puur goud, 24 karaat", upd:"Laatst bijgewerkt",
       note:"Dit is de waarde van het goud zelf, berekend uit de beursprijs. Bij de juwelier of bank betaal je bij aankoop meestal meer, en krijg je bij verkoop meestal iets minder.",
@@ -515,30 +731,42 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent = L[el.dataset.t]; });
     document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.l===lang)));
     $("viewHome").lang = L.html;
-    renderStats(); renderMarket();
+    renderAll(); renderMarket(); renderNews();
   }
-  function agoKg(days){
-    if (days===1){ if (!S.day || !S.day.length) return null; return S.day[0].kg * cal(S.day).kg; }
-    const c = S.cache["1J"]; if (!c) return null;
-    const target = Date.now() - days*D; let best = null;
-    for (const p of c.pts) if (!best || Math.abs(p.t-target) < Math.abs(best.t-target)) best = p;
-    if (!best || Math.abs(best.t-target) > 3*D) return null;
-    return best.kg * cal(c.pts).kg;
+  function kgAt(target){
+    const age = Date.now() - target;
+    const srcs = age <= 1.1*D ? [["day",3*3600e3],["1J",2*D]] : age <= 370*D ? [["1J",3*D],["5J",8*D]] : [["5J",8*D],["MAX",35*D]];
+    for (const [key, tol] of srcs){
+      const pts = key==="day" ? S.day : (S.cache[key] && S.cache[key].pts); if (!pts || !pts.length) continue;
+      let best = null; for (const p of pts) if (!best || Math.abs(p.t-target) < Math.abs(best.t-target)) best = p;
+      if (best && Math.abs(best.t-target) <= tol) return best.kg * cal(pts).kg;
+    }
+    return null;
   }
+  function agoKg(days){ return (days===1 && S.day && S.day.length) ? S.day[0].kg*cal(S.day).kg : kgAt(Date.now()-days*D); }
+  const isTry = () => S.cur==="try" && S.try;
+  const money = (v, fmt=nf2) => v==null ? "—" : (isTry() ? "₺ " : "€ ") + fmt.format(isTry() ? v*S.try : v);
   function renderHome(){
-    const L = I18N[lang], k = kgNow();
+    const L = I18N[lang], k = kgNow(), tr = isTry(), sym = tr ? "₺" : "€";
     const periods = [[1,L.p1],[7,L.p7],[30,L.p30],[365,L.p365]], agos = periods.map(([d])=>agoKg(d));
+    const rateNow = tr ? S.try : 1, rateAt = d => tr ? (S.tryAt[d] || null) : 1;
     for (const [id, f, fmt] of [["homeKgTbl",1,nf0],["homeCeyrekTbl",CEYREK_G/1000,nf2],["homeGramTbl",1/1000,nf2]]){
       let html = `<div class="th">${L.period}</div><div class="th r">${L.then}</div><div class="th r">${L.diff}</div>`;
       periods.forEach(([d,lab],i)=>{
-        const a = agos[i];
-        if (a==null || k==null){ html += `<div>${lab}</div><div class="r m">—</div><div class="r m">—</div>`; return; }
-        const diff = (k-a)*f, pc = Math.abs((k/a-1)*100).toLocaleString("nl-NL",{minimumFractionDigits:1,maximumFractionDigits:1});
+        const a = agos[i], ra = rateAt(d);
+        if (a==null || k==null || ra==null){ html += `<div>${lab}</div><div class="r m">—</div><div class="r m">—</div>`; return; }
+        const then = a*f*ra, now = k*f*rateNow, diff = now-then, pc = Math.abs((now/then-1)*100).toLocaleString("nl-NL",{minimumFractionDigits:1,maximumFractionDigits:1});
         const cls = diff>0 ? "up" : diff<0 ? "down" : "";
-        html += `<div>${lab}</div><div class="r m">€ ${fmt.format(a*f)}</div><div class="r ${cls}">${diff>0?"▲":diff<0?"▼":"="} € ${fmt.format(Math.abs(diff))} <span>(${L.pctf(pc)})</span></div>`;
+        html += `<div>${lab}</div><div class="r m">${sym} ${fmt.format(then)}</div><div class="r ${cls}">${diff>0?"▲":diff<0?"▼":"="} ${sym} ${fmt.format(Math.abs(diff))} <span>(${L.pctf(pc)})</span></div>`;
       });
       $(id).innerHTML = html;
     }
+    if (k!=null){
+      setRoller($("homeKg"), sym, k*rateNow);
+      setRoller($("homeCeyrek"), sym, k/1000*CEYREK_G*rateNow);
+      setRoller($("homeGram"), sym, k/1000*rateNow);
+    }
+    document.querySelector(".hgrid").classList.toggle("lira", !!tr);
   }
   function nyParts(d){
     const p = new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"numeric",hour12:false}).formatToParts(d);
@@ -564,11 +792,6 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   function renderLive(prev){
     const k = kgNow();
     setRoller($("priceKg"), "€", k);
-    if (k!=null){
-      setRoller($("homeKg"), "€", k);
-      setRoller($("homeCeyrek"), "€", k/1000*CEYREK_G);
-      setRoller($("homeGram"), "€", k/1000);
-    }
     const dir = prev==null ? null : S.oz>prev ? "up" : S.oz<prev ? "down" : null;
     setTimeout(()=>{ const el = $("priceKg"); el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); }, FLOW_MS);
     const t0 = performance.now(), fxTxt = S.fx ? S.fx.toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4}) : null;
@@ -576,7 +799,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
       labels: [ "Bron: " + S.src, "$ " + nf2.format(S.oz) + " per oz", "× 32,1507 = $ " + nf0.format(S.oz*OZ_PER_KG) + " per kg", fxTxt ? `× ${fxTxt} = € ${nf0.format(k)} per kg` : "EUR/USD laden…" ],
       short: [ S.src, "$ " + nf0.format(S.oz) + "/oz", "× 32,15 = $/kg", fxTxt ? `× ${fxTxt} = €/kg` : "€ …" ] };
     S.pulse = { t: t0 + FLOW_MS, dir: dir || "flat" };
-    buildRing(); renderStats(); updateRangeChip();
+    buildRing(); renderAll(); updateRangeChip();
   }
 
   // ---------- chart ----------
@@ -809,7 +1032,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const dpr = Math.min(devicePixelRatio||1, 1.75), w = innerWidth, h = innerHeight;
     if (sc.width!==Math.round(w*dpr) || sc.height!==Math.round(h*dpr)){ sc.width=Math.round(w*dpr); sc.height=Math.round(h*dpr); }
     const g = sx; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
-    if (!$("viewHome").hidden){ drawRing(g, w*.5, h*.64, Math.min(w,h)*.3, t, .3, null); return; }
+    if ($("viewDash").hidden){ drawRing(g, w*.5, h*.64, Math.min(w,h)*.3, t, .22, null); return; }
     const G = stageGeom(); if (G.w < 60 || G.h < 60) return;
     const key = `${Math.round(G.w)}x${Math.round(G.h)}`;
     if (!TREE || TREE.key !== key){ buildTree(G); TREE.key = key; if (S.flow) S.flow.path = pickPath(); }
@@ -889,6 +1112,330 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     }
   }
 
+  // ---------- munten, rekenmachine, juwelier ----------
+  const COINS = [
+    { id:"gram",   tr:"Gram altın",              nl:"Gram goud",            g:1,      k:24, pg:true },
+    { id:"ceyrek", tr:"Çeyrek altın",            nl:"Çeyrek altın",         g:1.754,  k:22 },
+    { id:"yarim",  tr:"Yarım altın",             nl:"Yarım altın",          g:3.508,  k:22 },
+    { id:"tam",    tr:"Tam altın",               nl:"Tam altın",            g:7.016,  k:22 },
+    { id:"ata",    tr:"Ata / Cumhuriyet altını", nl:"Ata / Cumhuriyet altını", g:7.216, k:22 },
+    { id:"resat",  tr:"Reşat altını",            nl:"Reşat altını",         g:7.216,  k:22 },
+    { id:"gremse", tr:"Gremse altın",            nl:"Gremse altın",         g:17.54,  k:22 },
+    { id:"b22",    tr:"22 ayar bilezik",         nl:"22 karaat sieraden",   g:1,      k:22, pg:true },
+    { id:"k18",    tr:"18 ayar altın",           nl:"18 karaat goud",       g:1,      k:18, pg:true },
+    { id:"k14",    tr:"14 ayar altın",           nl:"14 karaat goud",       g:1,      k:14, pg:true },
+    { id:"kg",     tr:"Kilo altın",              nl:"Kilo goud",            g:1000,   k:24 },
+  ];
+  const PURITY = { 24:1, 22:K22, 18:.75, 14:.585 };
+  const fine = c => c.g * PURITY[c.k];
+  const coinEur = c => { const k = kgNow(); return k==null ? null : fine(c)/1000*k; };
+  const SIMPLE_IDS = ["gram","ceyrek","yarim","tam","ata","b22"];
+  let QTY = {}; try { QTY = JSON.parse(localStorage.getItem("goudpuls-qty")||"{}") || {}; } catch(e){}
+  const saveQty = () => { try { localStorage.setItem("goudpuls-qty", JSON.stringify(QTY)); } catch(e){} };
+  const coinSub = (c, L) => c.pg ? `${c.k} ${L.karat} · ${L.perGram}` : `${nf2.format(c.g).replace(/,00$/,"")} g · ${c.k} ${L.karat}`;
+  const calcs = [];
+  function buildCalc(container, ids, Lget){
+    const root = $(container); root.innerHTML = "";
+    const grid = document.createElement("div"); grid.className = "calc"; root.appendChild(grid);
+    const rows = [];
+    for (const c of COINS.filter(c=>ids.includes(c.id))){
+      const cn = document.createElement("div"); cn.className = "cn";
+      const b = document.createElement("b"), sm = document.createElement("small"); cn.append(b, sm);
+      const inp = document.createElement("input"); inp.type = "number"; inp.min = "0"; inp.step = c.pg ? "0.1" : "1"; inp.inputMode = "decimal";
+      inp.id = container + "-" + c.id; inp.placeholder = "0"; if (QTY[c.id]) inp.value = QTY[c.id];
+      b.id = inp.id + "-l"; inp.setAttribute("aria-labelledby", b.id);
+      const cs = document.createElement("div"); cs.className = "cs";
+      inp.addEventListener("input", ()=>{ const v = parseFloat(inp.value.replace(",", ".")); if (v>0) QTY[c.id] = v; else delete QTY[c.id]; saveQty(); syncInputs(inp); renderCalcs(); });
+      grid.append(cn, inp, cs); rows.push({ c, b, sm, inp, cs });
+    }
+    const tot = document.createElement("div"); tot.className = "ctotal";
+    const tl = document.createElement("span"), tv = document.createElement("span"); tl.className = "lbl"; tv.className = "big"; tot.append(tl, tv); root.appendChild(tot);
+    calcs.push({ rows, tl, tv, Lget });
+  }
+  function syncInputs(src){ for (const cl of calcs) for (const r of cl.rows) if (r.inp!==src) r.inp.value = QTY[r.c.id] || ""; }
+  function renderCalcs(){
+    for (const cl of calcs){
+      const L = cl.Lget(); let total = 0, any = false;
+      for (const r of cl.rows){
+        const v = coinEur(r.c), q = QTY[r.c.id] || 0;
+        r.b.textContent = r.c[L.html==="tr" ? "tr" : "nl"];
+        r.sm.textContent = coinSub(r.c, L) + " · " + money(v);
+        r.cs.textContent = q ? money(v==null ? null : v*q) : "—"; r.cs.classList.toggle("zero", !q);
+        if (q && v!=null){ total += v*q; any = true; }
+      }
+      cl.tl.textContent = L.total; cl.tv.textContent = any ? money(total) : money(0);
+    }
+  }
+  function renderCoins(){
+    const NL = I18N.nl, Lh = I18N[lang];
+    let html = `<div class="th">Munt / karaat</div><div class="th r">Puur goud</div><div class="th r">Waarde</div>`;
+    for (const c of COINS) html += `<div>${c.nl}<small>${coinSub(c, NL)}</small></div><div class="r muted">${nf2.format(fine(c))} g</div><div class="r">${money(coinEur(c), c.id==="kg"?nf0:nf2)}</div>`;
+    $("coinTbl").innerHTML = html;
+    let h2 = "";
+    for (const c of COINS.filter(c=>c.id!=="kg" && c.id!=="k14")) h2 += `<div>${c[lang==="tr"?"tr":"nl"]}<small>${coinSub(c, Lh)}</small></div><div class="r">${money(coinEur(c))}</div>`;
+    $("homeCoins").innerHTML = h2;
+  }
+  // juwelier-check
+  let jwMode = "buy";
+  (()=>{ const sel = $("jwItem"); for (const c of COINS){ const o = document.createElement("option"); o.value = c.id; o.textContent = c.nl + (c.pg ? " (per gram)" : ""); sel.appendChild(o); } sel.value = "ceyrek"; })();
+  function renderJeweler(){
+    const c = COINS.find(x=>x.id===$("jwItem").value), q = parseFloat(($("jwQty").value||"0").replace(",", ".")) || 0;
+    const price = parseFloat(($("jwPrice").value||"").replace(",", ".")), v1 = coinEur(c);
+    $("jwQtyL").textContent = c.pg ? "Gram" : "Aantal";
+    $("jwPriceL").textContent = (jwMode==="buy" ? "Prijs juwelier" : "Bod juwelier") + (isTry() ? " (₺)" : " (€)");
+    document.querySelectorAll("#jwMode button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.m===jwMode)));
+    const out = $("jwOut"), note = $("jwNote"), mark = $("jwMark");
+    out.className = "verdict";
+    if (v1==null || !q){ out.textContent = "Vul het aantal in."; note.textContent = ""; return; }
+    const value = v1*q*(isTry() ? S.try : 1), sym = isTry() ? "₺" : "€";
+    if (!(price>0)){ out.textContent = `De goudwaarde is ${sym} ${nf2.format(value)}. Vul de prijs van de juwelier in.`; note.textContent = ""; mark.style.left = "0%"; return; }
+    const pctv = jwMode==="buy" ? (price/value-1)*100 : (1-price/value)*100, abs = Math.abs(price-value);
+    mark.style.left = Math.max(0, Math.min(100, pctv/25*100)) + "%";
+    const pt = pctv.toLocaleString("nl-NL",{maximumFractionDigits:1});
+    let cls, msg;
+    if (jwMode==="buy"){
+      if (pctv < 0){ cls = "up"; msg = `Je betaalt ${sym} ${nf2.format(abs)} onder de goudwaarde. Uitzonderlijk; controleer of gewicht en karaat kloppen.`; }
+      else if (pctv <= 4){ cls = "up"; msg = `Scherp: je betaalt ${pt}% (${sym} ${nf2.format(abs)}) boven de goudwaarde.`; }
+      else if (pctv <= 10){ cls = "gold"; msg = `Normaal: ${pt}% (${sym} ${nf2.format(abs)}) boven de goudwaarde.`; }
+      else { cls = "down"; msg = `Hoog: ${pt}% (${sym} ${nf2.format(abs)}) boven de goudwaarde. Vergelijk met een andere juwelier.`; }
+      note.textContent = "Voor munten is 2 tot 6% boven de goudwaarde gebruikelijk. Bij sieraden zit er vaak arbeidsloon (işçilik) in, dan is 10 tot 25% niet vreemd.";
+    } else {
+      if (pctv <= 0){ cls = "up"; msg = `Uitstekend bod: ${sym} ${nf2.format(abs)} boven de goudwaarde.`; }
+      else if (pctv <= 4){ cls = "up"; msg = `Goed bod: maar ${pt}% (${sym} ${nf2.format(abs)}) onder de goudwaarde.`; }
+      else if (pctv <= 10){ cls = "gold"; msg = `Gebruikelijk bod: ${pt}% (${sym} ${nf2.format(abs)}) onder de goudwaarde.`; }
+      else { cls = "down"; msg = `Laag bod: ${pt}% (${sym} ${nf2.format(abs)}) onder de goudwaarde. Vraag ook ergens anders.`; }
+      note.textContent = "Bij verkoop houdt de juwelier meestal een paar procent in. Arbeidsloon van sieraden krijg je bij verkoop meestal niet terug.";
+    }
+    out.classList.add(cls); out.textContent = msg + ` Goudwaarde: ${sym} ${nf2.format(value)}.`;
+  }
+  ["jwItem","jwQty","jwPrice"].forEach(id=>$(id).addEventListener("input", renderJeweler));
+  $("jwMode").addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return; jwMode = b.dataset.m; renderJeweler(); });
+
+  // valuta
+  S.cur = "eur"; S.tryAt = {};
+  try { const c = localStorage.getItem("goudpuls-cur"); if (c==="try") S.cur = "try"; } catch(e){}
+  function syncCur(){ document.querySelectorAll(".curSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.c===S.cur))); }
+  document.querySelectorAll(".curSeg").forEach(seg=>seg.addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return;
+    S.cur = b.dataset.c; try { localStorage.setItem("goudpuls-cur", S.cur); } catch(e){} syncCur(); renderAll(); }));
+  async function loadTryHist(){
+    for (const d of [1,7,30,365]){
+      const date = new Date(Date.now()-d*D).toISOString().slice(0,10);
+      try { const j = await getJSON(`https://api.frankfurter.app/${date}?from=EUR&to=TRY`); if (j.rates && j.rates.TRY>1) S.tryAt[d] = +j.rates.TRY; } catch(e){}
+    }
+    renderAll();
+  }
+  document.querySelectorAll("[data-clear]").forEach(b=>b.addEventListener("click", ()=>{ QTY = {}; saveQty(); syncInputs(null); renderCalcs(); }));
+
+  // ---------- inzicht: rendement, spaarplan, jaaroverzicht ----------
+  const REND = [["1 dag",1],["1 week",7],["1 maand",30],["3 maanden",91],["Dit jaar","ytd"],["1 jaar",365],["3 jaar",1095],["5 jaar",1826],["Sinds start","max"]];
+  function rendAt(key){
+    if (key==="max"){ const c = S.cache["MAX"]; if (!c) return null; return { kg: c.pts[0].kg*cal(c.pts).kg, t: c.pts[0].t }; }
+    const target = key==="ytd" ? new Date(new Date().getFullYear(),0,1).getTime() : Date.now()-key*D;
+    const kg = key===1 ? agoKg(1) : kgAt(target); return kg==null ? null : { kg, t: target };
+  }
+  function renderRend(id, keys, wide){
+    const k = kgNow(), rows = REND.filter(r=>keys.includes(r[1]));
+    const vals = rows.map(([lab,key])=>{ const a = rendAt(key); return a && k!=null ? { lab, a, pc:(k/a.kg-1)*100 } : { lab }; });
+    const maxAbs = Math.max(5, ...vals.filter(v=>v.pc!=null).map(v=>Math.abs(v.pc)));
+    let html = `<div class="th">Periode</div><div class="th r">Toen</div><div class="th r">Verschil</div><div class="th r">%</div>` + (wide ? `<div class="th bh"></div>` : "");
+    for (const v of vals){
+      if (v.pc==null){ html += `<div>${v.lab}</div><div class="r m">—</div><div class="r m">—</div><div class="r m">—</div>` + (wide ? `<div class="bar"></div>` : ""); continue; }
+      const cls = v.pc>0 ? "up" : v.pc<0 ? "down" : "", diff = k - v.a.kg, w = Math.abs(v.pc)/maxAbs*50;
+      const lab = v.lab==="Sinds start" ? `Sinds ${new Date(v.a.t).toLocaleDateString("nl-NL",{month:"short",year:"numeric"})}` : v.lab;
+      html += `<div>${lab}</div><div class="r m">€ ${nf0.format(v.a.kg)}</div><div class="r ${cls}">${diff>0?"+":diff<0?"−":""}€ ${nf0.format(Math.abs(diff))}</div><div class="r ${cls}">${pct(v.pc)}</div>`;
+      if (wide) html += `<div class="bar"><i style="${v.pc>=0?`left:50%`:`right:50%`};width:${w}%;background:var(--${v.pc>=0?"up":"down"})"></i></div>`;
+    }
+    $(id).innerHTML = html;
+  }
+  function cagr(){ const c = S.cache["MAX"], k = kgNow(); if (!c || k==null) return null; const f = c.pts[0], yrs = (Date.now()-f.t)/(365.25*D); return yrs>1 ? Math.pow(k/(f.kg*cal(c.pts).kg), 1/yrs)-1 : null; }
+  function renderSavings(){
+    const c = S.cache["MAX"], k = kgNow(), out = $("spKpis");
+    const amt = Math.max(0, parseFloat(($("spAmt").value||"0").replace(",", ".")) || 0), yv = $("spYears").value;
+    if (!c || k==null || !amt){ out.innerHTML = `<div class="kpi"><div class="lbl">Spaarplan</div><div class="v">${!amt ? "Vul een bedrag in" : "Historie laden…"}</div></div>`; drawSavings(null); return; }
+    const r = cal(c.pts).kg, start = yv==="max" ? 0 : Date.now() - (+yv)*365.25*D;
+    const buys = c.pts.filter(p=>p.t >= start).map(p=>({ t:p.t, kg:p.kg*r }));
+    let grams = 0, inv = 0; const curve = [];
+    for (const p of buys){ grams += amt/(p.kg/1000); inv += amt; curve.push({ t:p.t, inv, val:grams*p.kg/1000 }); }
+    const val = grams*k/1000; if (curve.length) curve[curve.length-1].val = val;
+    const res = val-inv, rp = inv ? res/inv*100 : 0, cls = res>=0 ? "up" : "down";
+    out.innerHTML = `<div class="kpi"><div class="lbl">Totaal ingelegd</div><div class="v">€ ${nf0.format(inv)}</div><small>${buys.length} maanden × € ${nf0.format(amt)}</small></div>
+      <div class="kpi"><div class="lbl">Waarde nu</div><div class="v gold">€ ${nf0.format(val)}</div><small>${nf2.format(grams)} gram puur goud</small></div>
+      <div class="kpi"><div class="lbl">Resultaat</div><div class="v ${cls}">${res>=0?"+":"−"}€ ${nf0.format(Math.abs(res))}</div><small>${pct(rp)} op je inleg</small></div>
+      <div class="kpi"><div class="lbl">Dat is ongeveer</div><div class="v">${nf0.format(grams/CEYREK_G)} çeyrek</div><small>of ${nf2.format(grams/(7.216*K22))} Ata altını</small></div>`;
+    drawSavings(curve);
+    const fr = $("fwRate"), cg = cagr(); if (fr.value==="" && cg!=null && isFinite(cg) && cg>-.5 && cg<1) fr.value = (Math.round(cg*200)/2).toString();
+    const R = (parseFloat((fr.value||"0").replace(",", "."))||0)/100, n = (+$("fwYears").value)*12, rm = Math.pow(1+R, 1/12)-1;
+    const fv = rm===0 ? amt*n : amt*((Math.pow(1+rm,n)-1)/rm)*(1+rm), finv = amt*n;
+    $("fwOut").className = "verdict " + (fv>=finv ? "gold" : "down");
+    $("fwOut").textContent = `Leg je ${$("fwYears").value} jaar lang elke maand € ${nf0.format(amt)} in (totaal € ${nf0.format(finv)}), dan is dat bij ${pct(R*100).replace("+","")} groei per jaar ongeveer € ${nf0.format(fv)} waard.`;
+  }
+  function prepCanvas(cv){ const dpr = Math.min(devicePixelRatio||1,2), w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return null;
+    cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); const g = cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h); return { g, w, h }; }
+  function lineChart(cv, series, opts){
+    const c = prepCanvas(cv); if (!c) return; const { g, w, h } = c;
+    const padR = 70, padB = 22, padT = 10, cw = w-padR, ch = h-padT-padB;
+    const all = series.flatMap(s=>s.pts); if (all.length < 2) return;
+    const t0 = all.reduce((m,p)=>Math.min(m,p[0]), Infinity), t1 = all.reduce((m,p)=>Math.max(m,p[0]), -Infinity);
+    let lo = Math.min(...all.map(p=>p[1])), hi = Math.max(...all.map(p=>p[1])); const pad = (hi-lo||hi*.01)*.1; lo -= pad; hi += pad; if (opts.zero) lo = Math.min(lo, 0);
+    const X = t => (t-t0)/((t1-t0)||1)*cw, Y = v => padT + (1-(v-lo)/(hi-lo))*ch;
+    g.font = "11px 'JetBrains Mono', monospace"; g.textBaseline = "middle"; g.textAlign = "left";
+    for (let i=0;i<=4;i++){ const v = lo+(hi-lo)*i/4, y = Y(v); g.strokeStyle = "rgba(255,255,255,.07)"; g.beginPath(); g.moveTo(0,y); g.lineTo(cw,y); g.stroke();
+      if (i>0 && i<4){ g.fillStyle = C.muted; g.fillText("€ " + nf0.format(v), cw+8, y); } }
+    g.textAlign = "center"; g.textBaseline = "top";
+    for (let i=0;i<5;i++){ const tt = t0+(t1-t0)*(i+.5)/5; g.fillStyle = C.muted; g.fillText(new Date(tt).toLocaleDateString("nl-NL", opts.fmt), X(tt), padT+ch+6); }
+    for (const sr of series){
+      g.save(); g.beginPath(); sr.pts.forEach((p,i)=>{ const x = X(p[0]), y = Y(p[1]); i ? g.lineTo(x,y) : g.moveTo(x,y); });
+      if (sr.dash) g.setLineDash([4,4]); g.strokeStyle = sr.color; g.lineWidth = sr.w || 2; if (sr.glow){ g.shadowColor = sr.color; g.shadowBlur = 10; } g.stroke(); g.restore();
+      if (sr.fill){ g.save(); g.beginPath(); sr.pts.forEach((p,i)=>{ const x = X(p[0]), y = Y(p[1]); i ? g.lineTo(x,y) : g.moveTo(x,y); });
+        g.lineTo(X(sr.pts[sr.pts.length-1][0]), padT+ch); g.lineTo(X(sr.pts[0][0]), padT+ch); g.closePath();
+        const gr = g.createLinearGradient(0,padT,0,padT+ch); gr.addColorStop(0, sr.fill); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fill(); g.restore(); }
+    }
+    if (opts.marks) for (const m of opts.marks){ const x = X(m.t), y = Y(m.v); g.fillStyle = m.color; g.beginPath(); g.arc(x,y,4,0,Math.PI*2); g.fill();
+      g.font = "500 11px 'JetBrains Mono', monospace"; g.textAlign = x > cw-90 ? "right" : "left"; g.textBaseline = m.below ? "top" : "bottom"; g.fillText(m.label, x + (x > cw-90 ? -8 : 8), y + (m.below ? 6 : -6)); }
+  }
+  function drawSavings(curve){
+    const cv = $("spChart"); if (!curve || curve.length < 2){ prepCanvas(cv); return; }
+    lineChart(cv, [ { pts: curve.map(p=>[p.t,p.inv]), color:"rgba(255,255,255,.55)", dash:true, w:1.5 },
+                    { pts: curve.map(p=>[p.t,p.val]), color:"#e8b830", glow:true, fill:"rgba(232,184,48,.18)" } ],
+              { fmt:{ month:"short", year:"2-digit" }, zero:true });
+    const g = cv.getContext("2d"); g.font = "500 11px 'JetBrains Mono', monospace"; g.textAlign = "left"; g.textBaseline = "top";
+    g.fillStyle = "#e8b830"; g.fillText("— waarde", 4, 4); g.fillStyle = "rgba(255,255,255,.7)"; g.fillText("- - inleg", 90, 4);
+  }
+  S.years = {}; S.year = new Date().getFullYear();
+  async function loadYear(y){
+    const cur = y===new Date().getFullYear(), c = S.years[y];
+    if (c && (!cur || Date.now()-c.at < 30*60e3)){ renderYear(); return; }
+    const st = Date.UTC(y,0,1), en = Math.min(Date.UTC(y+1,0,1)-1, Date.now());
+    try { const pts = await series("1d", 366, `&startTime=${st}&endTime=${en}`); S.years[y] = { pts, at: Date.now() }; } catch(e){ if (!c) S.years[y] = { pts: [], at: Date.now(), err: true }; }
+    renderYear();
+  }
+  function renderYearChips(){
+    const c = S.cache["MAX"], first = c ? new Date(c.pts[0].t).getFullYear() : S.year-5, el = $("yearChips");
+    if (el.dataset.first==String(first)) { el.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.y===S.year))); return; }
+    el.dataset.first = first; el.innerHTML = "";
+    for (let y = new Date().getFullYear(); y >= first; y--){ const b = document.createElement("button"); b.type = "button"; b.dataset.y = y; b.textContent = y; el.appendChild(b); }
+    el.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.y===S.year)));
+  }
+  $("yearChips").addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return; S.year = +b.dataset.y; renderYearChips(); loadYear(S.year); });
+  function renderYear(){
+    const y = S.year, d = S.years[y], out = $("yrKpis");
+    if (!d){ out.innerHTML = `<div class="kpi"><div class="lbl">${y}</div><div class="v">Laden…</div></div>`; return; }
+    if (!d.pts.length){ out.innerHTML = `<div class="kpi"><div class="lbl">${y}</div><div class="v">Geen gegevens</div></div>`; prepCanvas($("yrChart")); return; }
+    const cur = y===new Date().getFullYear(), r = cur ? cal(d.pts).kg : 1;
+    const pts = d.pts.map(p=>({ t:p.t, kg:p.kg*r })); if (cur && kgNow()!=null) pts[pts.length-1].kg = kgNow();
+    const first = pts[0], last = pts[pts.length-1], ch = (last.kg/first.kg-1)*100;
+    let hi = pts[0], lo = pts[0], best = null, worst = null, up = 0, down = 0;
+    for (let i=0;i<pts.length;i++){ const p = pts[i]; if (p.kg>hi.kg) hi = p; if (p.kg<lo.kg) lo = p;
+      if (i){ const dc = (p.kg/pts[i-1].kg-1)*100; if (dc>0) up++; else if (dc<0) down++; if (!best || dc>best.dc) best = { dc, t:p.t }; if (!worst || dc<worst.dc) worst = { dc, t:p.t }; } }
+    const dfmt = t => new Date(t).toLocaleDateString("nl-NL",{ day:"numeric", month:"long" });
+    out.innerHTML = `<div class="kpi"><div class="lbl">${cur ? "Dit jaar tot nu" : "Heel " + y}</div><div class="v ${ch>=0?"up":"down"}">${pct(ch)}</div><small>€ ${nf0.format(first.kg)} → € ${nf0.format(last.kg)}</small></div>
+      <div class="kpi"><div class="lbl">Hoogste</div><div class="v gold">€ ${nf0.format(hi.kg)}</div><small>${dfmt(hi.t)}</small></div>
+      <div class="kpi"><div class="lbl">Laagste</div><div class="v">€ ${nf0.format(lo.kg)}</div><small>${dfmt(lo.t)}</small></div>
+      <div class="kpi"><div class="lbl">Dagen omhoog / omlaag</div><div class="v"><span style="color:var(--up)">${up}</span> / <span style="color:var(--down)">${down}</span></div><small>Beste dag ${pct(best?best.dc:0)} (${best?dfmt(best.t):"—"}) · slechtste ${pct(worst?worst.dc:0)}</small></div>`;
+    lineChart($("yrChart"), [ { pts: pts.map(p=>[p.t,p.kg]), color:"#ffffff", glow:true, fill:"rgba(255,255,255,.1)", w:1.8 } ],
+      { fmt:{ month:"short" }, marks:[ { t:hi.t, v:hi.kg, color:"#e8b830", label:"hoogste" }, { t:lo.t, v:lo.kg, color:"#ff3366", label:"laagste", below:true } ] });
+  }
+  ["spAmt","spYears","fwYears","fwRate"].forEach(id=>$(id).addEventListener("input", renderSavings));
+
+  // ---------- nieuws ----------
+  const NEWS_URLS = ["https://raw.githubusercontent.com/klcfurkan/goudprijs/data/news.json", "news.json"];
+  const NCAT = {
+    gold:     { nl:"Goud", tr:"Altın", why:{ nl:"Nieuws direct over goud: prijsrecords, vraag van centrale banken of beleggers.", tr:"Doğrudan altınla ilgili haberler: rekorlar, merkez bankalarının ve yatırımcıların talebi." } },
+    conflict: { nl:"Oorlog & spanning", tr:"Savaş & gerginlik", why:{ nl:"Bij oorlog of grote spanning kopen mensen vaak goud als veilige haven. De prijs stijgt dan meestal.", tr:"Savaş ve büyük gerginlik dönemlerinde insanlar güvenli liman olarak altına yönelir. Fiyat genellikle yükselir." } },
+    rates:    { nl:"Rente & centrale bank", tr:"Faiz & merkez bankası", why:{ nl:"Daalt de rente, dan wordt goud vaak aantrekkelijker en stijgt de prijs. Stijgt de rente, dan vaak andersom.", tr:"Faiz düşünce altın genellikle daha cazip olur ve fiyatı yükselir. Faiz artınca çoğu zaman tersi olur." } },
+    economy:  { nl:"Economie", tr:"Ekonomi", why:{ nl:"Hoge inflatie, crisis of handelsruzies maken mensen onzeker. Dat duwt de goudprijs vaak omhoog.", tr:"Yüksek enflasyon, kriz ve ticaret anlaşmazlıkları belirsizlik yaratır. Bu genellikle altın fiyatını yukarı iter." } },
+    currency: { nl:"Dollar & valuta", tr:"Dolar & döviz", why:{ nl:"Goud wordt in dollars verhandeld. Een zwakkere dollar maakt goud vaak duurder; een zwakkere lira maakt goud in lira duurder.", tr:"Altın dolarla işlem görür. Dolar zayıflayınca altın genellikle pahalanır; lira zayıflayınca altın TL olarak pahalanır." } },
+  };
+  S.news = null; S.newsCat = "all"; S.newsGroup = "all";
+  async function loadNews(){
+    for (const u of NEWS_URLS){
+      try { const j = await getJSON(u + "?v=" + Math.floor(Date.now()/300000)); if (j && Array.isArray(j.items)){ S.news = j; break; } } catch(e){}
+    }
+    renderNews();
+  }
+  function ago(ts, lg){
+    const s = (ts*1000 - Date.now())/1000, rtf = new Intl.RelativeTimeFormat(lg, { numeric:"auto" });
+    if (s > -3600) return rtf.format(Math.round(s/60), "minute");
+    if (s > -86400) return rtf.format(Math.round(s/3600), "hour");
+    return rtf.format(Math.round(s/86400), "day");
+  }
+  function newsList(el, items, lg, max, emptyText){
+    el.innerHTML = "";
+    if (!items.length){ const p = document.createElement("p"); p.className = "muted"; p.textContent = emptyText; el.appendChild(p); return; }
+    for (const it of items.slice(0, max)){
+      if (!/^https?:\/\//.test(it.u)) continue;
+      const a = document.createElement("a"); a.className = "ni"; a.href = it.u; a.target = "_blank"; a.rel = "noopener noreferrer";
+      const cat = document.createElement("span"); cat.className = "ncat c-" + (NCAT[it.cat] ? it.cat : "economy"); cat.textContent = (NCAT[it.cat] || NCAT.economy)[lg==="tr" ? "tr" : "nl"];
+      const t = document.createElement("span"); t.className = "nt"; t.textContent = it.t;
+      const m = document.createElement("span"); m.className = "nm"; m.textContent = it.s + " · " + ago(it.ts, lg);
+      if (it.score >= 6){ const b = document.createElement("b"); b.textContent = " · " + I18N[lg==="tr" ? "tr" : "nl"].important; m.appendChild(b); }
+      a.append(cat, t, m); el.appendChild(a);
+    }
+  }
+  function legend(el, cats, lg){
+    el.innerHTML = "";
+    for (const c of cats){ const k = document.createElement("span"); k.className = "ncat c-" + c; k.textContent = NCAT[c][lg]; const d = document.createElement("span"); d.textContent = NCAT[c].why[lg]; el.append(k, d); }
+  }
+  function renderNews(){
+    const items = S.news ? S.news.items.slice().sort((a,b)=>b.ts-a.ts) : [];
+    const loading = !S.news, NL = I18N.nl;
+    newsList($("dashNews"), items, "nl", 6, loading ? NL.newsLoading : NL.noNews);
+    // nieuws-tab
+    let list = items.filter(i => S.newsGroup==="all" || i.g===S.newsGroup);
+    const cats = Object.keys(NCAT).filter(c => list.some(i=>i.cat===c));
+    const chips = $("newsCats"); chips.innerHTML = "";
+    for (const c of ["all", ...cats]){ const b = document.createElement("button"); b.type = "button"; b.dataset.c = c;
+      b.textContent = c==="all" ? `Alles (${list.length})` : `${NCAT[c].nl} (${list.filter(i=>i.cat===c).length})`;
+      b.setAttribute("aria-pressed", String(c===S.newsCat)); chips.appendChild(b); }
+    if (S.newsCat!=="all") list = list.filter(i=>i.cat===S.newsCat);
+    newsList($("newsFull"), list, "nl", 40, loading ? NL.newsLoading : NL.noNews);
+    legend($("newsLegend"), Object.keys(NCAT), "nl");
+    document.querySelectorAll("#newsGroupSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.g===S.newsGroup)));
+    $("newsUpd").textContent = S.news ? "Bijgewerkt " + ago(S.news.updated, "nl") + "." : "";
+    // simpele versie: in de taal van de ouders
+    const L = I18N[lang];
+    let mine = lang==="tr" ? items.filter(i=>i.g==="tr") : items.filter(i=>i.lang==="nl");
+    if (mine.length < 3) mine = lang==="tr" ? items.filter(i=>i.g==="tr" || i.lang==="tr") : items.filter(i=>i.g==="intl");
+    newsList($("homeNews"), mine, lang, 6, loading ? L.newsLoading : L.noNews);
+    legend($("homeLegend"), Object.keys(NCAT).filter(c=>mine.slice(0,6).some(i=>i.cat===c)), lang);
+  }
+  $("newsCats").addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return; S.newsCat = b.dataset.c; renderNews(); });
+  $("newsGroupSeg").addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return; S.newsGroup = b.dataset.g; S.newsCat = "all"; renderNews(); });
+
+  // ---------- ticker ----------
+  S.metals = {};
+  async function loadMetals(){
+    for (const m of ["XAG","XPT"]){ try { const j = await getJSON("https://api.gold-api.com/price/" + m); if (+j.price>0) S.metals[m] = +j.price; } catch(e){} }
+    renderTicker();
+  }
+  const TICK = [
+    ["GOUD € / KG", ()=>kgNow(), v=>"€ " + nf0.format(v), "kg"], ["GOUD $ / OZ", ()=>S.oz, v=>"$ " + nf2.format(v), "oz"],
+    ["GRAM €", ()=>kgNow()!=null ? kgNow()/1000 : null, v=>"€ " + nf2.format(v)], ["GRAM ₺", ()=>kgNow()!=null && S.try ? kgNow()/1000*S.try : null, v=>"₺ " + nf2.format(v)],
+    ["ÇEYREK €", ()=>kgNow()!=null ? kgNow()/1000*CEYREK_G : null, v=>"€ " + nf2.format(v)], ["ÇEYREK ₺", ()=>kgNow()!=null && S.try ? kgNow()/1000*CEYREK_G*S.try : null, v=>"₺ " + nf2.format(v)],
+    ["ZILVER $ / OZ", ()=>S.metals.XAG, v=>"$ " + nf2.format(v)], ["PLATINA $ / OZ", ()=>S.metals.XPT, v=>"$ " + nf2.format(v)],
+    ["EUR / USD", ()=>S.fx ? 1/S.fx : null, v=>v.toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4})],
+    ["EUR / TRY", ()=>S.try, v=>nf2.format(v)],
+  ];
+  (()=>{ const tr = $("ttrack"); for (let rep=0; rep<2; rep++) for (let i=0;i<TICK.length;i++){ const sp = document.createElement("span"); sp.dataset.i = i;
+      const b = document.createElement("b"); b.textContent = TICK[i][0]; const v = document.createElement("span"); v.className = "tv"; v.textContent = "—"; const em = document.createElement("em");
+      sp.append(b, v, em); tr.appendChild(sp); } })();
+  function renderTicker(){
+    const p24 = { kg: change24("kg"), oz: change24("oz") };
+    document.querySelectorAll("#ttrack > span").forEach(sp=>{ const t = TICK[+sp.dataset.i], v = t[1]();
+      sp.querySelector(".tv").textContent = v==null ? "—" : t[2](v);
+      const em = sp.querySelector("em"), c = t[3] ? p24[t[3]] : null; em.className = c==null ? "" : c>0 ? "up" : c<0 ? "down" : "";
+      em.textContent = c==null ? "" : (c>0 ? "▲ " : c<0 ? "▼ " : "") + pct(c); });
+  }
+  try { if (localStorage.getItem("goudpuls-ticker")==="off") $("tickwrap").hidden = true; } catch(e){}
+  $("tclose").addEventListener("click", ()=>{ $("tickwrap").hidden = true; try { localStorage.setItem("goudpuls-ticker","off"); } catch(e){} });
+
+  function renderAll(){
+    renderStats(); renderCalcs(); renderCoins(); renderJeweler(); renderTicker();
+    renderRend("dashRend", [7,30,"ytd",365,1826], false);
+    if (!$("viewInsight").hidden){ renderRend("insRend", REND.map(r=>r[1]), true); renderSavings(); renderYearChips(); renderYear(); }
+  }
+  let rsT; addEventListener("resize", ()=>{ clearTimeout(rsT); rsT = setTimeout(()=>{ if (!$("viewInsight").hidden){ renderSavings(); renderYear(); } }, 200); });
+
   // ---------- loop ----------
   const ring = $("ringProg"), clock = $("clock"); let lastSec = -1, lastScene = 0;
   function frame(t){
@@ -914,12 +1461,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   $("seriesSeg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
     S.series = b.dataset.s; syncButtons(); savePref(); });
 
+  const VIEWS = { dashboard:"viewDash", inzicht:"viewInsight", rekenen:"viewCalc", nieuws:"viewNews", simpel:"viewHome", thuis:"viewHome" };
   function route(){
-    const home = location.hash === "#simpel" || location.hash === "#thuis";
-    $("viewDash").hidden = home; $("viewDash").style.display = home ? "none" : "flex";
-    $("viewHome").hidden = !home;
-    $("tabDash").toggleAttribute("aria-current", !home); if (!home) $("tabDash").setAttribute("aria-current","page");
-    $("tabHome").toggleAttribute("aria-current", home); if (home) $("tabHome").setAttribute("aria-current","page");
+    const key = VIEWS[location.hash.slice(1)] ? location.hash.slice(1) : "dashboard", id = VIEWS[key];
+    for (const v of new Set(Object.values(VIEWS))) $(v).hidden = v!==id;
+    $("viewDash").style.display = id==="viewDash" ? "flex" : "none";
+    document.querySelectorAll("nav a").forEach(a=>{ const on = VIEWS[a.dataset.v]===id; a.toggleAttribute("aria-current", on); if (on) a.setAttribute("aria-current","page"); });
+    if (id==="viewInsight"){ renderYearChips(); loadYear(S.year); }
+    renderAll();
   }
   $("langSeg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
     lang = b.dataset.l; try { localStorage.setItem("goudpuls-lang", lang); } catch(e){} applyLang(); });
@@ -936,11 +1485,16 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   document.addEventListener("keydown",e=>{ if ((e.key==="f"||e.key==="F") && !e.ctrlKey && !e.metaKey) $("fsBtn").click(); });
 
   // ---------- start ----------
-  syncButtons(); applyLang();
-  (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); loadRange("1J"); })();
+  syncCur();
+  buildCalc("calcFull", COINS.map(c=>c.id), ()=>I18N.nl);
+  buildCalc("homeCalc", SIMPLE_IDS, ()=>I18N[lang]);
+  syncButtons(); applyLang(); renderNews();
+  (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); loadRange("1J"); loadRange("5J"); loadRange("MAX"); loadTryHist(); })();
+  loadNews(); loadMetals();
+  setInterval(loadNews, 10*60e3); setInterval(loadMetals, 2*60e3);
   setInterval(updateGold, GOLD_EVERY);
   setInterval(updateFx, FX_EVERY);
-  setInterval(()=>{ loadDay(); loadRange(S.range); loadRange("1J"); }, 60e3);
+  setInterval(()=>{ loadDay(); loadRange(S.range); loadRange("1J"); loadRange("5J"); loadRange("MAX"); }, 60e3);
   document.addEventListener("visibilitychange",()=>{ if (!document.hidden) updateGold(); });
 })();
 </script>
