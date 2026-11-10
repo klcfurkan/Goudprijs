@@ -60,6 +60,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .ring .prog{stroke:var(--amber);stroke-linecap:round}
 .btn{appearance:none;border:1px solid var(--rule);background:rgba(255,255,255,.03);color:var(--ice);font:600 12px var(--font-body);
   letter-spacing:.06em;padding:9px 14px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s}
+.btn.icon{font-size:16px;line-height:1;padding:7px 11px}
 .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.45)}
 
 /* HUD frame with corner brackets */
@@ -175,7 +176,7 @@ body.focus .mid{min-height:calc(100vh - 150px)}
 .ctrls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label,.field .fl{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-input[type=number],select{appearance:none;-webkit-appearance:none;background:#0d0d0d;border:1px solid var(--rule);color:var(--ice);
+input[type=number],input[type=text],select{appearance:none;-webkit-appearance:none;background:#0d0d0d;border:1px solid var(--rule);color:var(--ice);
   font:600 16px var(--font-data);padding:10px 12px;border-radius:8px;width:100%;min-width:0}
 select{padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
   background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px;background-repeat:no-repeat}
@@ -250,7 +251,7 @@ input:focus,select:focus{outline:2px solid var(--amber);outline-offset:1px}
 @media (max-width:1000px){ .duo,.grid2,.newsgrid{grid-template-columns:1fr} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:560px){
   .ni{grid-template-columns:1fr} .ncat{grid-row:auto;justify-self:start}
-  .calc{grid-template-columns:minmax(0,1fr) 88px} .calc .cs{grid-column:1 / -1;margin-top:-6px;text-align:left;color:var(--muted)}
+  .calc{grid-template-columns:minmax(0,1fr) 88px} .calc .cs{grid-column:1 / -1;margin-top:-6px;text-align:left;color:var(--amber)} .calc .cs.zero{display:none}
   .rtbl.wide{grid-template-columns:auto auto auto auto} .rtbl.wide .bar,.rtbl.wide .bh{display:none}
   .legend{grid-template-columns:1fr;gap:6px} .legend .ncat{justify-self:start;margin-top:10px}
 }
@@ -301,7 +302,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         <circle class="prog" id="ringProg" cx="14" cy="14" r="11" stroke-dasharray="69.1" stroke-dashoffset="69.1"></circle>
       </svg>
       <button class="btn" id="focusBtn" type="button" aria-pressed="false">Focus</button>
-      <button class="btn" id="fsBtn" type="button">Volledig scherm</button>
+      <button class="btn icon" id="fsBtn" type="button" aria-label="Volledig scherm" title="Volledig scherm (F)">⛶</button>
     </div>
   </header>
 
@@ -387,20 +388,16 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     <div class="hud box">
       <div class="bhead"><h3>Spaarplan in goud</h3><span class="lbl">Elke maand een vast bedrag</span></div>
       <div class="ctrls">
-        <div class="field" style="width:150px"><label for="spAmt">Per maand (€)</label><input type="number" id="spAmt" min="10" step="10" value="300" inputmode="decimal"></div>
-        <div class="field" style="width:170px"><label for="spYears">Periode</label>
-          <select id="spYears"><option value="1">Afgelopen 1 jaar</option><option value="3">Afgelopen 3 jaar</option><option value="5" selected>Afgelopen 5 jaar</option><option value="max">Zo lang mogelijk</option></select></div>
+        <div class="field" style="width:150px"><label for="spAmt">Per maand (€)</label><input type="text" id="spAmt" value="300" inputmode="decimal" autocomplete="off"></div>
+        <div class="field"><span class="fl" id="spYearsL">Periode</span>
+          <div class="chips" id="spYears" role="group" aria-labelledby="spYearsL">
+            <button type="button" data-y="1">1 jaar</button><button type="button" data-y="3">3 jaar</button><button type="button" data-y="5">5 jaar</button><button type="button" data-y="max">Zo lang mogelijk</button>
+          </div></div>
       </div>
       <div class="kpis" id="spKpis"></div>
       <div class="cv"><canvas id="spChart" aria-label="Waarde van het spaarplan tegenover de inleg"></canvas></div>
-      <div class="bhead" style="margin-top:6px"><h3 style="font-size:17px">En vooruit? Een rekenvoorbeeld</h3></div>
-      <div class="ctrls">
-        <div class="field" style="width:170px"><label for="fwYears">Looptijd</label>
-          <select id="fwYears"><option value="5">5 jaar</option><option value="10" selected>10 jaar</option><option value="15">15 jaar</option><option value="20">20 jaar</option></select></div>
-        <div class="field" style="width:170px"><label for="fwRate">Groei per jaar (%)</label><input type="number" id="fwRate" step="0.5" min="-20" max="40" inputmode="decimal"></div>
-      </div>
       <p class="verdict" id="fwOut">—</p>
-      <p class="small muted">Het spaarplan rekent met de goudprijs aan het eind van elke maand, zonder aankoop- of opslagkosten. Het rekenvoorbeeld vooruit is geen voorspelling: de groei staat standaard op het gemiddelde van de afgelopen jaren, maar goud kan ook dalen.</p>
+      <p class="small muted">Gerekend met de goudprijs aan het eind van elke maand, zonder aankoop- of opslagkosten. De blik vooruit gaat uit van dezelfde groei als in de gekozen periode. Dat is een rekenvoorbeeld, geen voorspelling: goud kan ook dalen.</p>
     </div>
 
     <div class="hud box">
@@ -427,8 +424,8 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
           <div class="seg" id="jwMode" role="group" aria-label="Kopen of verkopen" style="align-self:flex-start"><button type="button" data-m="buy">Ik koop</button><button type="button" data-m="sell">Ik verkoop</button></div>
           <div class="ctrls">
             <div class="field" style="flex:2 1 180px"><label for="jwItem">Wat</label><select id="jwItem"></select></div>
-            <div class="field" style="flex:1 1 90px"><label for="jwQty" id="jwQtyL">Aantal</label><input type="number" id="jwQty" min="0" step="1" value="1" inputmode="decimal"></div>
-            <div class="field" style="flex:1 1 140px"><label for="jwPrice" id="jwPriceL">Prijs juwelier</label><input type="number" id="jwPrice" min="0" step="1" inputmode="decimal" placeholder="bijv. 200"></div>
+            <div class="field" style="flex:1 1 90px"><label for="jwQty" id="jwQtyL">Aantal</label><input type="text" id="jwQty" value="1" inputmode="decimal" autocomplete="off"></div>
+            <div class="field" style="flex:1 1 140px"><label for="jwPrice" id="jwPriceL">Prijs juwelier</label><input type="text" id="jwPrice" inputmode="decimal" autocomplete="off" placeholder="bijv. 760"></div>
           </div>
           <div class="gauge" aria-hidden="true"><i id="jwMark" style="left:0"></i></div>
           <div class="gscale"><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%+</span></div>
@@ -522,6 +519,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   const isSmall = () => innerWidth < 1000;
   const nf2 = new Intl.NumberFormat("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
   const nf0 = new Intl.NumberFormat("nl-NL",{maximumFractionDigits:0});
+  const num = el => { const v = parseFloat(String(el.value||"").replace(/\s/g,"").replace(/\.(?=\d{3}(\D|$))/g,"").replace(",", ".")); return isFinite(v) ? v : 0; };
   const pct = p => (p>0?"+":"") + p.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2}) + "%";
   const C = { ice:"#ffffff", muted:"#a3a3a3", cyan:"255,255,255", amber:"232,184,48", up:"49,233,129", down:"255,51,102" };
 
@@ -558,12 +556,22 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     { name:"Binance PAXG", get: async()=> +(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=PAXGUSDT")).price },
   ];
   const fxSources = [
+    async()=>{ const r = (await getJSON("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,TRY")).rates; return { usd:+r.USD, try:+r.TRY }; },
     async()=>{ const r = (await getJSON("https://api.frankfurter.app/latest?from=EUR&to=USD,TRY")).rates; return { usd:+r.USD, try:+r.TRY }; },
     async()=>{ const r = (await getJSON("https://open.er-api.com/v6/latest/EUR")).rates; return { usd:+r.USD, try:+r.TRY }; },
-    async()=>({ usd:+(await getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=EURUSDT")).price, try:null }),
+    async()=>{ const [e, t] = await Promise.all([getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=EURUSDT"), getJSON("https://data-api.binance.vision/api/v3/ticker/price?symbol=USDTTRY")]);
+      return { usd:+e.price, try:(+e.price)*(+t.price) }; },
   ];
+  // eerste bron met een goede EUR/USD wint; EUR/TRY mag uit een volgende bron komen als de eerste hem mist
   async function updateFx(){
-    for (const f of fxSources){ try { const v = await f(); if (v.usd>0.3 && v.usd<3){ S.fx = 1/v.usd; if (v.try>1) S.try = v.try; if (typeof renderAll==='function') renderAll(); return; } } catch(e){} }
+    let usd = null, tr = null;
+    for (const f of fxSources){
+      try { const v = await f(); if (usd==null && v.usd>0.3 && v.usd<3) usd = v.usd; if (tr==null && v.try>1) tr = v.try; } catch(e){}
+      if (usd!=null && tr!=null) break;
+    }
+    if (usd!=null) S.fx = 1/usd;
+    if (tr!=null) S.try = tr;
+    if (typeof renderAll==='function') renderAll();
   }
   async function updateGold(){
     let price=null, src=null;
@@ -786,6 +794,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
   function updateRangeChip(){
     const pts = displayPts(), el = $("cRange");
+    if (S.histErr && !S.cache[S.range]){ el.className = "chip"; el.textContent = "Historie niet bereikbaar"; return; }
     if (!pts || pts.length<2){ setChip(el, null, S.range+" ·"); return; }
     setChip(el, (pts[pts.length-1][1]/pts[0][1]-1)*100, S.range+" ·");
   }
@@ -1141,11 +1150,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     for (const c of COINS.filter(c=>ids.includes(c.id))){
       const cn = document.createElement("div"); cn.className = "cn";
       const b = document.createElement("b"), sm = document.createElement("small"); cn.append(b, sm);
-      const inp = document.createElement("input"); inp.type = "number"; inp.min = "0"; inp.step = c.pg ? "0.1" : "1"; inp.inputMode = "decimal";
+      const inp = document.createElement("input"); inp.type = "text"; inp.inputMode = "decimal"; inp.autocomplete = "off";
       inp.id = container + "-" + c.id; inp.placeholder = "0"; if (QTY[c.id]) inp.value = QTY[c.id];
       b.id = inp.id + "-l"; inp.setAttribute("aria-labelledby", b.id);
       const cs = document.createElement("div"); cs.className = "cs";
-      inp.addEventListener("input", ()=>{ const v = parseFloat(inp.value.replace(",", ".")); if (v>0) QTY[c.id] = v; else delete QTY[c.id]; saveQty(); syncInputs(inp); renderCalcs(); });
+      inp.addEventListener("input", ()=>{ const v = num(inp); if (v>0) QTY[c.id] = v; else delete QTY[c.id]; saveQty(); syncInputs(inp); renderCalcs(); });
       grid.append(cn, inp, cs); rows.push({ c, b, sm, inp, cs });
     }
     const tot = document.createElement("div"); tot.className = "ctotal";
@@ -1179,8 +1188,8 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   let jwMode = "buy";
   (()=>{ const sel = $("jwItem"); for (const c of COINS){ const o = document.createElement("option"); o.value = c.id; o.textContent = c.nl + (c.pg ? " (per gram)" : ""); sel.appendChild(o); } sel.value = "ceyrek"; })();
   function renderJeweler(){
-    const c = COINS.find(x=>x.id===$("jwItem").value), q = parseFloat(($("jwQty").value||"0").replace(",", ".")) || 0;
-    const price = parseFloat(($("jwPrice").value||"").replace(",", ".")), v1 = coinEur(c);
+    const c = COINS.find(x=>x.id===$("jwItem").value), q = num($("jwQty"));
+    const price = num($("jwPrice")), v1 = coinEur(c);
     $("jwQtyL").textContent = c.pg ? "Gram" : "Aantal";
     $("jwPriceL").textContent = (jwMode==="buy" ? "Prijs juwelier" : "Bod juwelier") + (isTry() ? " (₺)" : " (€)");
     document.querySelectorAll("#jwMode button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.m===jwMode)));
@@ -1217,13 +1226,29 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   function syncCur(){ document.querySelectorAll(".curSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.c===S.cur))); }
   document.querySelectorAll(".curSeg").forEach(seg=>seg.addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return;
     S.cur = b.dataset.c; try { localStorage.setItem("goudpuls-cur", S.cur); } catch(e){} syncCur(); renderAll(); }));
+  // lirakoers van 1 dag, 1 week, 1 maand en 1 jaar geleden: eerst de ECB-reeks, anders Binance (USDT/TRY × EUR/USDT)
+  const TRY_DAYS = [1,7,30,365];
   async function loadTryHist(){
-    for (const d of [1,7,30,365]){
-      const date = new Date(Date.now()-d*D).toISOString().slice(0,10);
-      try { const j = await getJSON(`https://api.frankfurter.app/${date}?from=EUR&to=TRY`); if (j.rates && j.rates.TRY>1) S.tryAt[d] = +j.rates.TRY; } catch(e){}
+    const now = Date.now(), iso = t => new Date(t).toISOString().slice(0,10), start = iso(now-372*D);
+    for (const url of [`https://api.frankfurter.dev/v1/${start}..?base=EUR&symbols=TRY`, `https://api.frankfurter.app/${start}..?from=EUR&to=TRY`]){
+      if (TRY_DAYS.every(d=>S.tryAt[d])) break;
+      try {
+        const j = await getJSON(url), dates = Object.keys(j.rates || {}).sort();
+        for (const d of TRY_DAYS){ const target = iso(now-d*D); let best = null; for (const k of dates){ if (k <= target) best = k; else break; }
+          if (best && +j.rates[best].TRY > 1) S.tryAt[d] = +j.rates[best].TRY; }
+      } catch(e){}
+    }
+    if (!TRY_DAYS.every(d=>S.tryAt[d])){
+      try {
+        const [ut, eu] = await Promise.all([klines("USDTTRY","1d",380), klines("EURUSDT","1d",380)]), em = new Map(eu.map(k=>[k.o,k.c]));
+        for (const d of TRY_DAYS){ if (S.tryAt[d]) continue; const target = now-d*D; let best = null;
+          for (const k of ut) if (!best || Math.abs(k.t-target) < Math.abs(best.t-target)) best = k;
+          const e = best && em.get(best.o); if (best && e && Math.abs(best.t-target) < 3*D) S.tryAt[d] = best.c*e; }
+      } catch(e){}
     }
     renderAll();
   }
+  setInterval(()=>{ if (!TRY_DAYS.every(d=>S.tryAt[d])) loadTryHist(); if (!S.try) updateFx(); }, 5*60e3);
   document.querySelectorAll("[data-clear]").forEach(b=>b.addEventListener("click", ()=>{ QTY = {}; saveQty(); syncInputs(null); renderCalcs(); }));
 
   // ---------- inzicht: rendement, spaarplan, jaaroverzicht ----------
@@ -1247,28 +1272,32 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     }
     $(id).innerHTML = html;
   }
-  function cagr(){ const c = S.cache["MAX"], k = kgNow(); if (!c || k==null) return null; const f = c.pts[0], yrs = (Date.now()-f.t)/(365.25*D); return yrs>1 ? Math.pow(k/(f.kg*cal(c.pts).kg), 1/yrs)-1 : null; }
+  let spYears = "5";
   function renderSavings(){
-    const c = S.cache["MAX"], k = kgNow(), out = $("spKpis");
-    const amt = Math.max(0, parseFloat(($("spAmt").value||"0").replace(",", ".")) || 0), yv = $("spYears").value;
-    if (!c || k==null || !amt){ out.innerHTML = `<div class="kpi"><div class="lbl">Spaarplan</div><div class="v">${!amt ? "Vul een bedrag in" : "Historie laden…"}</div></div>`; drawSavings(null); return; }
-    const r = cal(c.pts).kg, start = yv==="max" ? 0 : Date.now() - (+yv)*365.25*D;
-    const buys = c.pts.filter(p=>p.t >= start).map(p=>({ t:p.t, kg:p.kg*r }));
+    document.querySelectorAll("#spYears button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.y===spYears)));
+    const c = S.cache["MAX"], k = kgNow(), out = $("spKpis"), fw = $("fwOut");
+    const amt = Math.max(0, num($("spAmt")));
+    if (!c || k==null || !amt){ out.innerHTML = `<div class="kpi"><div class="lbl">Spaarplan</div><div class="v">${!amt ? "Vul een bedrag in" : "Historie laden…"}</div></div>`; fw.textContent = ""; drawSavings(null); return; }
+    const r = cal(c.pts).kg, all = c.pts.map(p=>({ t:p.t, kg:p.kg*r }));
+    const buys = spYears==="max" ? all : all.slice(-(+spYears)*12);
+    if (!buys.length){ out.innerHTML = ""; fw.textContent = ""; drawSavings(null); return; }
     let grams = 0, inv = 0; const curve = [];
     for (const p of buys){ grams += amt/(p.kg/1000); inv += amt; curve.push({ t:p.t, inv, val:grams*p.kg/1000 }); }
-    const val = grams*k/1000; if (curve.length) curve[curve.length-1].val = val;
+    const val = grams*k/1000; curve[curve.length-1].val = val;
     const res = val-inv, rp = inv ? res/inv*100 : 0, cls = res>=0 ? "up" : "down";
     out.innerHTML = `<div class="kpi"><div class="lbl">Totaal ingelegd</div><div class="v">€ ${nf0.format(inv)}</div><small>${buys.length} maanden × € ${nf0.format(amt)}</small></div>
-      <div class="kpi"><div class="lbl">Waarde nu</div><div class="v gold">€ ${nf0.format(val)}</div><small>${nf2.format(grams)} gram puur goud</small></div>
+      <div class="kpi"><div class="lbl">Waarde nu</div><div class="v gold">€ ${nf0.format(val)}</div><small>${nf0.format(grams)} gram puur goud</small></div>
       <div class="kpi"><div class="lbl">Resultaat</div><div class="v ${cls}">${res>=0?"+":"−"}€ ${nf0.format(Math.abs(res))}</div><small>${pct(rp)} op je inleg</small></div>
-      <div class="kpi"><div class="lbl">Dat is ongeveer</div><div class="v">${nf0.format(grams/CEYREK_G)} çeyrek</div><small>of ${nf2.format(grams/(7.216*K22))} Ata altını</small></div>`;
+      <div class="kpi"><div class="lbl">Dat is ongeveer</div><div class="v">${nf0.format(grams/CEYREK_G)} çeyrek</div><small>of ${nf0.format(grams/(7.216*K22))} Ata altını</small></div>`;
     drawSavings(curve);
-    const fr = $("fwRate"), cg = cagr(); if (fr.value==="" && cg!=null && isFinite(cg) && cg>-.5 && cg<1) fr.value = (Math.round(cg*200)/2).toString();
-    const R = (parseFloat((fr.value||"0").replace(",", "."))||0)/100, n = (+$("fwYears").value)*12, rm = Math.pow(1+R, 1/12)-1;
-    const fv = rm===0 ? amt*n : amt*((Math.pow(1+rm,n)-1)/rm)*(1+rm), finv = amt*n;
-    $("fwOut").className = "verdict " + (fv>=finv ? "gold" : "down");
-    $("fwOut").textContent = `Leg je ${$("fwYears").value} jaar lang elke maand € ${nf0.format(amt)} in (totaal € ${nf0.format(finv)}), dan is dat bij ${pct(R*100).replace("+","")} groei per jaar ongeveer € ${nf0.format(fv)} waard.`;
+    // vooruit: dezelfde gemiddelde groei als in de gekozen periode, even lang vooruit
+    const yrs = Math.max(1, Math.round((Date.now()-buys[0].t)/(365.25*D))), R = Math.pow(k/buys[0].kg, 1/((Date.now()-buys[0].t)/(365.25*D)))-1;
+    const n = yrs*12, rm = Math.pow(1+R, 1/12)-1, fv = Math.abs(rm) < 1e-9 ? amt*n : amt*((Math.pow(1+rm,n)-1)/rm)*(1+rm), finv = amt*n;
+    const rTxt = (R>=0 ? "+" : "−") + Math.abs(R*100).toLocaleString("nl-NL",{maximumFractionDigits:1}) + "%";
+    fw.className = "verdict " + (fv>=finv ? "gold" : "down");
+    fw.textContent = `En vooruit? Gaat goud de komende ${yrs} jaar net zo als de afgelopen ${yrs} jaar (gemiddeld ${rTxt} per jaar), dan wordt € ${nf0.format(amt)} per maand (totaal € ${nf0.format(finv)}) ongeveer € ${nf0.format(fv)}.`;
   }
+  $("spYears").addEventListener("click", e=>{ const b = e.target.closest("button"); if (!b) return; spYears = b.dataset.y; renderSavings(); });
   function prepCanvas(cv){ const dpr = Math.min(devicePixelRatio||1,2), w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return null;
     cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); const g = cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h); return { g, w, h }; }
   function lineChart(cv, series, opts){
@@ -1331,11 +1360,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     out.innerHTML = `<div class="kpi"><div class="lbl">${cur ? "Dit jaar tot nu" : "Heel " + y}</div><div class="v ${ch>=0?"up":"down"}">${pct(ch)}</div><small>€ ${nf0.format(first.kg)} → € ${nf0.format(last.kg)}</small></div>
       <div class="kpi"><div class="lbl">Hoogste</div><div class="v gold">€ ${nf0.format(hi.kg)}</div><small>${dfmt(hi.t)}</small></div>
       <div class="kpi"><div class="lbl">Laagste</div><div class="v">€ ${nf0.format(lo.kg)}</div><small>${dfmt(lo.t)}</small></div>
-      <div class="kpi"><div class="lbl">Dagen omhoog / omlaag</div><div class="v"><span style="color:var(--up)">${up}</span> / <span style="color:var(--down)">${down}</span></div><small>Beste dag ${pct(best?best.dc:0)} (${best?dfmt(best.t):"—"}) · slechtste ${pct(worst?worst.dc:0)}</small></div>`;
+      <div class="kpi"><div class="lbl">Beste / slechtste dag</div><div class="v"><span style="color:var(--up)">${pct(best?best.dc:0)}</span> / <span style="color:var(--down)">${pct(worst?worst.dc:0)}</span></div><small>${best?dfmt(best.t):"—"} · ${worst?dfmt(worst.t):"—"} · ${up} dagen omhoog, ${down} omlaag</small></div>`;
     lineChart($("yrChart"), [ { pts: pts.map(p=>[p.t,p.kg]), color:"#ffffff", glow:true, fill:"rgba(255,255,255,.1)", w:1.8 } ],
       { fmt:{ month:"short" }, marks:[ { t:hi.t, v:hi.kg, color:"#e8b830", label:"hoogste" }, { t:lo.t, v:lo.kg, color:"#ff3366", label:"laagste", below:true } ] });
   }
-  ["spAmt","spYears","fwYears","fwRate"].forEach(id=>$(id).addEventListener("input", renderSavings));
+  $("spAmt").addEventListener("input", renderSavings);
 
   // ---------- nieuws ----------
   const NEWS_URLS = ["https://raw.githubusercontent.com/klcfurkan/goudprijs/data/news.json", "news.json"];
@@ -1466,6 +1495,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const key = VIEWS[location.hash.slice(1)] ? location.hash.slice(1) : "dashboard", id = VIEWS[key];
     for (const v of new Set(Object.values(VIEWS))) $(v).hidden = v!==id;
     $("viewDash").style.display = id==="viewDash" ? "flex" : "none";
+    $("focusBtn").hidden = id!=="viewDash"; if (id!=="viewDash" && document.body.classList.contains("focus")) $("focusBtn").click();
     document.querySelectorAll("nav a").forEach(a=>{ const on = VIEWS[a.dataset.v]===id; a.toggleAttribute("aria-current", on); if (on) a.setAttribute("aria-current","page"); });
     if (id==="viewInsight"){ renderYearChips(); loadYear(S.year); }
     renderAll();
@@ -1479,7 +1509,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); } catch(e){}
     try { if ("wakeLock" in navigator && !lock){ lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release",()=>lock=null); } } catch(e){}
   });
-  document.addEventListener("fullscreenchange",()=>{ $("fsBtn").textContent = document.fullscreenElement ? "Venster" : "Volledig scherm"; });
+  document.addEventListener("fullscreenchange",()=>{ $("fsBtn").title = document.fullscreenElement ? "Venster (F)" : "Volledig scherm (F)"; });
   $("focusBtn").addEventListener("click", ()=>{ const on = document.body.classList.toggle("focus");
     $("focusBtn").setAttribute("aria-pressed", String(on)); $("focusBtn").textContent = on ? "Alles tonen" : "Focus"; });
   document.addEventListener("keydown",e=>{ if ((e.key==="f"||e.key==="F") && !e.ctrlKey && !e.metaKey) $("fsBtn").click(); });
