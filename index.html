@@ -101,7 +101,9 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .cur{font-size:.42em;color:var(--cyan);margin-right:.22em;align-self:flex-start;margin-top:.2em}
 .roll{display:inline-block;height:1em;overflow:hidden;width:.66em;text-align:center;
   -webkit-mask:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
-.roll>span{display:flex;flex-direction:column;transition:transform 1.6s cubic-bezier(.17,.84,.2,1)}
+.roll>span{display:flex;flex-direction:column;transition:transform .6s cubic-bezier(.25,.8,.25,1),color .8s ease}
+.roll.up>span{color:var(--up);transition:transform .6s cubic-bezier(.25,.8,.25,1),color .15s ease}
+.roll.down>span{color:var(--down);transition:transform .6s cubic-bezier(.25,.8,.25,1),color .15s ease}
 .roll>span>i{font-style:normal;height:1em;line-height:1em}
 .sep{display:inline-block;width:.24em;text-align:center}
 .dec{font-size:.48em;color:var(--muted)}
@@ -131,8 +133,13 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .hname{font-family:var(--font-display);font-weight:700;font-size:clamp(24px,2.3vw,36px)}
 .hdesc{color:var(--muted);font-size:clamp(14px,1.1vw,17px);font-weight:500}
 .hcard .price{font-size:clamp(40px,4.6vw,84px);margin-top:6px}
-.hchg{font:600 clamp(15px,1.2vw,18px) var(--font-body);color:var(--muted)}
-.hchg.up{color:var(--up)} .hchg.down{color:var(--down)}
+.ptbl{display:grid;grid-template-columns:auto auto auto;justify-content:space-between;gap:10px 14px;margin-top:8px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:clamp(14px,1.05vw,16px);font-weight:500;font-variant-numeric:tabular-nums}
+.ptbl .th{font:500 10.5px var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ptbl .r{text-align:right;white-space:nowrap}
+.ptbl .m{color:var(--muted)}
+.ptbl .up{color:var(--up);font-weight:700} .ptbl .down{color:var(--down);font-weight:700}
+.ptbl span{font-weight:500;opacity:.85}
 .note{max-width:70ch;color:var(--muted);font-size:clamp(14px,1.1vw,16px);line-height:1.6;margin:0}
 
 footer{display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
@@ -247,19 +254,19 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         <div class="hname" data-t="kgN"></div>
         <div class="hdesc" data-t="kgD"></div>
         <div class="price" id="homeKg"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeKgChg">—</div>
+        <div class="ptbl" id="homeKgTbl"></div>
       </div>
       <div class="hcard hud">
         <div class="hname" data-t="cN"></div>
         <div class="hdesc" data-t="cD"></div>
         <div class="price" id="homeCeyrek"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeCeyrekChg">—</div>
+        <div class="ptbl" id="homeCeyrekTbl"></div>
       </div>
       <div class="hcard hud">
         <div class="hname" data-t="gN"></div>
         <div class="hdesc" data-t="gD"></div>
         <div class="price" id="homeGram"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeGramChg">—</div>
+        <div class="ptbl" id="homeGramTbl"></div>
       </div>
     </div>
     <p class="note"><span data-t="upd"></span>: <b id="homeUpd">—</b></p>
@@ -371,7 +378,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     if (c && Date.now()-c.at < R.ttl) return;
     try { const pts = await series(R.iv, R.lim); S.cache[r] = {pts, at:Date.now()}; if (r===S.range) S.histErr = false; }
     catch(e){ if (!c && r===S.range) S.histErr = true; }
-    finally { if (r===S.range) S.loading = false; updateRangeChip(); }
+    finally { if (r===S.range) S.loading = false; updateRangeChip(); if (r==="1J") renderHome(); }
   }
   async function loadDay(){
     try { S.day = await series("15m", 96); buildRing(); } catch(e){}
@@ -411,7 +418,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const [ip, dp] = str.split(",");
     const add = (target, s) => { for (const ch of s){
       if (/\d/.test(ch)){ const r=document.createElement("span"); r.className="roll"; const strip=document.createElement("span");
-        for (let d=0; d<30; d++){ const i=document.createElement("i"); i.textContent=d%10; strip.appendChild(i); }
+        for (let d=0; d<10; d++){ const i=document.createElement("i"); i.textContent=d; strip.appendChild(i); }
         r.appendChild(strip); target.appendChild(r); }
       else { const sp=document.createElement("span"); sp.className="sep"; sp.textContent=ch; target.appendChild(sp); } } };
     add(el, ip);
@@ -420,16 +427,17 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
   function setRoller(el, cur, value){
     if (value==null) return;
-    const str = nf2.format(value);
-    if (el.dataset.shape !== str.replace(/\d/g,"0")){ buildRoller(el, cur, str); el.getBoundingClientRect(); }
-    const digits = str.replace(/\D/g,""), strips = el.querySelectorAll(".roll>span"), n = strips.length;
-    strips.forEach((strip,i)=>{
-      const d = +digits[i];
-      if (reduced){ strip.style.transform = `translateY(-${d*100/30}%)`; return; }
-      strip.style.transitionDelay = ((n-1-i)*70)+"ms";
-      strip.style.transform = `translateY(-${(20+d)*100/30}%)`;
-      clearTimeout(strip._t);
-      strip._t = setTimeout(()=>{ strip.style.transition="none"; strip.style.transform=`translateY(-${d*100/30}%)`; strip.offsetHeight; strip.style.transition=""; }, 1700+(n-1-i)*70);
+    const str = nf2.format(value), prev = el._v; el._v = value;
+    const fresh = el.dataset.shape !== str.replace(/\d/g,"0");
+    if (fresh) buildRoller(el, cur, str);
+    const digits = str.replace(/\D/g,""), rolls = el.querySelectorAll(".roll");
+    const dir = (prev==null || fresh) ? null : value>prev ? "up" : value<prev ? "down" : null;
+    rolls.forEach((r,i)=>{
+      const strip = r.firstChild, d = +digits[i];
+      if (fresh){ strip.style.transition = "none"; strip.style.transform = `translateY(-${d*10}%)`; strip.offsetHeight; strip.style.transition = ""; r._d = d; return; }
+      if (r._d === d) return;          // alleen cijfers die echt veranderen bewegen
+      r._d = d; strip.style.transform = `translateY(-${d*10}%)`;
+      if (dir){ r.classList.remove("up","down"); r.classList.add(dir); clearTimeout(r._t); r._t = setTimeout(()=>r.classList.remove("up","down"), 1500); }
     });
     el.setAttribute("aria-label", cur+" "+str);
   }
@@ -455,25 +463,20 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const sc = $("sChg"); sc.classList.remove("up","down");
     if (pOz!=null){ sc.textContent = pct(pOz); if (pOz) sc.classList.add(pOz>0?"up":"down"); }
     setChip($("cOz"), pOz, "24u ·"); setChip($("cKg"), pKg, "24u ·");
-    const L = I18N[lang];
-    for (const id of ["homeKgChg","homeCeyrekChg","homeGramChg"]){
-      const el = $(id); el.classList.remove("up","down");
-      if (pKg==null){ el.textContent = L.none; continue; }
-      const a = Math.abs(pKg).toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
-      el.textContent = pKg>0 ? L.up(a) : pKg<0 ? L.down(a) : L.flat;
-      if (pKg) el.classList.add(pKg>0?"up":"down");
-    }
+    renderHome();
   }
   const I18N = {
     tr: { html:"tr", title:"Bugünkü altın fiyatı", lead:"Euro cinsinden · her 10 saniyede kendiliğinden yenilenir",
       kgN:"Kilo altın", kgD:"1 kilo saf altın, 24 ayar", cN:"Çeyrek altın", cD:"1,75 gram, 22 ayar · 1,60 gram saf altın",
       gN:"Gram altın", gD:"1 gram saf altın, 24 ayar", upd:"Son güncelleme",
       note:"Bu, borsa fiyatına göre altının kendi değeridir. Kuyumcuda veya bankada alırken genellikle daha fazla ödersiniz, satarken ise genellikle biraz daha az alırsınız.",
+      period:"Ne zaman", then:"O zaman", diff:"Fark", p1:"1 gün önce", p7:"1 hafta önce", p30:"1 ay önce", p365:"1 yıl önce", pctf:a=>`%${a}`,
       up:a=>`▲ Son 24 saatte %${a} yükseldi`, down:a=>`▼ Son 24 saatte %${a} düştü`, flat:"Son 24 saatte değişmedi", none:"Son 24 saat —" },
     nl: { html:"nl", title:"Goudprijs vandaag", lead:"In euro's · ververst vanzelf elke 10 seconden",
       kgN:"Kilo goud", kgD:"1 kilo puur goud, 24 karaat", cN:"Çeyrek altın", cD:"1,75 gram, 22 karaat · 1,60 gram puur goud",
       gN:"Gram goud", gD:"1 gram puur goud, 24 karaat", upd:"Laatst bijgewerkt",
       note:"Dit is de waarde van het goud zelf, berekend uit de beursprijs. Bij de juwelier of bank betaal je bij aankoop meestal meer, en krijg je bij verkoop meestal iets minder.",
+      period:"Wanneer", then:"Toen", diff:"Verschil", p1:"1 dag geleden", p7:"1 week geleden", p30:"1 maand geleden", p365:"1 jaar geleden", pctf:a=>`${a}%`,
       up:a=>`▲ ${a}% gestegen in 24 uur`, down:a=>`▼ ${a}% gedaald in 24 uur`, flat:"Gelijk gebleven in 24 uur", none:"24 uur —" },
   };
   let lang = "tr";
@@ -484,6 +487,29 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.l===lang)));
     $("viewHome").lang = L.html;
     renderStats();
+  }
+  function agoKg(days){
+    if (days===1){ if (!S.day || !S.day.length) return null; return S.day[0].kg * cal(S.day).kg; }
+    const c = S.cache["1J"]; if (!c) return null;
+    const target = Date.now() - days*D; let best = null;
+    for (const p of c.pts) if (!best || Math.abs(p.t-target) < Math.abs(best.t-target)) best = p;
+    if (!best || Math.abs(best.t-target) > 3*D) return null;
+    return best.kg * cal(c.pts).kg;
+  }
+  function renderHome(){
+    const L = I18N[lang], k = kgNow();
+    const periods = [[1,L.p1],[7,L.p7],[30,L.p30],[365,L.p365]], agos = periods.map(([d])=>agoKg(d));
+    for (const [id, f, fmt] of [["homeKgTbl",1,nf0],["homeCeyrekTbl",CEYREK_G/1000,nf2],["homeGramTbl",1/1000,nf2]]){
+      let html = `<div class="th">${L.period}</div><div class="th r">${L.then}</div><div class="th r">${L.diff}</div>`;
+      periods.forEach(([d,lab],i)=>{
+        const a = agos[i];
+        if (a==null || k==null){ html += `<div>${lab}</div><div class="r m">—</div><div class="r m">—</div>`; return; }
+        const diff = (k-a)*f, pc = Math.abs((k/a-1)*100).toLocaleString("nl-NL",{minimumFractionDigits:1,maximumFractionDigits:1});
+        const cls = diff>0 ? "up" : diff<0 ? "down" : "";
+        html += `<div>${lab}</div><div class="r m">€ ${fmt.format(a*f)}</div><div class="r ${cls}">${diff>0?"▲":diff<0?"▼":"="} € ${fmt.format(Math.abs(diff))} <span>(${L.pctf(pc)})</span></div>`;
+      });
+      $(id).innerHTML = html;
+    }
   }
   function updateRangeChip(){
     const pts = displayPts(), el = $("cRange");
@@ -503,7 +529,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     for (const id of ["hOz","hKg"]){ const el=$(id); el.classList.remove("up","down"); if (dir){ el.classList.add(dir); setTimeout(()=>el.classList.remove(dir), 2200); } }
     const t0 = performance.now(), fxTxt = S.fx ? S.fx.toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4}) : null;
     S.flow = { t0, path: (typeof pickPath==="function") ? pickPath() : null,
-      labels: [ "BRON · " + S.src, "XAU · $ " + nf2.format(S.oz), "× 32,1507 oz per kg", fxTxt ? `× ${fxTxt} €/$ = € ${nf0.format(k)}` : "EUR/USD laden…" ] };
+      labels: [ "Bron: " + S.src, "$ " + nf2.format(S.oz) + " per oz", "× 32,1507 = $ " + nf0.format(S.oz*OZ_PER_KG) + " per kg", fxTxt ? `× ${fxTxt} = € ${nf0.format(k)} per kg` : "EUR/USD laden…" ] };
     S.pulse = { t: t0 + FLOW_MS, dir: dir || "flat" };
     buildRing(); renderStats(); updateRangeChip();
   }
@@ -596,7 +622,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     return { r, w, h, cx:w/2, cy:h*.26, size:Math.min(w*(isSmall()?.26:.23), h*.18), rootY:h-40 };
   }
   function buildTree(G){
-    const { w, h, cx, cy, size, rootY } = G, topY = cy + size*.15, D = isSmall() ? 7 : 8, treeW = w*.98;
+    const { w, h, cx, cy, size, rootY } = G, topY = cy + size*1.05, D = isSmall() ? 7 : 8, treeW = w*.98;
     const trees = [];
     for (let k=0; k<3; k++){
       const rand = rng(11 + k*131), levels = [[{x:cx, y:rootY, l:0, i:0}]];
@@ -629,23 +655,24 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   }
   function pickPath(){
     if (!TREE) return null;
-    const D = TREE.D, leafI = Math.floor((.3 + .4*Math.random()) * 2**D), chain = [];
+    const D = TREE.D, leafI = 2**(D-1), chain = [];
     for (let l=0; l<=D; l++) chain.push(TREE.trees[0][l][leafI>>(D-l)]);
     const samples = [[chain[0].x, chain[0].y]], at = [0];
     for (let l=1; l<=D; l++){ for (let s=1; s<=14; s++) samples.push(qpt(chain[l-1], chain[l], s/14)); at.push(samples.length-1); }
-    return { chain, samples, at };
+    const steps = [.1, .36, .62, .88].map(f => Math.round(f*(samples.length-1)));
+    return { chain, samples, at, steps };
   }
   function buildRing(){
     if (!S.day || !S.day.length || S.oz==null) return;
     const r = cal(S.day).oz, vals = S.day.map(p=>p.oz*r); vals.push(S.oz);
     let lo = Infinity, hi = -Infinity, hiI = 0;
-    vals.forEach((v,i)=>{ if (v<lo) lo = v; if (v>hi){ hi = v; hiI = i; } });
-    S.ring = { vals, lo, hi, hiI };
+    let loI = 0; vals.forEach((v,i)=>{ if (v<lo){ lo = v; loI = i; } if (v>hi){ hi = v; hiI = i; } });
+    S.ring = { vals, lo, hi, hiI, loI };
   }
 
   // de ring: één rondje = afgelopen 24 uur, dikte van de buis = prijs
   function drawRing(g, cx, cy, size, t, dim, G){
-    const a = t*.00011, b = 1.02 + .14*Math.sin(t*.00007), c = .28*Math.sin(t*.00005);
+    const a = Math.PI/2 + (reduced ? 0 : .2*Math.sin(t*.00009)), b = 1.0 + (reduced ? 0 : .08*Math.sin(t*.00007)), c = reduced ? 0 : .12*Math.sin(t*.00005);
     const ca=Math.cos(a), sa=Math.sin(a), cb=Math.cos(b), sb=Math.sin(b), cc=Math.cos(c), s_c=Math.sin(c);
     const proj = (x,y,z) => {
       const X = x*ca - y*sa, Y = x*sa + y*ca;
@@ -716,12 +743,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     if (G && !small && S.oz!=null && ring){
       const ox = G.r.left, oy = G.r.top, n = ring.vals.length, p24 = (S.oz/ring.vals[0]-1)*100;
       const items = [
-        { u:TAU-.02, x:ox+G.w-8, y:oy+16, side:"r", k:"NU", v:"$ "+nf2.format(S.oz), col:C.amber },
-        { u:.02, x:ox+8, y:oy+cy-oy+size*1.15, side:"l", k:"−24U · "+(p24>=0?"▲ ":"▼ ")+pct(p24), v:"$ "+nf2.format(ring.vals[0]), col:p24>=0?C.up:C.down },
-        { u:ring.hiI/(n-1)*TAU, x:ox+G.w-8, y:oy+cy-oy+size*1.15, side:"r", k:"24U HOOG", v:"$ "+nf2.format(ring.hi), col:C.amber },
+        { u:TAU-.03, x:ox+G.w-8, y:oy+16, side:"r", k:"NU · 24U "+(p24>=0?"▲ ":"▼ ")+pct(p24), v:"$ "+nf2.format(S.oz), col:p24>=0?C.up:C.down },
+        { u:ring.hiI/(n-1)*TAU, x:ox+G.w-8, y:oy+cy-oy-size*.2, side:"r", k:"24U HOOG", v:"$ "+nf2.format(ring.hi), col:C.amber },
+        { u:ring.loI/(n-1)*TAU, x:ox+8, y:oy+cy-oy-size*.2, side:"l", k:"24U LAAG", v:"$ "+nf2.format(ring.lo), col:C.amber },
       ];
       for (const it of items){
-        const A = anchor(it.u), ex = it.side==="r" ? it.x-140 : it.x+140;
+        const A = anchor(Math.min(TAU-.03, Math.max(.03, it.u))), ex = it.side==="r" ? it.x-140 : it.x+140;
         g.strokeStyle = "rgba(200,225,255,.35)"; g.lineWidth = 1; g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(ex, it.y+6); g.lineTo(it.x, it.y+6); g.stroke();
         g.fillStyle = `rgba(${C.amber},.95)`; g.beginPath(); g.arc(A[0],A[1],2.6,0,TAU); g.fill();
         g.strokeStyle = "rgba(220,235,255,.6)"; g.beginPath(); g.arc(A[0],A[1],7,0,TAU); g.stroke();
@@ -755,7 +782,8 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(g, n.p, n, ox, oy); g.stroke(); }
       if (!isSmall() || k===0 || k===3){ g.fillStyle = act[k] ? C.ice : C.muted; g.fillText(FAN_NAMES[k], ox+TREE.fanX[k], oy+TREE.rootY+8); }
     });
-    g.fillStyle = C.muted; g.fillText("DATAROUTE · BRON → KOERS → OMREKENEN → RING", ox+G.w/2, oy+TREE.rootY+22);
+    g.fillStyle = C.muted; g.fillText("DATAROUTE · 1 BRON → 2 PRIJS → 3 KILO → 4 EURO → RING", ox+G.w/2, oy+TREE.rootY+22);
+    g.textAlign = "left"; g.textBaseline = "top"; g.fillText("RING = AFGELOPEN 24 UUR · DIKTE = PRIJS · NAAD = NU", ox+8, oy+8);
 
     // datadeeltjes die continu omhoog stromen
     if (!S.dots) S.dots = Array.from({length:50}, ()=>({ leaf: Math.floor(Math.random()*2**TREE.D), s: Math.random(), v: .004+Math.random()*.005 }));
@@ -775,24 +803,27 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     glow(g, ox+G.cx, oy+TREE.rootY, 20, .55 + .25*Math.sin(t*.003));
     if (F){
       if (!F.path) F.path = pickPath();
-      const P = F.path, p = Math.min(1, (performance.now()-F.t0)/FLOW_MS), tp = Math.min(1, p/.78);
+      const P = F.path, el = performance.now()-F.t0, p = Math.min(1, el/FLOW_MS), tp = Math.min(1, p/.8);
       const n = P.samples.length, upto = Math.max(1, Math.floor(tp*(n-1)));
       const nu = R.anchor(TAU-.002), leaf = P.samples[n-1];
-      g.save(); g.shadowColor = "rgba(190,230,255,.95)"; g.shadowBlur = 12; g.strokeStyle = "#ffffff"; g.lineWidth = 2.2; g.lineJoin = "round"; g.lineCap = "round";
+      const fade = p < 1 ? 1 : Math.max(.35, 1 - (el-FLOW_MS)/3000*.65);
+      g.save(); g.globalAlpha = fade;
+      g.shadowColor = "rgba(190,230,255,.95)"; g.shadowBlur = 12; g.strokeStyle = "#ffffff"; g.lineWidth = 2.2; g.lineJoin = "round"; g.lineCap = "round";
       g.beginPath(); g.moveTo(ox+P.samples[0][0], oy+P.samples[0][1]);
       for (let i=1; i<=upto; i++) g.lineTo(ox+P.samples[i][0], oy+P.samples[i][1]);
       let head = [ox+P.samples[upto][0], oy+P.samples[upto][1]];
-      if (p > .78){
-        const q = (p-.78)/.22, lx = ox+leaf[0], ly = oy+leaf[1], kx = lx, ky = (ly+nu[1])/2, steps = 24, m = Math.max(1, Math.round(q*steps));
-        for (let i=1; i<=m; i++){ const s = i/steps, mm = 1-s, x = mm*mm*lx + 2*mm*s*kx + s*s*nu[0], y = mm*mm*ly + 2*mm*s*ky + s*s*nu[1]; g.lineTo(x,y); head = [x,y]; }
+      if (p > .8){
+        const q = (p-.8)/.2, lx = ox+leaf[0], ly = oy+leaf[1], kx = lx, ky = (ly+nu[1])/2, steps = 24, m = Math.max(1, Math.round(q*steps));
+        for (let i=1; i<=m; i++){ const s2 = i/steps, mm = 1-s2, x = mm*mm*lx + 2*mm*s2*kx + s2*s2*nu[0], y = mm*mm*ly + 2*mm*s2*ky + s2*s2*nu[1]; g.lineTo(x,y); head = [x,y]; }
       }
       g.stroke(); g.restore();
-      if (p < 1) glow(g, head[0], head[1], 22, 1); else glow(g, nu[0], nu[1], 16, .55 + .3*Math.sin(t*.004));
-      const lvls = [2, 4, 6, D], fs = isSmall() ? 10 : 11;
+      if (p < 1) glow(g, head[0], head[1], 22, 1); else glow(g, nu[0], nu[1], 16, .5 + .3*Math.sin(t*.004));
+      const fs = isSmall() ? 10 : 11;
       g.font = `500 ${fs}px 'JetBrains Mono', monospace`; g.textBaseline = "middle"; g.textAlign = "left";
-      lvls.forEach((lv,k)=>{
-        if (P.at[lv] > upto) return;
-        const N = P.chain[lv], x = ox+N.x, y = oy+N.y, txt = F.labels[k], tw = g.measureText(txt).width + 16;
+      g.save(); g.globalAlpha = Math.max(.6, fade);
+      P.steps.forEach((si,k)=>{
+        if (si > upto && p < 1) return;
+        const x = ox+P.samples[si][0], y = oy+P.samples[si][1], txt = (k+1) + " · " + F.labels[k], tw = g.measureText(txt).width + 16;
         g.fillStyle = "#05070e"; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.fill();
         g.strokeStyle = "#ffffff"; g.lineWidth = 1.5; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.stroke();
         g.fillStyle = "#ffffff"; g.beginPath(); g.arc(x,y,2.3,0,TAU); g.fill();
@@ -801,6 +832,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
         g.fillStyle = "rgba(4,7,14,.92)"; g.fillRect(bx, y-11, tw, 22); g.strokeRect(bx+.5, y-10.5, tw-1, 21);
         g.fillStyle = C.ice; g.fillText(txt, bx+8, y+.5);
       });
+      g.restore();
     }
   }
 
@@ -850,10 +882,10 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 
   // ---------- start ----------
   syncButtons(); applyLang();
-  (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); })();
+  (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); loadRange("1J"); })();
   setInterval(updateGold, GOLD_EVERY);
   setInterval(updateFx, FX_EVERY);
-  setInterval(()=>{ loadDay(); loadRange(S.range); }, 60e3);
+  setInterval(()=>{ loadDay(); loadRange(S.range); loadRange("1J"); }, 60e3);
   document.addEventListener("visibilitychange",()=>{ if (!document.hidden) updateGold(); });
 })();
 </script>
