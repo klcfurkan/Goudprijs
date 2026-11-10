@@ -1521,7 +1521,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   syncButtons(); applyLang(); renderNews();
   (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); loadRange("1J"); loadRange("5J"); loadRange("MAX"); loadTryHist(); })();
   loadNews(); loadMetals();
-  setInterval(loadNews, 10*60e3); setInterval(loadMetals, 2*60e3);
+  setInterval(loadNews, 5*60e3); setInterval(loadMetals, 2*60e3);
   setInterval(updateGold, GOLD_EVERY);
   setInterval(updateFx, FX_EVERY);
   setInterval(()=>{ loadDay(); loadRange(S.range); loadRange("1J"); loadRange("5J"); loadRange("MAX"); }, 60e3);

@@ -1,12 +1,15 @@
 name: Nieuws ophalen
 
+# Ketting: elke run haalt nieuws op, wacht 10 minuten en start dan de volgende run.
+# Het schema is een reserve die de ketting opnieuw start als die ooit stopt.
 on:
   schedule:
-    - cron: "7,37 * * * *"
+    - cron: "4,34 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: news
@@ -15,6 +18,7 @@ concurrency:
 jobs:
   news:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Nieuws ophalen en filteren
@@ -28,4 +32,10 @@ jobs:
           cp /tmp/news.json .
           git add news.json
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Nieuws bijwerken"
-          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" data
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" data
+      - name: Wachten en de volgende run starten
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sleep 600
+          gh workflow run news.yml --repo "${{ github.repository }}" --ref main
