@@ -1,0 +1,31 @@
+name: Nieuws ophalen
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news
+  cancel-in-progress: true
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nieuws ophalen en filteren
+        run: python3 scripts/news.py /tmp/news.json
+      - name: Publiceren op de data-branch
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir /tmp/data && cd /tmp/data
+          git init -q -b data
+          cp /tmp/news.json .
+          git add news.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Nieuws bijwerken"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" data
