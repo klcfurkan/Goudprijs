@@ -26,12 +26,6 @@ SOURCES = [
 # categorie -> (gewicht, woorden die als heel woord tellen, Turkse stammen die mogen doorlopen)
 CATS = {
     "gold": (5, ["gold", "goud", "goudprijs", "precious metals", "edelmetaal", "bullion"], ["altın", "külçe"]),
-    "conflict": (3, ["war", "wars", "attack", "attacks", "airstrike", "airstrikes", "missile", "missiles", "invasion",
-                     "military", "troops", "nuclear", "ceasefire", "iran", "israel", "gaza", "ukraine", "russia",
-                     "hamas", "hezbollah", "houthi", "houthis", "rusland", "oekraïne", "israël", "oorlog", "aanval", "aanvallen", "raket", "raketten",
-                     "leger", "bestand", "kernwapen", "bombardement", "invasie"],
-                 ["savaş", "saldırı", "füze", "askeri", "ateşkes", "nükleer", "işgal", "çatışma", "bombard", "iran",
-                  "israil", "gazze", "ukrayna", "rusya", "hamas"]),
     "rates": (3, ["fed", "federal reserve", "ecb", "central bank", "interest rate", "interest rates", "rate cut",
                   "rate hike", "powell", "lagarde", "monetary policy", "centrale bank", "rente", "renteverlaging",
                   "renteverhoging"],
@@ -41,31 +35,53 @@ CATS = {
                     "werkloosheid", "handelsoorlog", "sancties", "olieprijs", "importheffing", "importheffingen"],
                 ["enflasyon", "resesyon", "işsizlik", "gümrük vergi", "yaptırım", "petrol", "kriz", "büyüme",
                  "ticaret savaş"]),
-    "currency": (3, ["dollar", "currency", "currencies", "exchange rate", "wisselkoers", "yuan"],
-                 ["dolar", "döviz", "kur ", "türk lirası", "euro"]),
+    "currency": (3, ["dollar", "euro", "currency", "currencies", "exchange rate", "wisselkoers", "yuan"],
+                 ["dolar", "döviz", "türk lirası", "dolar/tl", "kur "]),
 }
+# oorlog en spanning: sterke woorden tellen altijd, zwakke ("aanval") alleen samen met een land of conflict
+WAR_STRONG = (["war", "wars", "airstrike", "airstrikes", "missile", "missiles", "invasion", "nuclear", "ceasefire",
+               "oorlog", "raket", "raketten", "kernwapen", "kernwapens", "bombardement", "invasie", "luchtaanval"],
+              ["savaş", "füze", "ateşkes", "nükleer", "işgal", "bombard", "çatışma", "hava saldırı"])
+WAR_WEAK = (["attack", "attacks", "military", "troops", "strike", "strikes", "blockade", "aanval", "aanvallen", "leger", "blokkade"],
+            ["saldırı", "askeri", "asker", "abluka"])
+GEO = (["iran", "israel", "israël", "gaza", "ukraine", "russia", "rusland", "oekraïne", "china", "taiwan", "nato",
+        "hamas", "hezbollah", "houthi", "houthis", "north korea", "noord-korea", "venezuela", "hormuz", "us", "vs"],
+       ["iran", "israil", "gazze", "ukrayna", "rusya", "çin", "tayvan", "nato", "hamas", "hizbullah", "husi",
+        "kuzey kore", "abd", "venezuela", "hürmüz"])
 PRIORITY = ["gold", "conflict", "rates", "economy", "currency"]
 
-def compile_patterns():
-    out = {}
-    for cat, (w, words, stems) in CATS.items():
-        pats = [re.compile(r"(?<![\w])" + re.escape(x) + r"(?![\w])") for x in words]
-        pats += [re.compile(r"(?<![\w])" + re.escape(x)) for x in stems]
-        out[cat] = (w, pats)
-    return out
-PATS = compile_patterns()
+def _pats(words, stems):
+    return ([re.compile(r"(?<![\w])" + re.escape(x) + r"(?![\w])") for x in words] +
+            [re.compile(r"(?<![\w])" + re.escape(x)) for x in stems])
+PATS = {c: (w, _pats(words, stems)) for c, (w, words, stems) in CATS.items()}
+P_STRONG, P_WEAK, P_GEO = _pats(*WAR_STRONG), _pats(*WAR_WEAK), _pats(*GEO)
+
+# zinnen die op goud of valuta lijken maar het niet zijn
+NOISE = [
+    re.compile(r"(\d[\d.,%]*|doların|dolar|liranın|seviyenin|seviyesinin|sınırın|beklentilerin|eşiğin)\s+altın(a|da|ı)?(?![\w])"),
+    re.compile(r"(\d[\d.,]*|milyar|milyon|bin|trilyon)\s+dolar\w*"),
+    re.compile(r"\$?\d[\d.,]*\s*(billion|million|trillion|bn|m|miljard|miljoen)?\s+dollars?"),
+]
 
 def norm(s):
     return s.replace("İ", "i").lower()
 
+def clean(t):
+    for p in NOISE:
+        t = p.sub(" ", t)
+    return t
+
 def classify(title, official):
-    t = norm(title)
-    hits = [c for c, (w, pats) in PATS.items() if any(p.search(t) for p in pats)]
+    t = clean(norm(title))
+    hit = lambda pats: any(p.search(t) for p in pats)
+    hits = {c: w for c, (w, pats) in PATS.items() if hit(pats)}
+    geo = hit(P_GEO)
+    if hit(P_STRONG) or (geo and hit(P_WEAK)):
+        hits["conflict"] = 3
     if not hits:
         return None, 0
-    score = sum(CATS[c][0] for c in hits) + (2 if official else 0)
-    cat = next(c for c in PRIORITY if c in hits)
-    return cat, score
+    score = sum(hits.values()) + (1 if geo else 0) + (2 if official else 0)
+    return next(c for c in PRIORITY if c in hits), score
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; GoudPrijsAnalytics/1.0)"})
