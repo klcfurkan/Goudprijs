@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Goudpuls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: één scherm, twee grote prijspanelen naast elkaar op een levende smaragd-nachtachtergrond */
+:root{
+  --bg:#03110d;          /* diep smaragd-nacht */
+  --surface:rgba(4,22,17,.38);
+  --line:rgba(190,240,220,.10);
+  --ivory:#f1ebdf;       /* parelwit voor cijfers */
+  --muted:#8fb3a6;       /* gedempt jade-grijs */
+  --jade:#46e0ad;        /* accent */
+  --up:#46e0ad;
+  --down:#ff7f8a;
+  --font-display:"Sora","Manrope",system-ui,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ivory);font-family:var(--font-body);font-size:14px;overflow:hidden;
+  -webkit-font-smoothing:antialiased}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(1,8,6,.75) 100%)}
+.app{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:clamp(12px,2.2vh,28px);
+  padding-block:clamp(16px,3vh,36px);
+  padding-left:max(16px,env(safe-area-inset-left,0px),3vw);padding-right:max(16px,env(safe-area-inset-right,0px),3vw)}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:14px}
+.brand h1{font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.4vw,34px);letter-spacing:.02em;margin:0}
+.brand h1 em{font-style:normal;color:var(--jade)}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--jade);box-shadow:0 0 0 0 rgba(70,224,173,.6);animation:ping 2s infinite}
+.live.err .dot{background:var(--down);animation:none}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(70,224,173,.55)}70%{box-shadow:0 0 0 12px rgba(70,224,173,0)}100%{box-shadow:0 0 0 0 rgba(70,224,173,0)}}
+.hright{display:flex;align-items:center;gap:18px}
+.clock{font-family:var(--font-data);font-size:clamp(14px,1.3vw,18px);color:var(--ivory);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.ring{width:30px;height:30px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:2.5}
+.ring .track{stroke:var(--line)}
+.ring .prog{stroke:var(--jade);stroke-linecap:round}
+.btn{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ivory);font:500 12px var(--font-body);
+  letter-spacing:.08em;padding:9px 14px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s}
+.btn:hover{background:rgba(70,224,173,.10);border-color:rgba(70,224,173,.4)}
+.btn:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+
+main{display:grid;grid-template-columns:1fr minmax(240px,.8fr) 1fr;gap:clamp(12px,1.6vw,24px);min-height:0}
+.stage{position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;min-height:0}
+.stage p{margin:0;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);text-align:center}
+.panel{position:relative;min-width:0;min-height:0;display:grid;grid-template-rows:auto auto 1fr;gap:clamp(8px,1.4vh,16px);
+  padding:clamp(18px,2.4vw,36px);border:1px solid var(--line);border-radius:22px;background:var(--surface);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow:hidden;
+  transition:box-shadow .9s ease,border-color .9s ease}
+.panel::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+  background:radial-gradient(60% 50% at 30% 0%,var(--flash,transparent),transparent 70%)}
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+.panel::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--ang),transparent 0 62%,rgba(70,224,173,.15) 72%,rgba(127,240,200,.95) 86%,transparent 92%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spin 7s linear infinite}
+#pKg::after{animation-delay:-3.5s}
+@keyframes spin{to{--ang:360deg}}
+.panel.flash::before{opacity:.35;transition:opacity .15s ease}
+.panel.up{--flash:var(--up);border-color:rgba(70,224,173,.45)}
+.panel.down{--flash:var(--down);border-color:rgba(255,127,138,.45)}
+.ptop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.label b{color:var(--ivory);font-weight:600}
+.unit{font-family:var(--font-body);font-weight:500;font-size:clamp(14px,1.2vw,17px);color:var(--muted);margin-top:6px}
+.chip{font-family:var(--font-data);font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);
+  white-space:nowrap;font-variant-numeric:tabular-nums;transition:color .4s,border-color .4s,background .4s}
+.chip.up{color:var(--up);border-color:rgba(70,224,173,.35);background:rgba(70,224,173,.07)}
+.chip.down{color:var(--down);border-color:rgba(255,127,138,.35);background:rgba(255,127,138,.07)}
+
+.price{display:flex;align-items:baseline;font-family:var(--font-display);font-weight:600;line-height:1;
+  font-size:clamp(40px,4.6vw,92px);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:0;
+  text-shadow:0 0 40px rgba(70,224,173,.12)}
+.cur{font-size:.42em;color:var(--jade);margin-right:.22em;align-self:flex-start;margin-top:.2em;font-weight:600}
+.roll{display:inline-block;height:1em;overflow:hidden;width:.66em;text-align:center;position:relative}
+.roll>span{display:flex;flex-direction:column;transition:transform 1.6s cubic-bezier(.17,.84,.2,1)}
+.roll{-webkit-mask:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.roll>span>i{font-style:normal;height:1em;line-height:1em}
+.sep{display:inline-block;width:.24em;text-align:center}
+.dec{font-size:.48em;color:var(--muted)}
+.dec .roll{width:.66em}
+.skeleton{color:rgba(241,235,223,.25)}
+
+.chartwrap{position:relative;min-height:120px}
+.chartwrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+footer{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+footer span b{color:var(--ivory);font-weight:500;font-family:var(--font-data);font-variant-numeric:tabular-nums}
+#status.err{color:var(--down)}
+
+@media (max-width:820px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100%}
+  main{grid-template-columns:1fr}
+  .stage{height:300px;order:-1}
+  .chartwrap{min-height:170px}
+}
+@media (prefers-reduced-motion:reduce){
+  .dot{animation:none}
+  .roll>span{transition:none}
+  .panel::after{animation:none}
+}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="vignette"></div>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <h1>Goud<em>puls</em></h1>
+      <span class="live" id="live"><span class="dot"></span><span id="liveText">Verbinden</span></span>
+    </div>
+    <div class="hright">
+      <span class="clock" id="clock">--:--:--</span>
+      <svg class="ring" viewBox="0 0 30 30" aria-label="Tijd tot volgende update">
+        <circle class="track" cx="15" cy="15" r="12"></circle>
+        <circle class="prog" id="ringProg" cx="15" cy="15" r="12" stroke-dasharray="75.4" stroke-dashoffset="75.4"></circle>
+      </svg>
+      <button class="btn" id="fsBtn" type="button">Volledig scherm</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" id="pOz">
+      <div class="ptop">
+        <div>
+          <div class="label"><b>XAU</b> · Spotprijs</div>
+          <div class="unit">per troy ounce in dollars</div>
+        </div>
+        <span class="chip" id="chipOz">15 min · —</span>
+      </div>
+      <div class="price" id="priceOz"><span class="cur">$</span><span class="skeleton">—</span></div>
+      <div class="chartwrap"><canvas id="cOz"></canvas></div>
+    </section>
+
+    <div class="stage" id="stage" aria-hidden="true"><p>Elke puls is een nieuwe prijs</p></div>
+
+    <section class="panel" id="pKg">
+      <div class="ptop">
+        <div>
+          <div class="label"><b>1 KG</b> · Fijngoud</div>
+          <div class="unit">per kilo in euro's</div>
+        </div>
+        <span class="chip" id="chipKg">15 min · —</span>
+      </div>
+      <div class="price" id="priceKg"><span class="cur">€</span><span class="skeleton">—</span></div>
+      <div class="chartwrap"><canvas id="cKg"></canvas></div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="status">Prijs ophalen…</span>
+    <span>EUR/USD <b id="fx">—</b> · 1 kg = 32,1507 troy oz</span>
+    <span>Bron <b id="src">—</b> · laatste update <b id="upd">—</b></span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const OZ_PER_KG = 32.1507466;
+  const GOLD_EVERY = 10_000;          // goudprijs elke 10 s
+  const FX_EVERY = 10 * 60_000;       // wisselkoers elke 10 min
+  const WINDOW = 15 * 60_000;         // grafiek toont 15 minuten
+  const KEEP = 6 * 3600_000;          // bewaar 6 uur aan punten lokaal
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nf = new Intl.NumberFormat("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  // ---------- state ----------
+  const S = { oz:null, fx:null, src:"—", hist:{oz:[],kg:[]}, nextAt:Date.now()+GOLD_EVERY, ok:false };
+  try {
+    const saved = JSON.parse(localStorage.getItem("goudpuls-v1")||"null");
+    if (saved && saved.oz && saved.kg) {
+      const cut = Date.now()-KEEP;
+      S.hist.oz = saved.oz.filter(p=>p[0]>cut);
+      S.hist.kg = saved.kg.filter(p=>p[0]>cut);
+      if (saved.fx) S.fx = saved.fx;
+    }
+  } catch(e) {}
+  const save = () => { try { localStorage.setItem("goudpuls-v1", JSON.stringify({oz:S.hist.oz,kg:S.hist.kg,fx:S.fx})); } catch(e) {} };
+
+  // ---------- data sources ----------
+  async function getJSON(url){
+    const ctl = new AbortController(); const t = setTimeout(()=>ctl.abort(), 8000);
+    try { const r = await fetch(url,{signal:ctl.signal,cache:"no-store"}); if(!r.ok) throw new Error(r.status); return await r.json(); }
+    finally { clearTimeout(t); }
+  }
+  const goldSources = [
+    { name:"gold-api.com", get: async()=>{ const j=await getJSON("https://api.gold-api.com/price/XAU"); return +j.price; } },
+    { name:"Binance PAXG", get: async()=>{ const j=await getJSON("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT"); return +j.price; } },
+  ];
+  const fxSources = [
+    async()=>{ const j=await getJSON("https://api.frankfurter.app/latest?from=USD&to=EUR"); return +j.rates.EUR; },
+    async()=>{ const j=await getJSON("https://open.er-api.com/v6/latest/USD"); return +j.rates.EUR; },
+    async()=>{ const j=await getJSON("https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT"); return 1/(+j.price); },
+  ];
+
+  async function updateFx(){
+    for (const f of fxSources){
+      try { const v = await f(); if (v>0.3 && v<3){ S.fx=v; $("fx").textContent = (1/v).toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4}); return; } } catch(e){}
+    }
+  }
+
+  async function updateGold(){
+    let price=null, src=null;
+    for (const s of goldSources){
+      try { const v = await s.get(); if (v>100 && v<100000){ price=v; src=s.name; break; } } catch(e){}
+    }
+    S.nextAt = Date.now()+GOLD_EVERY;
+    if (price==null){ setStatus(false); return; }
+    if (!S.fx) await updateFx();
+    const prevOz = S.oz, now = Date.now();
+    S.oz = price; S.src = src; S.ok = true;
+    S.hist.oz.push([now, price]);
+    if (S.fx){ S.hist.kg.push([now, price*OZ_PER_KG*S.fx]); }
+    const cut = now-KEEP; S.hist.oz = S.hist.oz.filter(p=>p[0]>cut); S.hist.kg = S.hist.kg.filter(p=>p[0]>cut);
+    save();
+    render(prevOz);
+    setStatus(true);
+  }
+
+  // ---------- DOM ----------
+  const $ = id => document.getElementById(id);
+  function setStatus(ok){
+    const live=$("live"), st=$("status");
+    if (ok){ live.classList.remove("err"); $("liveText").textContent="Live"; st.classList.remove("err");
+      st.textContent="Prijs ververst elke 10 seconden"; $("src").textContent=S.src;
+      $("upd").textContent=new Date().toLocaleTimeString("nl-NL"); }
+    else { live.classList.add("err"); $("liveText").textContent="Offline"; st.classList.add("err");
+      st.textContent=S.ok ? "Geen verbinding met de prijsbron. Laatst bekende prijs blijft staan, nieuwe poging over 10 s."
+                         : "Kan de prijs niet ophalen. Controleer je internetverbinding; nieuwe poging over 10 s."; }
+  }
+
+  function buildRoller(el, cur, str){
+    el.innerHTML = "";
+    const c = document.createElement("span"); c.className="cur"; c.textContent=cur; el.appendChild(c);
+    const [intPart, decPart] = str.split(",");
+    const addChars = (target, s) => { for (const ch of s){
+      if (/\d/.test(ch)){ const r=document.createElement("span"); r.className="roll";
+        const strip=document.createElement("span"); for(let d=0;d<30;d++){const i=document.createElement("i");i.textContent=d%10;strip.appendChild(i);}
+        r.appendChild(strip); target.appendChild(r); }
+      else { const s2=document.createElement("span"); s2.className="sep"; s2.textContent=ch; target.appendChild(s2); } } };
+    addChars(el, intPart);
+    const dec = document.createElement("span"); dec.className="dec"; addChars(dec, ","+decPart); el.appendChild(dec);
+    el.dataset.shape = str.replace(/\d/g,"0");
+  }
+  function setRoller(el, cur, value){
+    const str = nf.format(value);
+    if (el.dataset.shape !== str.replace(/\d/g,"0")) {
+      buildRoller(el, cur, str);
+      el.getBoundingClientRect(); // eerst op 0, dan rollen naar waarde
+    }
+    const digits = str.replace(/\D/g,"");
+    const strips = el.querySelectorAll(".roll>span"), n = strips.length;
+    strips.forEach((strip,i)=>{
+      const d = +digits[i];
+      if (reduced){ strip.style.transform=`translateY(-${d*100/30}%)`; return; }
+      // elk cijfer draait een volle slag door en landt dan op zijn waarde, van rechts naar links gestaffeld
+      strip.style.transitionDelay = ((n-1-i)*70)+"ms";
+      strip.style.transform = `translateY(-${(20+d)*100/30}%)`;
+      clearTimeout(strip._t);
+      strip._t = setTimeout(()=>{ strip.style.transition="none"; strip.style.transform=`translateY(-${d*100/30}%)`;
+        strip.offsetHeight; strip.style.transition=""; }, 1700+(n-1-i)*70);
+    });
+    el.setAttribute("aria-label", cur+" "+str);
+  }
+
+  function flash(panel, dir){
+    if (!dir) return;
+    panel.classList.remove("up","down","flash"); void panel.offsetWidth;
+    panel.classList.add(dir, "flash");
+    setTimeout(()=>panel.classList.remove("flash"), 900);
+  }
+  function chip(el, hist){
+    const now=Date.now(), pts=hist.filter(p=>p[0]>=now-WINDOW);
+    if (pts.length<2){ el.className="chip"; el.textContent="15 min · —"; return; }
+    const a=pts[0][1], b=pts[pts.length-1][1], pct=(b-a)/a*100;
+    el.className = "chip " + (pct>0?"up":pct<0?"down":"");
+    el.textContent = `15 min · ${pct>0?"▲ +":pct<0?"▼ ":""}${pct.toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2})}%`;
+  }
+
+  function render(prevOz){
+    setRoller($("priceOz"), "$", S.oz);
+    if (S.fx) setRoller($("priceKg"), "€", S.oz*OZ_PER_KG*S.fx);
+    const dir = prevOz==null ? null : S.oz>prevOz ? "up" : S.oz<prevOz ? "down" : null;
+    flash($("pOz"), dir); flash($("pKg"), dir);
+    S.pulse = { t: performance.now(), dir: dir||"up" };
+    chip($("chipOz"), S.hist.oz); chip($("chipKg"), S.hist.kg);
+  }
+
+  // ---------- charts ----------
+  function makeChart(canvas, key, fmt){
+    const ctx = canvas.getContext("2d");
+    return function draw(now, t){
+      const dpr = Math.min(devicePixelRatio||1, 2);
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (canvas.width!==Math.round(w*dpr) || canvas.height!==Math.round(h*dpr)){ canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr); }
+      ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+      const padR = 64, padB = 22, padT = 10, cw = w-padR, ch = h-padB-padT;
+      const t0 = now-WINDOW;
+      const all = S.hist[key];
+      const pts = all.filter(p=>p[0]>=t0);
+      const before = all.filter(p=>p[0]<t0).pop();
+      if (before) pts.unshift([t0, before[1]]);
+      const X = tt => (tt-t0)/WINDOW*cw;
+
+      // tijd-ticks (elke 5 min) schuiven continu mee
+      ctx.font = "11px 'JetBrains Mono', monospace"; ctx.textBaseline="top";
+      const step = 5*60_000;
+      for (let tt=Math.ceil(t0/step)*step; tt<=now; tt+=step){
+        const x=X(tt); ctx.strokeStyle="rgba(190,240,220,.06)"; ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,padT+ch); ctx.stroke();
+        ctx.fillStyle="rgba(143,179,166,.75)"; ctx.textAlign="center";
+        ctx.fillText(new Date(tt).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}), x, padT+ch+6);
+      }
+
+      if (!pts.length){
+        ctx.fillStyle="rgba(143,179,166,.6)"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font="12px Manrope, sans-serif";
+        ctx.fillText("Grafiek vult zich met elke update", cw/2, padT+ch/2); return;
+      }
+      let lo=Infinity, hi=-Infinity; for (const p of pts){ lo=Math.min(lo,p[1]); hi=Math.max(hi,p[1]); }
+      const span = Math.max(hi-lo, hi*0.0004); const mid=(hi+lo)/2;
+      lo = mid-span*0.65; hi = mid+span*0.65;
+      const Y = v => padT + (1-(v-lo)/(hi-lo))*ch;
+
+      // horizontale grid + waardes
+      ctx.textAlign="left"; ctx.textBaseline="middle";
+      for (let i=0;i<=3;i++){
+        const v = lo+(hi-lo)*(i/3), y=Y(v);
+        ctx.strokeStyle="rgba(190,240,220,.06)"; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cw,y); ctx.stroke();
+        ctx.fillStyle="rgba(143,179,166,.75)"; ctx.fillText(fmt(v), cw+10, y);
+      }
+
+      const last = pts[pts.length-1];
+      const path = new Path2D();
+      pts.forEach((p,i)=>{ const x=X(p[0]), y=Y(p[1]); if(i===0) path.moveTo(x,y); else { const prev=pts[i-1]; path.lineTo(x, Y(prev[1])); path.lineTo(x,y);} });
+      path.lineTo(cw, Y(last[1]));   // prijs geldt tot nu: lijn loopt mee naar rechts
+
+      const area = new Path2D(path); area.lineTo(cw,padT+ch); area.lineTo(X(pts[0][0]),padT+ch); area.closePath();
+      const g = ctx.createLinearGradient(0,padT,0,padT+ch); g.addColorStop(0,"rgba(70,224,173,.28)"); g.addColorStop(1,"rgba(70,224,173,0)");
+      ctx.fillStyle=g; ctx.fill(area);
+      ctx.save(); ctx.shadowColor="rgba(70,224,173,.8)"; ctx.shadowBlur=14; ctx.strokeStyle="#7ff0c8"; ctx.lineWidth=2; ctx.lineJoin="round"; ctx.stroke(path); ctx.restore();
+
+      // lopende scan-lijn + pulserend eindpunt
+      const ex=cw, ey=Y(last[1]);
+      ctx.strokeStyle="rgba(70,224,173,.25)"; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(ex,padT); ctx.lineTo(ex,padT+ch); ctx.stroke(); ctx.setLineDash([]);
+      const pulse = reduced ? 0 : (t/1600)%1;
+      ctx.fillStyle=`rgba(70,224,173,${.35*(1-pulse)})`; ctx.beginPath(); ctx.arc(ex,ey,4+pulse*16,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#f1ebdf"; ctx.beginPath(); ctx.arc(ex,ey,4,0,Math.PI*2); ctx.fill();
+    };
+  }
+  const fmtOz = v => v.toLocaleString("nl-NL",{maximumFractionDigits:v<1000?2:0});
+  const fmtKg = v => (v/1000).toLocaleString("nl-NL",{minimumFractionDigits:1,maximumFractionDigits:1})+"k";
+  const drawOz = makeChart($("cOz"),"oz",fmtOz), drawKg = makeChart($("cKg"),"kg",fmtKg);
+
+  // ---------- levende achtergrond: draaiende deeltjesbol ----------
+  const bg=$("bg"), bctx=bg.getContext("2d");
+  const blobs=[
+    {c:[22,120,92], r:.55, ax:.30, ay:.22, sx:.00011, sy:.00014, p:0},
+    {c:[12,84,96],  r:.60, ax:.28, ay:.25, sx:.00009, sy:.00007, p:2},
+    {c:[30,60,90],  r:.50, ax:.25, ay:.30, sx:.00006, sy:.00012, p:1},
+  ];
+  const GLOBE=[], NG=1300, GA=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<NG;i++){ const y=1-2*(i+.5)/NG, r=Math.sqrt(1-y*y), th=i*GA; GLOBE.push([Math.cos(th)*r,y,Math.sin(th)*r]); }
+  const RINGS=[ {rad:1.38,tilt:1.15,yaw:.3, sp:.00042,n:260}, {rad:1.62,tilt:-.95,yaw:1.4,sp:-.00028,n:300}, {rad:1.9,tilt:.35,yaw:2.3,sp:.00018,n:340} ];
+  const motes = Array.from({length:60},()=>({x:Math.random(),y:Math.random(),s:Math.random()*1.4+.3,v:Math.random()*.00004+.00001,ph:Math.random()*6.28}));
+  const rotY=(p,a)=>{const c=Math.cos(a),s=Math.sin(a);return[p[0]*c+p[2]*s,p[1],-p[0]*s+p[2]*c]};
+  const rotX=(p,a)=>{const c=Math.cos(a),s=Math.sin(a);return[p[0],p[1]*c-p[2]*s,p[1]*s+p[2]*c]};
+  const rotZ=(p,a)=>{const c=Math.cos(a),s=Math.sin(a);return[p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]]};
+  function drawBg(t){
+    const dpr=Math.min(devicePixelRatio||1,1.5), w=innerWidth, h=innerHeight;
+    if (bg.width!==Math.round(w*dpr)||bg.height!==Math.round(h*dpr)){bg.width=Math.round(w*dpr);bg.height=Math.round(h*dpr);}
+    bctx.setTransform(dpr,0,0,dpr,0,0);
+    bctx.fillStyle="#03110d"; bctx.fillRect(0,0,w,h);
+    bctx.globalCompositeOperation="lighter";
+    const m=Math.max(w,h);
+    for (const b of blobs){
+      const x=w*(.5+b.ax*Math.sin(t*b.sx+b.p)), y=h*(.5+b.ay*Math.cos(t*b.sy+b.p*1.3)), r=m*b.r;
+      const g=bctx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0,`rgba(${b.c},.18)`); g.addColorStop(1,`rgba(${b.c},0)`);
+      bctx.fillStyle=g; bctx.fillRect(0,0,w,h);
+    }
+    const sr=$("stage").getBoundingClientRect();
+    const cx=sr.left+sr.width/2, cy=sr.top+sr.height*.46, R=Math.min(sr.width*.62, sr.height*.62)/1.9;
+    // schokgolf na een prijsupdate
+    let age=9, pc="127,240,200";
+    if (S.pulse){ age=(performance.now()-S.pulse.t)/1000; pc = S.pulse.dir==="down" ? "255,127,138" : "127,240,200"; }
+    const front=-1.3+age*2.2, live=age<1.6;
+    const ay=t*.00022, ax=.42+Math.sin(t*.00013)*.18;
+    // gloed in de kern
+    const core=bctx.createRadialGradient(cx,cy,0,cx,cy,R*1.5);
+    const kick = live ? Math.max(0,1-age/1.6) : 0;
+    core.addColorStop(0,`rgba(70,224,173,${.10+.18*kick})`); core.addColorStop(1,"rgba(70,224,173,0)");
+    bctx.fillStyle=core; bctx.fillRect(cx-R*1.6,cy-R*1.6,R*3.2,R*3.2);
+    for (const p0 of GLOBE){
+      let p=rotX(rotY(p0,ay),ax);
+      let bump=0; if(live){ const d=(p0[1]-front)*3.2; bump=Math.exp(-d*d)*(1-age/1.6); }
+      const sc=1+.16*bump, z=p[2], persp=1.5/(2.4-z);
+      const x=cx+p[0]*R*sc*persp*1.6, y=cy+p[1]*R*sc*persp*1.6;
+      const a=.10+.55*((z+1)/2)+bump*.6, sz=(.6+1.3*(z+1)/2)*(1+bump*1.2);
+      bctx.fillStyle = bump>.08 ? `rgba(${pc},${Math.min(1,a)})` : `rgba(150,240,205,${a})`;
+      bctx.fillRect(x-sz/2,y-sz/2,sz,sz);
+    }
+    for (const [k,rg] of RINGS.entries()){
+      const spin=t*rg.sp;
+      for(let i=0;i<rg.n;i++){
+        const th=i/rg.n*Math.PI*2+spin;
+        let p=[Math.cos(th)*rg.rad,0,Math.sin(th)*rg.rad];
+        p=rotY(rotZ(rotX(p,rg.tilt),rg.yaw),ay*.5); p=rotX(p,ax*.6);
+        const z=p[2]/rg.rad, persp=1.5/(2.4-z);
+        const x=cx+p[0]*R*persp*1.6, y=cy+p[1]*R*persp*1.6;
+        const tail=((i/rg.n)+1)%1, a=(.05+.22*((z+1)/2))*(.35+.65*tail);
+        bctx.fillStyle=`rgba(150,240,205,${a})`; bctx.fillRect(x-.7,y-.7,1.4,1.4);
+        if(i===rg.n-1){ // vonk aan de kop van elke ring
+          const g=bctx.createRadialGradient(x,y,0,x,y,14+6*persp);
+          g.addColorStop(0,"rgba(220,255,240,.9)"); g.addColorStop(.25,"rgba(70,224,173,.45)"); g.addColorStop(1,"rgba(70,224,173,0)");
+          bctx.fillStyle=g; bctx.beginPath(); bctx.arc(x,y,14+6*persp,0,Math.PI*2); bctx.fill();
+        }
+      }
+    }
+    if (live){ // uitdijende ring rond de bol
+      const rr=R*(1.1+age*1.1); bctx.strokeStyle=`rgba(${pc},${.5*(1-age/1.6)})`; bctx.lineWidth=2;
+      bctx.beginPath(); bctx.ellipse(cx,cy,rr,rr*.38,0,0,Math.PI*2); bctx.stroke();
+    }
+    for (const p of motes){
+      const y=((p.y - t*p.v)%1+1)%1, x=p.x+Math.sin(t*.0003+p.ph)*.01;
+      const a=.25+.35*Math.sin(t*.002+p.ph)**2;
+      bctx.fillStyle=`rgba(200,255,230,${a*.5})`; bctx.beginPath(); bctx.arc(x*w,y*h,p.s,0,Math.PI*2); bctx.fill();
+    }
+    bctx.globalCompositeOperation="source-over";
+  }
+
+  // ---------- loop ----------
+  const ring=$("ringProg"), clock=$("clock");
+  let lastSec=-1;
+  function frame(t){
+    const now=Date.now();
+    if (!reduced || t-(frame.l||0)>1000){ drawBg(reduced?0:t); frame.l=t; }
+    drawOz(now,t); drawKg(now,t);
+    const left=Math.max(0,S.nextAt-now)/GOLD_EVERY;
+    ring.setAttribute("stroke-dashoffset", (75.4*left).toFixed(2));
+    const sec=Math.floor(now/1000);
+    if (sec!==lastSec){ lastSec=sec; clock.textContent=new Date(now).toLocaleTimeString("nl-NL");
+      if (sec%15===0){ chip($("chipOz"),S.hist.oz); chip($("chipKg"),S.hist.kg); } }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---------- fullscreen + wake lock ----------
+  let lock=null;
+  $("fsBtn").addEventListener("click", async()=>{
+    try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); } catch(e){}
+    try { if ("wakeLock" in navigator && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release",()=>lock=null); } } catch(e){}
+  });
+  document.addEventListener("fullscreenchange",()=>{ $("fsBtn").textContent = document.fullscreenElement ? "Venster" : "Volledig scherm"; });
+  document.addEventListener("keydown",e=>{ if(e.key==="f"||e.key==="F") $("fsBtn").click(); });
+
+  // ---------- start ----------
+  if (S.fx) $("fx").textContent=(1/S.fx).toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4});
+  (async()=>{ await updateFx(); await updateGold(); })();
+  setInterval(updateGold, GOLD_EVERY);
+  setInterval(updateFx, FX_EVERY);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) updateGold(); });
+})();
+</script>
+</body>
+</html>
