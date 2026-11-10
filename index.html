@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Goudpuls</title>
+<title>GoudPrijs Analytics</title>
 <meta name="description" content="Live goudprijs: troy ounce in dollars, kilo, gram en çeyrek in euro's.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,8 +39,10 @@ body{background-color:var(--bg);color:var(--ice);font-family:var(--font-body);fo
 /* header */
 header{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
 .hl{display:flex;align-items:center;gap:clamp(14px,2.4vw,36px);flex-wrap:wrap}
-.brand{font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2vw,30px);letter-spacing:.01em;margin:0}
+.brandwrap{display:flex;flex-direction:column;gap:3px}
+.brand{font-family:var(--font-display);font-weight:700;font-size:clamp(21px,1.9vw,28px);letter-spacing:.005em;margin:0;line-height:1.05}
 .brand span{color:var(--cyan)}
+.by{font:500 11px var(--font-data);letter-spacing:.12em;color:var(--muted)}
 nav{display:flex;gap:4px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:rgba(255,255,255,.02)}
 nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;padding:8px 16px;border-radius:999px;transition:color .2s,background .2s}
 nav a:hover{color:var(--ice)}
@@ -82,7 +84,7 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 .stat .v.up{color:var(--up)} .stat .v.down{color:var(--down)}
 
 /* middle */
-.mid{display:grid;grid-template-columns:minmax(300px,.85fr) 1.5fr;gap:clamp(12px,2vw,28px);flex:1 1 auto;min-height:clamp(330px,44vh,560px)}
+.mid{display:grid;grid-template-columns:minmax(300px,.85fr) 1.5fr;gap:clamp(12px,2vw,28px);flex:1 1 auto;min-height:clamp(500px,58vh,720px)}
 .heroes{display:flex;flex-direction:column;gap:clamp(12px,1.6vh,18px);min-width:0}
 .hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:clamp(16px,2vw,28px);min-width:0;overflow:hidden;transition:border-color .8s}
 .hero.up{border-color:rgba(78,224,160,.5)} .hero.down{border-color:rgba(255,107,129,.5)}
@@ -120,6 +122,8 @@ nav a:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px sol
 
 /* home view */
 .home{display:flex;flex-direction:column;gap:clamp(16px,2.4vh,28px);flex:1}
+.homehead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.lang button{font-size:14px;font-weight:600;padding:10px 18px}
 .home h2{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3vw,44px);margin:0;text-wrap:balance}
 .home .lead{margin:6px 0 0;color:var(--muted);font-size:clamp(15px,1.3vw,18px)}
 .hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,24px)}
@@ -138,12 +142,12 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 @media (max-width:1000px){
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .mid{grid-template-columns:1fr;min-height:0}
-  .stage{height:340px;order:-1}
+  .stage{height:560px;order:-1}
   .hgrid{grid-template-columns:1fr}
 }
 @media (max-width:560px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stage{height:280px}
+  .stage{height:500px}
   .chartbox{height:340px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -159,10 +163,10 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
 <div class="app">
   <header>
     <div class="hl">
-      <h1 class="brand">Goud<span>puls</span></h1>
+      <div class="brandwrap"><h1 class="brand">GoudPrijs <span>Analytics</span></h1><div class="by">by Furkan Kilic</div></div>
       <nav aria-label="Weergave">
         <a href="#dashboard" id="tabDash">Dashboard</a>
-        <a href="#thuis" id="tabHome">Voor thuis</a>
+        <a href="#simpel" id="tabHome">Simpele versie</a>
       </nav>
     </div>
     <div class="hr">
@@ -226,33 +230,40 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     </div>
   </section>
 
-  <!-- VOOR THUIS -->
+  <!-- SIMPELE VERSIE -->
   <section id="viewHome" class="home" hidden>
-    <div>
-      <h2>Goudprijs vandaag · Altın fiyatı bugün</h2>
-      <p class="lead">In euro's. Ververst vanzelf elke 10 seconden.</p>
+    <div class="homehead">
+      <div>
+        <h2 data-t="title"></h2>
+        <p class="lead" data-t="lead"></p>
+      </div>
+      <div class="seg lang" id="langSeg" role="group" aria-label="Taal / Dil">
+        <button type="button" data-l="tr">Türkçe</button>
+        <button type="button" data-l="nl">Nederlands</button>
+      </div>
     </div>
     <div class="hgrid">
       <div class="hcard hud">
-        <div class="hname">Kilo goud</div>
-        <div class="hdesc">1 kilo fijngoud, 24 karaat · 1 kg altın</div>
+        <div class="hname" data-t="kgN"></div>
+        <div class="hdesc" data-t="kgD"></div>
         <div class="price" id="homeKg"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeKgChg">Vandaag —</div>
+        <div class="hchg" id="homeKgChg">—</div>
       </div>
       <div class="hcard hud">
-        <div class="hname">Çeyrek altın</div>
-        <div class="hdesc">1,75 gram, 22 karaat · 1,60 g puur goud</div>
+        <div class="hname" data-t="cN"></div>
+        <div class="hdesc" data-t="cD"></div>
         <div class="price" id="homeCeyrek"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeCeyrekChg">Vandaag —</div>
+        <div class="hchg" id="homeCeyrekChg">—</div>
       </div>
       <div class="hcard hud">
-        <div class="hname">Gram altın</div>
-        <div class="hdesc">1 gram puur goud, 24 karaat</div>
+        <div class="hname" data-t="gN"></div>
+        <div class="hdesc" data-t="gD"></div>
         <div class="price" id="homeGram"><span class="cur">€</span><span class="skeleton">—</span></div>
-        <div class="hchg" id="homeGramChg">Vandaag —</div>
+        <div class="hchg" id="homeGramChg">—</div>
       </div>
     </div>
-    <p class="note">Dit is de waarde van het goud zelf, berekend uit de beursprijs. Bij de juwelier of bank betaal je bij aankoop meestal meer, en krijg je bij verkoop meestal iets minder.</p>
+    <p class="note"><span data-t="upd"></span>: <b id="homeUpd">—</b></p>
+    <p class="note" data-t="note"></p>
   </section>
 
   <footer>
@@ -363,7 +374,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     finally { if (r===S.range) S.loading = false; updateRangeChip(); }
   }
   async function loadDay(){
-    try { S.day = await series("15m", 96); } catch(e){}
+    try { S.day = await series("15m", 96); buildRing(); } catch(e){}
     renderStats();
   }
 
@@ -388,7 +399,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   function setStatus(ok){
     const live=$("live"), st=$("status");
     if (ok){ live.classList.remove("err"); $("liveText").textContent="Live"; st.classList.remove("err");
-      st.textContent="Prijs ververst elke 10 seconden"; $("src").textContent=S.src; $("upd").textContent=new Date().toLocaleTimeString("nl-NL"); }
+      st.textContent="Prijs ververst elke 10 seconden"; $("src").textContent=S.src; $("upd").textContent=$("homeUpd").textContent=new Date().toLocaleTimeString("nl-NL"); }
     else { live.classList.add("err"); $("liveText").textContent="Offline"; st.classList.add("err");
       st.textContent = S.ok ? "Geen verbinding met de prijsbron. De laatst bekende prijs blijft staan; nieuwe poging over 10 s."
                             : "Kan de prijs niet ophalen. Controleer je internetverbinding; nieuwe poging over 10 s."; }
@@ -444,12 +455,35 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     const sc = $("sChg"); sc.classList.remove("up","down");
     if (pOz!=null){ sc.textContent = pct(pOz); if (pOz) sc.classList.add(pOz>0?"up":"down"); }
     setChip($("cOz"), pOz, "24u ·"); setChip($("cKg"), pKg, "24u ·");
+    const L = I18N[lang];
     for (const id of ["homeKgChg","homeCeyrekChg","homeGramChg"]){
       const el = $(id); el.classList.remove("up","down");
-      if (pKg==null){ el.textContent = "Vandaag —"; continue; }
-      el.textContent = (pKg>0?"▲ Gestegen ":pKg<0?"▼ Gedaald ":"Gelijk ") + pct(pKg).replace(/^[+-]/,"") + " in 24 uur";
+      if (pKg==null){ el.textContent = L.none; continue; }
+      const a = Math.abs(pKg).toLocaleString("nl-NL",{minimumFractionDigits:2,maximumFractionDigits:2});
+      el.textContent = pKg>0 ? L.up(a) : pKg<0 ? L.down(a) : L.flat;
       if (pKg) el.classList.add(pKg>0?"up":"down");
     }
+  }
+  const I18N = {
+    tr: { html:"tr", title:"Bugünkü altın fiyatı", lead:"Euro cinsinden · her 10 saniyede kendiliğinden yenilenir",
+      kgN:"Kilo altın", kgD:"1 kilo saf altın, 24 ayar", cN:"Çeyrek altın", cD:"1,75 gram, 22 ayar · 1,60 gram saf altın",
+      gN:"Gram altın", gD:"1 gram saf altın, 24 ayar", upd:"Son güncelleme",
+      note:"Bu, borsa fiyatına göre altının kendi değeridir. Kuyumcuda veya bankada alırken genellikle daha fazla ödersiniz, satarken ise genellikle biraz daha az alırsınız.",
+      up:a=>`▲ Son 24 saatte %${a} yükseldi`, down:a=>`▼ Son 24 saatte %${a} düştü`, flat:"Son 24 saatte değişmedi", none:"Son 24 saat —" },
+    nl: { html:"nl", title:"Goudprijs vandaag", lead:"In euro's · ververst vanzelf elke 10 seconden",
+      kgN:"Kilo goud", kgD:"1 kilo puur goud, 24 karaat", cN:"Çeyrek altın", cD:"1,75 gram, 22 karaat · 1,60 gram puur goud",
+      gN:"Gram goud", gD:"1 gram puur goud, 24 karaat", upd:"Laatst bijgewerkt",
+      note:"Dit is de waarde van het goud zelf, berekend uit de beursprijs. Bij de juwelier of bank betaal je bij aankoop meestal meer, en krijg je bij verkoop meestal iets minder.",
+      up:a=>`▲ ${a}% gestegen in 24 uur`, down:a=>`▼ ${a}% gedaald in 24 uur`, flat:"Gelijk gebleven in 24 uur", none:"24 uur —" },
+  };
+  let lang = "tr";
+  try { const l = localStorage.getItem("goudpuls-lang"); if (l==="nl"||l==="tr") lang = l; } catch(e){}
+  function applyLang(){
+    const L = I18N[lang];
+    document.querySelectorAll("[data-t]").forEach(el=>{ el.textContent = L[el.dataset.t]; });
+    document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.l===lang)));
+    $("viewHome").lang = L.html;
+    renderStats();
   }
   function updateRangeChip(){
     const pts = displayPts(), el = $("cRange");
@@ -467,8 +501,11 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     }
     const dir = prev==null ? null : S.oz>prev ? "up" : S.oz<prev ? "down" : null;
     for (const id of ["hOz","hKg"]){ const el=$(id); el.classList.remove("up","down"); if (dir){ el.classList.add(dir); setTimeout(()=>el.classList.remove(dir), 2200); } }
-    S.pulse = { t: performance.now(), dir: dir || "flat" };
-    renderStats(); updateRangeChip();
+    const t0 = performance.now(), fxTxt = S.fx ? S.fx.toLocaleString("nl-NL",{minimumFractionDigits:4,maximumFractionDigits:4}) : null;
+    S.flow = { t0, path: (typeof pickPath==="function") ? pickPath() : null,
+      labels: [ "BRON · " + S.src, "XAU · $ " + nf2.format(S.oz), "× 32,1507 oz per kg", fxTxt ? `× ${fxTxt} €/$ = € ${nf0.format(k)}` : "EUR/USD laden…" ] };
+    S.pulse = { t: t0 + FLOW_MS, dir: dir || "flat" };
+    buildRing(); renderStats(); updateRangeChip();
   }
 
   // ---------- chart ----------
@@ -544,118 +581,226 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     }
   }
 
-  // ---------- scene: kronkelende lijnen-ring ----------
+  // ---------- scene: databoom (bron -> omrekening) die de 24-uursring voedt ----------
   const sc = $("scene"), sx = sc.getContext("2d");
-  const TAU = Math.PI*2;
+  const TAU = Math.PI*2, FLOW_MS = 2200;
+  const rng = seed => () => { seed = (seed*1664525 + 1013904223) >>> 0; return seed/4294967296; };
+  const edge = (o,P,Q,dx=0,dy=0) => { o.moveTo(P.x+dx,P.y+dy); o.quadraticCurveTo(P.x+(Q.x-P.x)*.15+dx, P.y-(P.y-Q.y)*.65+dy, Q.x+dx, Q.y+dy); };
+  const qpt = (P,Q,s) => { const kx=P.x+(Q.x-P.x)*.15, ky=P.y-(P.y-Q.y)*.65, m=1-s; return [m*m*P.x+2*m*s*kx+s*s*Q.x, m*m*P.y+2*m*s*ky+s*s*Q.y]; };
+  const glow = (g,x,y,r,a) => { const gr=g.createRadialGradient(x,y,0,x,y,r); gr.addColorStop(0,`rgba(255,255,255,${a})`); gr.addColorStop(.3,`rgba(190,230,255,${a*.45})`); gr.addColorStop(1,"rgba(190,230,255,0)"); g.fillStyle=gr; g.beginPath(); g.arc(x,y,r,0,TAU); g.fill(); };
+  const FAN_NAMES = ["GOLD-API · LIVE","ECB · EUR/USD","BINANCE · HISTORIE","BINANCE · PAXG"];
+  let TREE = null;
+
+  function stageGeom(){
+    const r = $("stage").getBoundingClientRect(), w = r.width, h = r.height;
+    return { r, w, h, cx:w/2, cy:h*.26, size:Math.min(w*(isSmall()?.26:.23), h*.18), rootY:h-40 };
+  }
+  function buildTree(G){
+    const { w, h, cx, cy, size, rootY } = G, topY = cy + size*.15, D = isSmall() ? 7 : 8, treeW = w*.98;
+    const trees = [];
+    for (let k=0; k<3; k++){
+      const rand = rng(11 + k*131), levels = [[{x:cx, y:rootY, l:0, i:0}]];
+      for (let l=1; l<=D; l++){
+        const n = 2**l, wl = treeW*Math.pow(l/D,1.7), yl = rootY - (rootY-topY)*Math.pow(l/D,1.05), arr = [];
+        for (let i=0; i<n; i++) arr.push({ x: cx - wl/2 + (i+.5)/n*wl + (rand()-.5)*(wl/n)*.9, y: yl + (rand()-.5)*(rootY-topY)/D*.4, l, i, p: levels[l-1][i>>1] });
+        levels.push(arr);
+      }
+      trees.push(levels);
+    }
+    const fanX = [.1,.27,.73,.9].map(f=>f*w), fw = Math.min(130, w*.14), fh = Math.min(80, h*.12);
+    const fans = fanX.map((fx,k)=>{ const rand = rng(500+k), lv = [[{x:fx, y:rootY}]];
+      for (let l=1; l<=5; l++){ const n = 2**l, wl = fw*Math.pow(l/5,1.1), yl = rootY - fh*Math.pow(l/5,.75), arr = [];
+        for (let i=0; i<n; i++) arr.push({ x: fx - wl/2 + (i+.5)/n*wl + (rand()-.5)*wl/n*.6, y: yl + (rand()-.5)*5, p: lv[l-1][i>>1] });
+        lv.push(arr); }
+      return lv; });
+    const rs = rng(999), stars = Array.from({length: isSmall() ? 70 : 160}, ()=>({ x: rs()*w, y: rs()*(rootY-12), s: rs()*1.6+.4, ph: rs()*TAU }));
+    const dpr = Math.min(devicePixelRatio||1, 2), oc = document.createElement("canvas");
+    oc.width = Math.round(w*dpr); oc.height = Math.round(h*dpr);
+    const o = oc.getContext("2d"); o.setTransform(dpr,0,0,dpr,0,0); o.lineWidth = .6;
+    trees.forEach((lv,k)=>{ o.strokeStyle = k===0 ? "rgba(200,225,255,.15)" : "rgba(170,200,255,.08)"; o.beginPath();
+      for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(o, n.p, n); o.stroke(); });
+    o.fillStyle = "rgba(220,235,255,.4)";
+    for (const lv of trees[0]) for (const n of lv) if (n.l>1 && n.i%3===0) o.fillRect(n.x-1, n.y-1, 2, 2);
+    o.strokeStyle = "rgba(200,225,255,.2)"; o.beginPath();
+    for (const lv of fans) for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(o, n.p, n);
+    o.stroke();
+    o.strokeStyle = "rgba(140,190,255,.28)"; o.beginPath(); o.moveTo(6, rootY+.5); o.lineTo(w-6, rootY+.5); o.stroke();
+    TREE = { key:"", w, h, D, trees, fans, fanX, stars, img: oc, rootY };
+  }
+  function pickPath(){
+    if (!TREE) return null;
+    const D = TREE.D, leafI = Math.floor((.3 + .4*Math.random()) * 2**D), chain = [];
+    for (let l=0; l<=D; l++) chain.push(TREE.trees[0][l][leafI>>(D-l)]);
+    const samples = [[chain[0].x, chain[0].y]], at = [0];
+    for (let l=1; l<=D; l++){ for (let s=1; s<=14; s++) samples.push(qpt(chain[l-1], chain[l], s/14)); at.push(samples.length-1); }
+    return { chain, samples, at };
+  }
+  function buildRing(){
+    if (!S.day || !S.day.length || S.oz==null) return;
+    const r = cal(S.day).oz, vals = S.day.map(p=>p.oz*r); vals.push(S.oz);
+    let lo = Infinity, hi = -Infinity, hiI = 0;
+    vals.forEach((v,i)=>{ if (v<lo) lo = v; if (v>hi){ hi = v; hiI = i; } });
+    S.ring = { vals, lo, hi, hiI };
+  }
+
+  // de ring: één rondje = afgelopen 24 uur, dikte van de buis = prijs
+  function drawRing(g, cx, cy, size, t, dim, G){
+    const a = t*.00011, b = 1.02 + .14*Math.sin(t*.00007), c = .28*Math.sin(t*.00005);
+    const ca=Math.cos(a), sa=Math.sin(a), cb=Math.cos(b), sb=Math.sin(b), cc=Math.cos(c), s_c=Math.sin(c);
+    const proj = (x,y,z) => {
+      const X = x*ca - y*sa, Y = x*sa + y*ca;
+      const Y2 = Y*cb - z*sb, Z2 = Y*sb + z*cb;
+      const X3 = X*cc + Z2*s_c, Z3 = -X*s_c + Z2*cc, p = 3.2/(3.2 - Z3);
+      return [cx + X3*size*p, cy + Y2*size*p, Z3];
+    };
+    const Rf = u => 1 + .14*Math.sin(3*u + t*.00031) + .04*Math.sin(5*u - t*.00047);
+    const ring = S.ring;
+    const rf = u => {
+      const wob = 1 + .06*Math.sin(3*u + t*.0009);
+      if (!ring) return .30*(1 + .24*Math.sin(2*u - t*.00058))*wob;
+      const n = ring.vals.length, f = Math.min(n-1, Math.max(0, u/TAU*(n-1))), i = Math.floor(f), j = Math.min(n-1, i+1);
+      const v = ring.vals[i] + (ring.vals[j]-ring.vals[i])*(f-i), norm = (v-ring.lo)/((ring.hi-ring.lo)||1);
+      return (.12 + .26*norm)*wob;
+    };
+    let age = 9, pcol = C.cyan;
+    if (S.pulse){ age = (performance.now()-S.pulse.t)/1000; pcol = S.pulse.dir==="down" ? C.down : S.pulse.dir==="up" ? C.up : C.amber; }
+    const pLive = age >= 0 && age < 2.6, front = TAU - age*2.6;
+    const bumpAt = u => { if (!pLive) return 0; let d = ((u-front)%TAU + TAU)%TAU; if (d>Math.PI) d -= TAU; return Math.exp(-((d*2.4)**2)) * (1-age/2.6); };
+
+    g.globalCompositeOperation = "lighter";
+    const cg = g.createRadialGradient(cx,cy,0,cx,cy,size*1.6);
+    cg.addColorStop(0,`rgba(${C.cyan},${(.07 + (pLive ? .12*(1-age/2.6) : 0))*dim})`); cg.addColorStop(1,`rgba(${C.cyan},0)`);
+    g.fillStyle = cg; g.fillRect(cx-size*1.7, cy-size*1.7, size*3.4, size*3.4);
+    const gr = size*1.6, rot = t*.00006;
+    g.strokeStyle = `rgba(140,190,255,${.09*dim})`; g.lineWidth = 1; g.beginPath(); g.arc(cx,cy,gr,0,TAU); g.stroke();
+    g.beginPath();
+    for (let i=0;i<120;i++){ const an = i/120*TAU + rot, l = i%10===0 ? 9 : 4; g.moveTo(cx+Math.cos(an)*gr, cy+Math.sin(an)*gr); g.lineTo(cx+Math.cos(an)*(gr+l), cy+Math.sin(an)*(gr+l)); }
+    g.strokeStyle = `rgba(140,190,255,${.15*dim})`; g.stroke();
+    g.strokeStyle = `rgba(${C.amber},${.5*dim})`; g.lineWidth = 1.5;
+    g.beginPath(); g.arc(cx,cy,gr+15,-rot*3,-rot*3+.5); g.stroke();
+    g.beginPath(); g.arc(cx,cy,gr+15,-rot*3+Math.PI,-rot*3+Math.PI+.22); g.stroke();
+
+    const small = isSmall(), NS = small ? 46 : 74, SEG = small ? 140 : 200;
+    const paths = { c:[new Path2D(),new Path2D(),new Path2D()], a:[new Path2D(),new Path2D(),new Path2D()], hot:new Path2D() };
+    const ph = reduced ? 0 : t*.0005;
+    const rCache = new Float32Array(SEG+1), RCache = new Float32Array(SEG+1), bCache = new Float32Array(SEG+1);
+    for (let i=0;i<=SEG;i++){ const u = i/SEG*TAU; bCache[i] = bumpAt(u); RCache[i] = Rf(u); rCache[i] = rf(u)*(1+.38*bCache[i]); }
+    for (let s=0; s<NS; s++){
+      const amber = s%7===0, tw = amber ? -2 : 3, v0 = s/NS*TAU, dp = amber ? -ph*1.3 : ph;
+      let prev = null;
+      for (let i=0; i<=SEG; i++){
+        const u = i/SEG*TAU, R = RCache[i], r = rCache[i], v = v0 + tw*u + dp;
+        const ox = Math.cos(v)*r, oz = Math.sin(v)*r*.8, P = proj((R+ox)*Math.cos(u), (R+ox)*Math.sin(u), oz);
+        if (prev){ const z = (P[2]+prev[2])/2, bk = z < -.35 ? 0 : z < .3 ? 1 : 2;
+          const path = bCache[i] > .3 ? paths.hot : (amber ? paths.a[bk] : paths.c[bk]); path.moveTo(prev[0],prev[1]); path.lineTo(P[0],P[1]); }
+        prev = P;
+      }
+    }
+    const al = [.16,.32,.6]; g.lineWidth = .7;
+    for (let k=0;k<3;k++){ g.strokeStyle = `rgba(${C.cyan},${al[k]*dim})`; g.stroke(paths.c[k]); g.strokeStyle = `rgba(${C.amber},${al[k]*.95*dim})`; g.stroke(paths.a[k]); }
+    g.lineWidth = 1.1; g.strokeStyle = `rgba(${pcol},${.95*dim})`; g.stroke(paths.hot);
+
+    const ringAt = (u, scale, alpha, col, lw) => {
+      const R = Rf(u), r = rf(u)*scale; g.beginPath();
+      for (let k=0;k<=28;k++){ const v = k/28*TAU, ox = Math.cos(v)*r, oz = Math.sin(v)*r*.8, P = proj((R+ox)*Math.cos(u), (R+ox)*Math.sin(u), oz); k ? g.lineTo(P[0],P[1]) : g.moveTo(P[0],P[1]); }
+      g.strokeStyle = `rgba(${col},${alpha*dim})`; g.lineWidth = lw; g.stroke();
+    };
+    const drift = reduced ? 0 : t*.00018;
+    for (let k=0;k<12;k++) ringAt(k/12*TAU + drift, 1.45, .2, "200,225,255", .8);
+    ringAt(TAU-.002, 1.75, .95, "240,248,255", 1.5);                // naad = NU
+    ringAt(reduced ? 1 : (t*.00042)%TAU, 1.6, .5, "240,248,255", 1);  // scanner
+    if (pLive) ringAt(front, 1.95, .9*(1-age/2.6), pcol, 2);
+    g.globalCompositeOperation = "source-over";
+
+    const anchor = u => { const R = Rf(u); return proj(R*Math.cos(u), R*Math.sin(u), 0); };
+    if (G && !small && S.oz!=null && ring){
+      const ox = G.r.left, oy = G.r.top, n = ring.vals.length, p24 = (S.oz/ring.vals[0]-1)*100;
+      const items = [
+        { u:TAU-.02, x:ox+G.w-8, y:oy+16, side:"r", k:"NU", v:"$ "+nf2.format(S.oz), col:C.amber },
+        { u:.02, x:ox+8, y:oy+cy-oy+size*1.15, side:"l", k:"−24U · "+(p24>=0?"▲ ":"▼ ")+pct(p24), v:"$ "+nf2.format(ring.vals[0]), col:p24>=0?C.up:C.down },
+        { u:ring.hiI/(n-1)*TAU, x:ox+G.w-8, y:oy+cy-oy+size*1.15, side:"r", k:"24U HOOG", v:"$ "+nf2.format(ring.hi), col:C.amber },
+      ];
+      for (const it of items){
+        const A = anchor(it.u), ex = it.side==="r" ? it.x-140 : it.x+140;
+        g.strokeStyle = "rgba(200,225,255,.35)"; g.lineWidth = 1; g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(ex, it.y+6); g.lineTo(it.x, it.y+6); g.stroke();
+        g.fillStyle = `rgba(${C.amber},.95)`; g.beginPath(); g.arc(A[0],A[1],2.6,0,TAU); g.fill();
+        g.strokeStyle = "rgba(220,235,255,.6)"; g.beginPath(); g.arc(A[0],A[1],7,0,TAU); g.stroke();
+        g.textAlign = it.side==="r" ? "right" : "left";
+        g.font = "500 10.5px 'JetBrains Mono', monospace"; g.textBaseline = "bottom"; g.fillStyle = C.muted; g.fillText(it.k, it.x, it.y+2);
+        g.font = "500 13px 'JetBrains Mono', monospace"; g.textBaseline = "top"; g.fillStyle = `rgb(${it.col})`; g.fillText(it.v, it.x, it.y+11);
+      }
+    }
+    return { anchor };
+  }
+
   function drawScene(t){
     const dpr = Math.min(devicePixelRatio||1, 1.75), w = innerWidth, h = innerHeight;
     if (sc.width!==Math.round(w*dpr) || sc.height!==Math.round(h*dpr)){ sc.width=Math.round(w*dpr); sc.height=Math.round(h*dpr); }
     const g = sx; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
-    const home = !$("viewHome").hidden;
-    let cx, cy, size, dim = 1;
-    if (home){ cx = w*.5; cy = h*.58; size = Math.min(w,h)*.34; dim = .32; }
-    else { const r = $("stage").getBoundingClientRect(); cx = r.left+r.width/2; cy = r.top+r.height/2; size = Math.min(r.width*(isSmall()?.27:.34), r.height*.4); }
-    if (size < 40) return;
+    if (!$("viewHome").hidden){ drawRing(g, w*.5, h*.64, Math.min(w,h)*.3, t, .3, null); return; }
+    const G = stageGeom(); if (G.w < 60 || G.h < 60) return;
+    const key = `${Math.round(G.w)}x${Math.round(G.h)}`;
+    if (!TREE || TREE.key !== key){ buildTree(G); TREE.key = key; if (S.flow) S.flow.path = pickPath(); }
+    const ox = G.r.left, oy = G.r.top;
+    if (oy > h || oy + G.h < 0) return;
 
-    // rotation
-    const a = t*.00011, b = 1.02 + .14*Math.sin(t*.00007), c = .28*Math.sin(t*.00005);
-    const ca=Math.cos(a), sa=Math.sin(a), cb=Math.cos(b), sb=Math.sin(b), cc=Math.cos(c), s_c=Math.sin(c);
-    const proj = (x,y,z) => {
-      let X = x*ca - y*sa, Y = x*sa + y*ca, Z = z;                 // spin om eigen as
-      let Y2 = Y*cb - Z*sb, Z2 = Y*sb + Z*cb;                       // kantelen
-      let X3 = X*cc + Z2*s_c, Z3 = -X*s_c + Z2*cc;                  // zwaaien
-      const p = 3.2/(3.2 - Z3);
-      return [cx + X3*size*p, cy + Y2*size*p, Z3];
-    };
-    const Rf = u => 1 + .17*Math.sin(3*u + t*.00031) + .05*Math.sin(5*u - t*.00047);
-    const rf = u => .30*(1 + .24*Math.sin(2*u - t*.00058));
+    g.drawImage(TREE.img, ox, oy, G.w, G.h);
+    for (const s of TREE.stars){ const a = .12 + .5*Math.sin(t*.0011 + s.ph)**2; g.fillStyle = `rgba(220,235,255,${a})`; g.fillRect(ox+s.x, oy+s.y, s.s, s.s); }
 
-    // pulse along the ring after each price update
-    let age = 9, pcol = C.cyan;
-    if (S.pulse){ age = (performance.now()-S.pulse.t)/1000; pcol = S.pulse.dir==="down" ? C.down : S.pulse.dir==="up" ? C.up : C.amber; }
-    const pLive = age < 2.6, front = age*2.6;
-    const bumpAt = u => { if (!pLive) return 0; let d = ((u - front) % TAU + TAU) % TAU; if (d>Math.PI) d -= TAU; return Math.exp(-((d*2.4)**2)) * (1-age/2.6); };
+    // bronnen onderaan: actieve bron licht op
+    const act = [S.src==="gold-api.com", !!S.fx, !!S.day, S.src==="Binance PAXG"];
+    g.font = "500 9.5px 'JetBrains Mono', monospace"; g.textAlign = "center"; g.textBaseline = "top";
+    TREE.fans.forEach((lv,k)=>{
+      if (act[k]){ g.strokeStyle = `rgba(${C.cyan},${.35 + .2*Math.sin(t*.003 + k)})`; g.lineWidth = .8; g.beginPath();
+        for (let l=1; l<lv.length; l++) for (const n of lv[l]) edge(g, n.p, n, ox, oy); g.stroke(); }
+      if (!isSmall() || k===0 || k===3){ g.fillStyle = act[k] ? C.ice : C.muted; g.fillText(FAN_NAMES[k], ox+TREE.fanX[k], oy+TREE.rootY+8); }
+    });
+    g.fillStyle = C.muted; g.fillText("DATAROUTE · BRON → KOERS → OMREKENEN → RING", ox+G.w/2, oy+TREE.rootY+22);
 
-    g.globalCompositeOperation = "lighter";
-    // core glow
-    const cg = g.createRadialGradient(cx,cy,0,cx,cy,size*1.6);
-    cg.addColorStop(0,`rgba(${C.cyan},${.07*dim})`); cg.addColorStop(1,`rgba(${C.cyan},0)`);
-    g.fillStyle=cg; g.fillRect(cx-size*1.7,cy-size*1.7,size*3.4,size*3.4);
-
-    // outer gauge ring with ticks
-    const gr = size*1.62, rot = t*.00006;
-    g.strokeStyle=`rgba(140,190,255,${.10*dim})`; g.lineWidth=1; g.beginPath(); g.arc(cx,cy,gr,0,TAU); g.stroke();
-    g.beginPath();
-    for (let i=0;i<120;i++){ const an = i/120*TAU + rot, l = i%10===0 ? 10 : 4;
-      g.moveTo(cx+Math.cos(an)*gr, cy+Math.sin(an)*gr); g.lineTo(cx+Math.cos(an)*(gr+l), cy+Math.sin(an)*(gr+l)); }
-    g.strokeStyle=`rgba(140,190,255,${.16*dim})`; g.stroke();
-    g.strokeStyle=`rgba(${C.amber},${.5*dim})`; g.lineWidth=1.5; g.beginPath(); g.arc(cx,cy,gr+16,-rot*3,-rot*3+.5); g.stroke();
-    g.beginPath(); g.arc(cx,cy,gr+16,-rot*3+Math.PI,-rot*3+Math.PI+.22); g.stroke();
-
-    // strands
-    const small = isSmall(), NS = small ? 46 : 74, SEG = small ? 140 : 200;
-    const paths = { c:[new Path2D(),new Path2D(),new Path2D()], a:[new Path2D(),new Path2D(),new Path2D()], hot:new Path2D() };
-    const ph = reduced ? 0 : t*.0005;
-    for (let s=0; s<NS; s++){
-      const amber = s%7===0, tw = amber ? -2 : 3, v0 = s/NS*TAU, dirp = amber ? -ph*1.3 : ph;
-      let prev = null;
-      for (let i=0; i<=SEG; i++){
-        const u = i/SEG*TAU, bump = bumpAt(u);
-        const R = Rf(u), r = rf(u)*(1+.38*bump), v = v0 + tw*u + dirp;
-        const ox = Math.cos(v)*r, oz = Math.sin(v)*r*.8;
-        const P = proj((R+ox)*Math.cos(u), (R+ox)*Math.sin(u), oz);
-        if (prev){
-          const z = (P[2]+prev[2])/2, bk = z < -.35 ? 0 : z < .3 ? 1 : 2;
-          const path = bump > .3 ? paths.hot : (amber ? paths.a[bk] : paths.c[bk]);
-          path.moveTo(prev[0],prev[1]); path.lineTo(P[0],P[1]);
-        }
-        prev = P;
-      }
+    // datadeeltjes die continu omhoog stromen
+    if (!S.dots) S.dots = Array.from({length:50}, ()=>({ leaf: Math.floor(Math.random()*2**TREE.D), s: Math.random(), v: .004+Math.random()*.005 }));
+    const L = TREE.trees[0], D = TREE.D;
+    for (const d of S.dots){
+      if (!reduced) d.s += d.v * .5;
+      if (d.s >= 1){ d.s = 0; d.leaf = Math.floor(Math.random()*2**D); }
+      if (d.leaf >= 2**D) d.leaf = d.leaf % 2**D;
+      const f = d.s*D, l = Math.min(D-1, Math.floor(f)), P = L[l][d.leaf>>(D-l)], Q = L[l+1][d.leaf>>(D-l-1)], pt = qpt(P, Q, f-l);
+      g.fillStyle = `rgba(${C.cyan},${.6*(1-d.s*.5)})`; g.beginPath(); g.arc(ox+pt[0], oy+pt[1], 1.4, 0, TAU); g.fill();
     }
-    const al = [.16,.32,.6];
-    g.lineWidth = .7;
-    for (let k=0;k<3;k++){
-      g.strokeStyle = `rgba(${C.cyan},${al[k]*dim})`; g.stroke(paths.c[k]);
-      g.strokeStyle = `rgba(${C.amber},${al[k]*.95*dim})`; g.stroke(paths.a[k]);
-    }
-    g.lineWidth = 1.1; g.strokeStyle = `rgba(${pcol},${.9*dim})`; g.stroke(paths.hot);
 
-    // small rings around the tube + one bright scanner ring
-    const ringAt = (u, scale, alpha, col, lw) => {
-      const R = Rf(u), r = rf(u)*scale; g.beginPath();
-      for (let k=0;k<=28;k++){ const v = k/28*TAU, ox = Math.cos(v)*r, oz = Math.sin(v)*r*.8;
-        const P = proj((R+ox)*Math.cos(u), (R+ox)*Math.sin(u), oz); k ? g.lineTo(P[0],P[1]) : g.moveTo(P[0],P[1]); }
-      g.strokeStyle = `rgba(${col},${alpha*dim})`; g.lineWidth = lw; g.stroke();
-    };
-    const drift = reduced ? 0 : t*.00018;
-    for (let k=0;k<12;k++) ringAt(k/12*TAU + drift, 1.45, .22, "200,225,255", .8);
-    const su = reduced ? 1 : t*.00042;
-    ringAt(su, 1.7, .9, "240,248,255", 1.4);
-    if (pLive) ringAt(front, 1.9, .9*(1-age/2.6), pcol, 2);
+    const R = drawRing(g, ox+G.cx, oy+G.cy, G.size, t, 1, G);
 
-    // callouts with live values
-    g.globalCompositeOperation = "source-over";
-    if (!home && !small && S.oz!=null){
-      const anchor = u => { const R = Rf(u); return proj(R*Math.cos(u), R*Math.sin(u), 0); };
-      const r = $("stage").getBoundingClientRect();
-      const kg = kgNow(), p24 = change24("oz");
-      const items = [
-        { u:.4+drift,  x:r.right-8,  y:r.top+28,     side:"r", k:"A / XAU · USD",   v:"$ "+nf2.format(S.oz),        col:C.amber },
-        { u:2.5+drift, x:r.right-8,  y:r.bottom-46,  side:"r", k:"B / 1 KG · EUR",  v:kg!=null?"€ "+nf0.format(kg):"—", col:C.amber },
-        { u:4.4+drift, x:r.left+8,   y:r.bottom-46,  side:"l", k:"Δ 24U",           v:p24!=null?pct(p24):"—",       col:p24==null?C.cyan:p24>=0?C.up:C.down },
-      ];
-      g.font = "500 10.5px 'JetBrains Mono', monospace";
-      for (const it of items){
-        const A = anchor(it.u), elbowX = it.side==="r" ? it.x-150 : it.x+150;
-        g.strokeStyle="rgba(200,225,255,.35)"; g.lineWidth=1; g.beginPath(); g.moveTo(A[0],A[1]); g.lineTo(elbowX, it.y+6); g.lineTo(it.x, it.y+6); g.stroke();
-        g.fillStyle=`rgba(${C.amber},.9)`; g.beginPath(); g.arc(A[0],A[1],2.6,0,TAU); g.fill();
-        g.strokeStyle="rgba(200,225,255,.6)"; g.beginPath(); g.arc(A[0],A[1],7,0,TAU); g.stroke();
-        g.textAlign = it.side==="r" ? "right" : "left"; g.textBaseline="bottom";
-        g.fillStyle = C.muted; g.fillText(it.k, it.x, it.y+2);
-        g.font = "500 13px 'JetBrains Mono', monospace"; g.textBaseline="top";
-        g.fillStyle = it.col.startsWith("#") ? it.col : `rgb(${it.col})`; g.fillText(it.v, it.x, it.y+11);
-        g.font = "500 10.5px 'JetBrains Mono', monospace";
+    // de witte route van de laatste update
+    const F = S.flow;
+    glow(g, ox+G.cx, oy+TREE.rootY, 20, .55 + .25*Math.sin(t*.003));
+    if (F){
+      if (!F.path) F.path = pickPath();
+      const P = F.path, p = Math.min(1, (performance.now()-F.t0)/FLOW_MS), tp = Math.min(1, p/.78);
+      const n = P.samples.length, upto = Math.max(1, Math.floor(tp*(n-1)));
+      const nu = R.anchor(TAU-.002), leaf = P.samples[n-1];
+      g.save(); g.shadowColor = "rgba(190,230,255,.95)"; g.shadowBlur = 12; g.strokeStyle = "#ffffff"; g.lineWidth = 2.2; g.lineJoin = "round"; g.lineCap = "round";
+      g.beginPath(); g.moveTo(ox+P.samples[0][0], oy+P.samples[0][1]);
+      for (let i=1; i<=upto; i++) g.lineTo(ox+P.samples[i][0], oy+P.samples[i][1]);
+      let head = [ox+P.samples[upto][0], oy+P.samples[upto][1]];
+      if (p > .78){
+        const q = (p-.78)/.22, lx = ox+leaf[0], ly = oy+leaf[1], kx = lx, ky = (ly+nu[1])/2, steps = 24, m = Math.max(1, Math.round(q*steps));
+        for (let i=1; i<=m; i++){ const s = i/steps, mm = 1-s, x = mm*mm*lx + 2*mm*s*kx + s*s*nu[0], y = mm*mm*ly + 2*mm*s*ky + s*s*nu[1]; g.lineTo(x,y); head = [x,y]; }
       }
+      g.stroke(); g.restore();
+      if (p < 1) glow(g, head[0], head[1], 22, 1); else glow(g, nu[0], nu[1], 16, .55 + .3*Math.sin(t*.004));
+      const lvls = [2, 4, 6, D], fs = isSmall() ? 10 : 11;
+      g.font = `500 ${fs}px 'JetBrains Mono', monospace`; g.textBaseline = "middle"; g.textAlign = "left";
+      lvls.forEach((lv,k)=>{
+        if (P.at[lv] > upto) return;
+        const N = P.chain[lv], x = ox+N.x, y = oy+N.y, txt = F.labels[k], tw = g.measureText(txt).width + 16;
+        g.fillStyle = "#05070e"; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.fill();
+        g.strokeStyle = "#ffffff"; g.lineWidth = 1.5; g.beginPath(); g.arc(x,y,6.5,0,TAU); g.stroke();
+        g.fillStyle = "#ffffff"; g.beginPath(); g.arc(x,y,2.3,0,TAU); g.fill();
+        const right = x + 30 + tw < ox + G.w - 4, bx = right ? x + 28 : x - 28 - tw;
+        g.strokeStyle = "rgba(232,242,255,.75)"; g.lineWidth = 1; g.beginPath(); g.moveTo(right ? x+7 : x-7, y); g.lineTo(right ? bx : bx+tw, y); g.stroke();
+        g.fillStyle = "rgba(4,7,14,.92)"; g.fillRect(bx, y-11, tw, 22); g.strokeRect(bx+.5, y-10.5, tw-1, 21);
+        g.fillStyle = C.ice; g.fillText(txt, bx+8, y+.5);
+      });
     }
   }
 
@@ -685,12 +830,14 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
     S.series = b.dataset.s; syncButtons(); savePref(); });
 
   function route(){
-    const home = location.hash === "#thuis";
+    const home = location.hash === "#simpel" || location.hash === "#thuis";
     $("viewDash").hidden = home; $("viewDash").style.display = home ? "none" : "flex";
     $("viewHome").hidden = !home;
     $("tabDash").toggleAttribute("aria-current", !home); if (!home) $("tabDash").setAttribute("aria-current","page");
     $("tabHome").toggleAttribute("aria-current", home); if (home) $("tabHome").setAttribute("aria-current","page");
   }
+  $("langSeg").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
+    lang = b.dataset.l; try { localStorage.setItem("goudpuls-lang", lang); } catch(e){} applyLang(); });
   addEventListener("hashchange", route); route();
 
   let lock = null;
@@ -702,7 +849,7 @@ footer b{color:var(--ice);font-weight:500;font-family:var(--font-data);font-vari
   document.addEventListener("keydown",e=>{ if ((e.key==="f"||e.key==="F") && !e.ctrlKey && !e.metaKey) $("fsBtn").click(); });
 
   // ---------- start ----------
-  syncButtons();
+  syncButtons(); applyLang();
   (async()=>{ await updateFx(); await updateGold(); loadDay(); loadRange(S.range); })();
   setInterval(updateGold, GOLD_EVERY);
   setInterval(updateFx, FX_EVERY);
