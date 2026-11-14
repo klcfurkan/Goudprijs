@@ -1,0 +1,196 @@
+{
+ "updated": 1794658149,
+ "errors": [],
+ "items": [
+  {
+   "t": "Kansen van Klaas Knot slinken, volgende week duidelijk wie ECB-president wordt",
+   "u": "https://nos.nl/l/2639342",
+   "s": "NOS",
+   "lang": "nl",
+   "g": "intl",
+   "ts": 1794588185,
+   "cat": "rates",
+   "score": 3
+  },
+  {
+   "t": "Olie-export krabbelt op richting niveau van voor Iran-oorlog, benzineprijzen dalen",
+   "u": "https://nos.nl/l/2639306",
+   "s": "NOS",
+   "lang": "nl",
+   "g": "intl",
+   "ts": 1794572081,
+   "cat": "conflict",
+   "score": 4
+  },
+  {
+   "t": "Federal Reserve announces revised tentative schedule of Federal Open Market Committee meetings in 2027",
+   "u": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261112a.htm",
+   "s": "Federal Reserve",
+   "lang": "en",
+   "g": "intl",
+   "ts": 1794505500,
+   "cat": "rates",
+   "score": 5
+  },
+  {
+   "t": "İsrail'in Gazze'de düzenlediği saldırılarda 2 Filistinli hayatını kaybetti",
+   "u": "https://www.aa.com.tr/tr/dunya/israilin-gazzede-duzenledigi-saldirilarda-2-filistinli-hayatini-kaybetti/4125070",
+   "s": "AA",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794654499,
+   "cat": "conflict",
+   "score": 4
+  },
+  {
+   "t": "Genç mühendis adayları COP31'de nükleer enerjinin denizcilikteki potansiyelini tanıtıyor",
+   "u": "https://www.aa.com.tr/tr/ekonomi/genc-muhendis-adaylari-cop31de-nukleer-enerjinin-denizcilikteki-potansiyelini-tanitiyor/4125015",
+   "s": "AA",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794650080,
+   "cat": "conflict",
+   "score": 3
+  },
+  {
+   "t": "Kahve güçlü dolar ve üretimin artmasıyla 3 aydır yatırımcısına kaybettiriyor",
+   "u": "https://www.aa.com.tr/tr/ekonomi/kahve-guclu-dolar-ve-uretimin-artmasiyla-3-aydir-yatirimcisina-kaybettiriyor/4124923",
+   "s": "AA",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794643544,
+   "cat": "currency",
+   "score": 3
+  },
+  {
+   "t": "Fed'in raporu yapay zekanın finansal istikrara yönelik riskler arasında öne çıktığını gösterdi",
+   "u": "https://www.aa.com.tr/tr/ekonomi/fedin-raporu-yapay-zekanin-finansal-istikrara-yonelik-riskler-arasinda-one-ciktigini-gosterdi/4124826",
+   "s": "AA",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794617499,
+   "cat": "rates",
+   "score": 3
+  },
+  {
+   "t": "Altın bugünü de düşüşle kapattı",
+   "u": "https://www.trthaber.com/haber/ekonomi/altin-bugunu-de-dususle-kapatti-963200.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794579420,
+   "cat": "gold",
+   "score": 5
+  },
+  {
+   "t": "Bakan Şimşek: Cari açığın OVP tahminlerinin altında olacağını öngörüyoruz",
+   "u": "https://www.trthaber.com/haber/ekonomi/bakan-simsek-cari-acigin-ovp-tahminlerinin-altinda-olacagini-ongoruyoruz-963179.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794566040,
+   "cat": "gold",
+   "score": 5
+  },
+  {
+   "t": "Altın güne artışla başladı",
+   "u": "https://www.trthaber.com/haber/ekonomi/altin-gune-artisla-basladi-963150.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794551580,
+   "cat": "gold",
+   "score": 5
+  },
+  {
+   "t": "Altın günü yüzde 2,2 düşüşle kapattı",
+   "u": "https://www.trthaber.com/haber/ekonomi/altin-gunu-yuzde-22-dususle-kapatti-963082.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794490200,
+   "cat": "gold",
+   "score": 5
+  },
+  {
+   "t": "Merkez Bankası rezervleri 161,1 milyar dolar oldu",
+   "u": "https://www.trthaber.com/haber/ekonomi/merkez-bankasi-rezervleri-1611-milyar-dolar-oldu-963062.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794483840,
+   "cat": "rates",
+   "score": 3
+  },
+  {
+   "t": "Hürmüz Boğazı'nda gemilere saldırılar artarak sürüyor",
+   "u": "https://www.trthaber.com/haber/dunya/hurmuz-bogazinda-gemilere-saldirilar-artarak-suruyor-963048.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794475980,
+   "cat": "conflict",
+   "score": 4
+  },
+  {
+   "t": "Dış ticarette Türk lirasıyla işlem hacmi 1,3 trilyon lirayı geçti",
+   "u": "https://www.trthaber.com/haber/ekonomi/dis-ticarette-turk-lirasiyla-islem-hacmi-13-trilyon-lirayi-gecti-963035.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794472980,
+   "cat": "currency",
+   "score": 3
+  },
+  {
+   "t": "Merkez Bankası yıl sonu enflasyon tahminini açıkladı",
+   "u": "https://www.trthaber.com/haber/ekonomi/merkez-bankasi-yil-sonu-enflasyon-tahminini-acikladi-963028.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794469080,
+   "cat": "rates",
+   "score": 5
+  },
+  {
+   "t": "Türkiye ile Kanada arasında nükleer santral için işbirliği anlaşması",
+   "u": "https://www.trthaber.com/haber/ekonomi/turkiye-ile-kanada-arasinda-nukleer-santral-icin-isbirligi-anlasmasi-963021.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794467220,
+   "cat": "conflict",
+   "score": 3
+  },
+  {
+   "t": "Altın fiyatlarında geri çekilme sürüyor",
+   "u": "https://www.trthaber.com/haber/ekonomi/altin-fiyatlarinda-geri-cekilme-suruyor-963005.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794464220,
+   "cat": "gold",
+   "score": 5
+  },
+  {
+   "t": "Merkez Bankası kredi büyüme sınırlarını yükseltti",
+   "u": "https://www.trthaber.com/haber/ekonomi/merkez-bankasi-kredi-buyume-sinirlarini-yukseltti-962975.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794427320,
+   "cat": "rates",
+   "score": 5
+  },
+  {
+   "t": "Altın günü düşüşle kapattı",
+   "u": "https://www.trthaber.com/haber/ekonomi/altin-gunu-dususle-kapatti-962954.html",
+   "s": "TRT Haber",
+   "lang": "tr",
+   "g": "tr",
+   "ts": 1794404940,
+   "cat": "gold",
+   "score": 5
+  }
+ ]
+}
