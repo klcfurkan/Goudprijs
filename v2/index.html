@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valoro · Goud, eerlijk uitgelegd</title>
+<meta name="description" content="Live goudprijs, wat je goud waard is, de goedkoopste manier om goud te bezitten en de belastingregels. Prototype.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f7f6f2; --card:#ffffff; --ink:#16181d; --soft:#3d424b; --muted:#6b7280; --rule:#e4e1d8;
+  --gold:#b8860b; --gold-2:#e8b830; --gold-bg:#fbf3dd; --up:#0f8a4f; --down:#c62a47; --focus:#2563eb;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#0e0f12; --card:#16181d; --ink:#f3f4f6; --soft:#d1d5db; --muted:#9ca3af; --rule:#2a2d34;
+         --gold:#e8b830; --gold-2:#e8b830; --gold-bg:#2a2410; --up:#31d17f; --down:#ff6b85; color-scheme:dark; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+a{color:var(--gold);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:14px} .xs{font-size:12.5px}
+h1,h2,h3{line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:700}
+h2{font-size:clamp(20px,2.6vw,26px);font-weight:700}
+h3{font-size:17px;font-weight:600}
+p{margin:0}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.bar{display:flex;align-items:center;gap:12px;min-height:60px;flex-wrap:wrap;padding:8px 0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin-right:auto}
+.brand b{font-size:19px;letter-spacing:-.01em}
+.brand small{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:-2px}
+.sel{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;background:var(--card);padding:2px}
+.seg button{font:600 12.5px var(--font);border:0;background:transparent;color:var(--soft);padding:6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap}
+@media (max-width:520px){.seg button{padding:6px 8px}.cc{display:none}.sel{width:100%;justify-content:space-between}}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;margin:0 -4px}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;text-decoration:none;color:var(--soft);font-weight:600;font-size:14px;padding:8px 12px;border-radius:999px}
+nav.tabs a[aria-current="page"]{background:var(--gold-bg);color:var(--ink)}
+
+main.wrap{padding-top:28px;padding-bottom:64px;display:flex;flex-direction:column;gap:28px}
+section.view{display:flex;flex-direction:column;gap:20px}
+.head{display:flex;flex-direction:column;gap:6px}
+.head p{color:var(--soft);max-width:70ch}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:20px;min-width:0}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:860px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr}}
+@media (max-width:640px){.g2{grid-template-columns:1fr}}
+
+/* stats */
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat .k{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.stat .v{font:600 clamp(20px,2.6vw,26px) var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat .s{font-size:13px;color:var(--muted)}
+.stat.hero .v{font-size:clamp(30px,5vw,44px);color:var(--ink)}
+.up{color:var(--up)} .down{color:var(--down)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--card);border:1px solid var(--rule)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.pill.open .dot{background:var(--up)} .pill.closed .dot{background:var(--down)} .pill.err .dot{background:var(--down)}
+.statusrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* chart */
+.chartbox{position:relative;height:300px}
+.chartbox canvas{position:absolute;inset:0;width:100%;height:100%}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 8px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-115%)}
+.charthead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.chartmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:20px}
+
+/* forms */
+label{font-size:13.5px;font-weight:600;color:var(--soft);display:flex;flex-direction:column;gap:6px;min-width:0}
+input,select{font:500 15px var(--font);color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+input.num{font-family:var(--mono)}
+.btn{font:600 14px var(--font);border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.icon{padding:8px 10px;line-height:1}
+.row{display:grid;gap:10px;align-items:end}
+.vrow{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) minmax(0,1fr) auto}
+@media (max-width:640px){.vrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.vrow .out{grid-column:1}.vrow .rm{grid-column:2;justify-self:end}}
+.out{font:600 16px var(--mono);padding:10px 0;white-space:nowrap}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:14px;margin-top:6px}
+.total .big{font:700 clamp(24px,3.4vw,32px) var(--mono)}
+.note{border-left:3px solid var(--gold-2);background:var(--gold-bg);padding:10px 14px;border-radius:0 10px 10px 0;color:var(--soft);font-size:14.5px}
+.fields{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+
+/* cost bars */
+.bars{display:flex;flex-direction:column;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,2fr) auto;gap:12px;align-items:center}
+@media (max-width:640px){.brow{grid-template-columns:1fr auto}.brow .track{grid-column:1/-1;order:3}}
+.brow .lbl b{display:block;font-size:15px}
+.brow .lbl span{font-size:13px;color:var(--muted)}
+.track{height:12px;background:var(--bg);border:1px solid var(--rule);border-radius:999px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--gold-2);border-radius:999px}
+.brow.best .track i{background:var(--up)}
+.brow .val{text-align:right;font:600 15px var(--mono);white-space:nowrap}
+.brow .val small{display:block;font:500 12px var(--font);color:var(--muted)}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--gold-bg);color:var(--ink);margin-left:6px;vertical-align:2px}
+.tag.best{background:color-mix(in srgb,var(--up) 18%,transparent)}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
+td.r,th.r{text-align:right;white-space:nowrap}
+.assume table{min-width:640px}
+.assume input{padding:6px 8px;font-size:14px;width:84px}
+details summary{cursor:pointer;font-weight:600;color:var(--soft)}
+details[open] summary{margin-bottom:12px}
+
+/* result box */
+.result{display:flex;flex-direction:column;gap:8px}
+.verdict{font-size:20px;font-weight:700}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:15px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-family:var(--mono);text-align:right}
+
+/* news */
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:600 13px var(--font);border:1px solid var(--rule);background:var(--card);color:var(--soft);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.news{display:flex;flex-direction:column}
+.news a{display:flex;flex-direction:column;gap:4px;padding:14px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.news a:last-child{border-bottom:0}
+.news a b{font-weight:600;font-size:15.5px}
+.news .meta{font-size:12.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.cat{font-weight:700;color:var(--gold)}
+
+.links{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.links a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px}
+.links a:hover{border-color:var(--gold-2)}
+.links a span{color:var(--muted);font-size:14px}
+.dealers{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.dealers ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40px;color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="bar">
+      <a class="brand" href="#home">
+        <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#16181d"/><path d="M10 40 L20 22 H50 L56 40 Z" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M10 40 V46 H56 V40" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M17 36 L26 32 L32 34.5 L40 27 L47 29" fill="none" stroke="#e8b830" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="47" cy="29" r="3.2" fill="#e8b830"/></svg>
+        <span><b>Valoro</b><small data-t="tagline"></small></span>
+      </a>
+      <div class="sel">
+        <div class="seg" id="langSeg" role="group" aria-label="Language"></div>
+        <div class="seg" id="curSeg" role="group" aria-label="Currency"></div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <div class="head">
+      <h1 data-t="homeTitle"></h1>
+      <p data-t="homeLead"></p>
+    </div>
+    <div class="statusrow">
+      <span class="pill" id="livePill"><span class="dot"></span><span id="liveText">…</span></span>
+      <span class="pill" id="mktPill"><span class="dot"></span><span id="mktText">…</span></span>
+      <span class="xs muted" id="srcText"></span>
+    </div>
+    <div class="grid g4">
+      <div class="card stat hero"><span class="k" data-t="perGram"></span><span class="v" id="pGram">—</span><span class="s" id="pGramS"></span></div>
+      <div class="card stat"><span class="k" data-t="perOz"></span><span class="v" id="pOz">—</span><span class="s" data-t="ozNote"></span></div>
+      <div class="card stat"><span class="k" data-t="perKg"></span><span class="v" id="pKg">—</span><span class="s" data-t="kgNote"></span></div>
+      <div class="card stat"><span class="k" data-t="ch24"></span><span class="v" id="pCh">—</span><span class="s" id="pChS"></span></div>
+    </div>
+    <div class="card">
+      <div class="charthead">
+        <h3 id="chartTitle"></h3>
+        <div class="seg" id="rangeSeg" role="group" aria-label="Range"></div>
+      </div>
+      <div class="chartbox" id="chartBox"><canvas id="chart"></canvas><div class="chartmsg" id="chartMsg"></div><div class="tip" id="tip" hidden></div></div>
+      <p class="xs muted" style="margin-top:8px" id="chartFoot"></p>
+    </div>
+    <div class="grid g3">
+      <div class="card stat"><span class="k" data-t="silver"></span><span class="v" id="pAg">—</span><span class="s" data-t="perOzShort"></span></div>
+      <div class="card stat"><span class="k" data-t="platinum"></span><span class="v" id="pPt">—</span><span class="s" data-t="perOzShort"></span></div>
+      <div class="card stat"><span class="k" id="fxK"></span><span class="v" id="pFx">—</span><span class="s" data-t="fxNote"></span></div>
+    </div>
+    <h2 data-t="toolsTitle"></h2>
+    <div class="links" id="toolLinks"></div>
+  </section>
+
+  <!-- VALUE -->
+  <section class="view" id="v-value" hidden>
+    <div class="head"><h1 data-t="valTitle"></h1><p data-t="valLead"></p></div>
+    <div class="card">
+      <div id="vRows" style="display:flex;flex-direction:column;gap:12px"></div>
+      <div style="margin-top:12px"><button class="btn" id="vAdd" data-t="valAdd"></button></div>
+      <div class="total">
+        <span><b data-t="valTotal"></b><br><span class="small muted" data-t="valTotalNote"></span></span>
+        <span class="big" id="vTotal">—</span>
+      </div>
+      <div class="total" style="border-top:0;padding-top:4px">
+        <span class="small" data-t="valFair"></span>
+        <span class="num" id="vFair">—</span>
+      </div>
+    </div>
+    <p class="note" data-t="valTip"></p>
+  </section>
+
+  <!-- COST -->
+  <section class="view" id="v-cost" hidden>
+    <div class="head"><h1 data-t="costTitle"></h1><p data-t="costLead"></p></div>
+    <div class="card">
+      <div class="fields">
+        <label><span data-t="costMode"></span>
+          <select id="cMode"><option value="m" data-t="costMonthly"></option><option value="o" data-t="costOnce"></option></select></label>
+        <label><span id="cAmtL"></span><input class="num" id="cAmt" inputmode="decimal" value="100"></label>
+        <label><span data-t="costYears"></span><input class="num" id="cYears" inputmode="numeric" value="10"></label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="charthead"><h3 id="cHead"></h3><span class="small muted" id="cInvested"></span></div>
+      <div class="bars" id="cBars"></div>
+      <p class="xs muted" style="margin-top:14px" data-t="costAssume"></p>
+    </div>
+    <div class="card assume">
+      <details>
+        <summary data-t="costEdit"></summary>
+        <div class="tbl"><table id="cTable"></table></div>
+        <p class="xs muted" style="margin-top:10px" data-t="costSrc"></p>
+        <div style="margin-top:10px"><button class="btn" id="cReset" data-t="costReset"></button></div>
+      </details>
+    </div>
+    <p class="note" data-t="costNote"></p>
+  </section>
+
+  <!-- TAX -->
+  <section class="view" id="v-tax" hidden>
+    <div class="head"><h1 data-t="taxTitle"></h1><p data-t="taxLead"></p></div>
+    <div class="seg" id="taxSeg" role="group" aria-label="Country" style="align-self:flex-start"></div>
+    <div id="taxDE" class="grid g2">
+      <div class="card">
+        <div class="fields">
+          <label><span data-t="tProd"></span>
+            <select id="tProd"><option value="phys" data-t="tPhys"></option><option value="etf" data-t="tEtf"></option></select></label>
+          <label><span data-t="tBuyDate"></span><input type="date" id="tBuyD"></label>
+          <label><span data-t="tSellDate"></span><input type="date" id="tSellD"></label>
+          <label><span data-t="tBuyAmt"></span><input class="num" id="tBuyA" inputmode="decimal" value="5000"></label>
+          <label><span data-t="tSellAmt"></span><input class="num" id="tSellA" inputmode="decimal" value="6200"></label>
+          <label id="tOtherL"><span data-t="tOther"></span><input class="num" id="tOther" inputmode="decimal" value="0"></label>
+          <label id="tRateL"><span data-t="tRate"></span><input class="num" id="tRate" inputmode="decimal" value="30"></label>
+          <label id="tAllowL" hidden><span data-t="tAllow"></span><input class="num" id="tAllow" inputmode="decimal" value="1000"></label>
+        </div>
+      </div>
+      <div class="card result">
+        <span class="small muted" data-t="tResult"></span>
+        <span class="verdict" id="tVerdict">—</span>
+        <dl class="kv" id="tKv"></dl>
+        <p class="small muted" id="tExplain"></p>
+      </div>
+    </div>
+    <div id="taxNL" class="card" hidden><div class="result"><h3 data-t="nlTitle"></h3><p data-t="nlBody"></p></div></div>
+    <div id="taxUK" class="card" hidden><div class="result"><h3 data-t="ukTitle"></h3><p data-t="ukBody"></p></div></div>
+    <p class="note" data-t="taxNote"></p>
+  </section>
+
+  <!-- BUY -->
+  <section class="view" id="v-buy" hidden>
+    <div class="head"><h1 data-t="buyTitle"></h1><p data-t="buyLead"></p></div>
+    <p class="note" data-t="buyPhase"></p>
+    <div class="card">
+      <div class="tbl"><table id="bTable"></table></div>
+      <p class="xs muted" style="margin-top:10px" data-t="buyFoot"></p>
+    </div>
+    <h2 data-t="buyDealers"></h2>
+    <p class="small muted" data-t="buyDealersNote"></p>
+    <div class="dealers" id="bDealers"></div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="view" id="v-news" hidden>
+    <div class="head"><h1 data-t="newsTitle"></h1><p data-t="newsLead"></p></div>
+    <div class="filters" id="nFilters"></div>
+    <div class="card"><div class="news" id="nList"></div><p class="xs muted" id="nUpd" style="margin-top:10px"></p></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view" id="v-about" hidden>
+    <div class="head"><h1 data-t="aboutTitle"></h1></div>
+    <div class="grid g2">
+      <div class="card result"><h3 data-t="aboutWho"></h3><p data-t="aboutWhoBody"></p></div>
+      <div class="card result"><h3 data-t="aboutMoney"></h3><p data-t="aboutMoneyBody"></p></div>
+      <div class="card result"><h3 data-t="aboutData"></h3><p data-t="aboutDataBody"></p></div>
+      <div class="card result"><h3 data-t="aboutLegal"></h3><p data-t="aboutLegalBody"></p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p data-t="foot1"></p>
+  <p data-t="foot2"></p>
+</footer>
+
+<script>
+(()=>{
+"use strict";
+const $ = id => document.getElementById(id);
+const OZ = 31.1034768;            // gram per troy ounce
+const LANGS = ["nl","en","de","tr"];
+const LOCALE = {nl:"nl-NL", en:"en-GB", de:"de-DE", tr:"tr-TR"};
+const CURS = ["EUR","USD","GBP","TRY"];
+
+/* ---------------- texts ---------------- */
+const T = {
+tagline:{nl:"Goud en geld, eerlijk uitgelegd · door Furkan Kilic",en:"Gold and money, explained honestly · by Furkan Kilic",de:"Gold und Geld, ehrlich erklärt · von Furkan Kilic",tr:"Altın ve para, dürüstçe anlatıldı · Furkan Kilic"},
+nav_home:{nl:"Goudprijs",en:"Gold price",de:"Goldpreis",tr:"Altın fiyatı"},
+nav_value:{nl:"Wat is mijn goud waard?",en:"What is my gold worth?",de:"Was ist mein Gold wert?",tr:"Altınım ne eder?"},
+nav_cost:{nl:"Goedkoopste manier",en:"Cheapest way",de:"Günstigster Weg",tr:"En ucuz yol"},
+nav_tax:{nl:"Belasting",en:"Tax",de:"Steuern",tr:"Vergi"},
+nav_buy:{nl:"Waar kopen",en:"Where to buy",de:"Wo kaufen",tr:"Nereden alınır"},
+nav_news:{nl:"Nieuws",en:"News",de:"Nachrichten",tr:"Haberler"},
+nav_about:{nl:"Over",en:"About",de:"Über uns",tr:"Hakkında"},
+
+homeTitle:{nl:"Goudprijs vandaag",en:"Gold price today",de:"Goldpreis heute",tr:"Bugünkü altın fiyatı"},
+homeLead:{nl:"De live wereldprijs van goud, omgerekend naar jouw munt. Dit is de prijs van puur goud; een winkel rekent daar altijd iets bovenop.",en:"The live world price of gold, converted into your currency. This is the price of pure gold; a shop always adds a margin on top.",de:"Der aktuelle Weltmarktpreis für Gold, umgerechnet in deine Währung. Das ist der Preis für reines Gold; ein Händler schlägt immer etwas auf.",tr:"Altının canlı dünya fiyatı, senin para birimine çevrilmiş hâli. Bu saf altının fiyatıdır; kuyumcu ya da satıcı her zaman üzerine bir pay ekler."},
+perGram:{nl:"Per gram",en:"Per gram",de:"Pro Gramm",tr:"Gram"},
+perOz:{nl:"Per troy ounce",en:"Per troy ounce",de:"Pro Feinunze",tr:"Ons (troy)"},
+perKg:{nl:"Per kilo",en:"Per kilo",de:"Pro Kilo",tr:"Kilogram"},
+gramNote:{nl:"24 karaat, 999,9 puur",en:"24 carat, 999.9 pure",de:"24 Karat, 999,9 fein",tr:"24 ayar, 999,9 saf"},
+ozNote:{nl:"31,10 gram puur goud",en:"31.10 grams of pure gold",de:"31,10 Gramm Feingold",tr:"31,10 gram saf altın"},
+kgNote:{nl:"1.000 gram puur goud",en:"1,000 grams of pure gold",de:"1.000 Gramm Feingold",tr:"1.000 gram saf altın"},
+ch24:{nl:"Afgelopen 24 uur",en:"Last 24 hours",de:"Letzte 24 Stunden",tr:"Son 24 saat"},
+silver:{nl:"Zilver",en:"Silver",de:"Silber",tr:"Gümüş"},
+platinum:{nl:"Platina",en:"Platinum",de:"Platin",tr:"Platin"},
+perOzShort:{nl:"per troy ounce",en:"per troy ounce",de:"pro Feinunze",tr:"ons başına"},
+fxNote:{nl:"wisselkoers (ECB)",en:"exchange rate (ECB)",de:"Wechselkurs (EZB)",tr:"döviz kuru (ECB)"},
+live:{nl:"Live",en:"Live",de:"Live",tr:"Canlı"},
+offline:{nl:"Geen verbinding, laatste prijs blijft staan",en:"No connection, last price kept",de:"Keine Verbindung, letzter Preis bleibt stehen",tr:"Bağlantı yok, son fiyat gösteriliyor"},
+loading:{nl:"Prijs laden…",en:"Loading price…",de:"Preis wird geladen…",tr:"Fiyat yükleniyor…"},
+mOpen:{nl:"Goudmarkt open",en:"Gold market open",de:"Goldmarkt geöffnet",tr:"Altın piyasası açık"},
+mClosed:{nl:"Goudmarkt dicht · opent {0}",en:"Gold market closed · opens {0}",de:"Goldmarkt geschlossen · öffnet {0}",tr:"Altın piyasası kapalı · açılış {0}"},
+src:{nl:"Bron: {0} · bijgewerkt {1}",en:"Source: {0} · updated {1}",de:"Quelle: {0} · aktualisiert {1}",tr:"Kaynak: {0} · güncellendi {1}"},
+chartTitle:{nl:"Koersverloop per gram in {0}",en:"Price per gram in {0}",de:"Kursverlauf pro Gramm in {0}",tr:"{0} cinsinden gram fiyatı"},
+chartFoot:{nl:"Historie: PAXG (1 token = 1 troy ounce goud) en wisselkoersen via Binance, afgestemd op de live prijs.",en:"History: PAXG (1 token = 1 troy ounce of gold) and exchange rates via Binance, aligned to the live price.",de:"Historie: PAXG (1 Token = 1 Feinunze Gold) und Wechselkurse über Binance, abgeglichen mit dem Live-Preis.",tr:"Geçmiş: PAXG (1 token = 1 ons altın) ve döviz kurları Binance üzerinden, canlı fiyata göre ayarlanmış."},
+chartErr:{nl:"De koershistorie is nu niet bereikbaar. De live prijs hierboven werkt wel.",en:"Price history is not reachable right now. The live price above still works.",de:"Die Kurshistorie ist gerade nicht erreichbar. Der Live-Preis oben funktioniert.",tr:"Fiyat geçmişine şu an ulaşılamıyor. Yukarıdaki canlı fiyat çalışıyor."},
+chartLoad:{nl:"Grafiek laden…",en:"Loading chart…",de:"Diagramm wird geladen…",tr:"Grafik yükleniyor…"},
+rangeD:{nl:"1D",en:"1D",de:"1T",tr:"1G"}, rangeW:{nl:"1W",en:"1W",de:"1W",tr:"1H"}, rangeM:{nl:"1M",en:"1M",de:"1M",tr:"1A"},
+rangeY:{nl:"1J",en:"1Y",de:"1J",tr:"1Y"}, range5:{nl:"5J",en:"5Y",de:"5J",tr:"5Y"},
+inRange:{nl:"in deze periode",en:"in this period",de:"in diesem Zeitraum",tr:"bu dönemde"},
+toolsTitle:{nl:"Wat wil je weten?",en:"What would you like to know?",de:"Was möchtest du wissen?",tr:"Ne öğrenmek istersin?"},
+tool_value:{nl:"Reken uit wat je sieraden, munten of baren waard zijn.",en:"Work out what your jewellery, coins or bars are worth.",de:"Berechne, was dein Schmuck, deine Münzen oder Barren wert sind.",tr:"Takılarının, sikkelerinin ya da külçelerinin değerini hesapla."},
+tool_cost:{nl:"Baar, munt, spaarplan, app of ETC: wat kost het echt?",en:"Bar, coin, savings plan, app or ETC: what does it really cost?",de:"Barren, Münze, Sparplan, App oder ETC: was kostet es wirklich?",tr:"Külçe, sikke, birikim planı, uygulama veya ETC: gerçek maliyet ne?"},
+tool_tax:{nl:"Wanneer betaal je belasting op goud, en hoeveel?",en:"When do you pay tax on gold, and how much?",de:"Wann zahlst du Steuern auf Gold, und wie viel?",tr:"Altın için ne zaman, ne kadar vergi ödenir?"},
+tool_buy:{nl:"Wat een baar of munt ongeveer hoort te kosten.",en:"What a bar or coin should roughly cost.",de:"Was ein Barren oder eine Münze ungefähr kosten sollte.",tr:"Bir külçe ya da sikke yaklaşık ne kadar olmalı."},
+
+valTitle:{nl:"Wat is mijn goud waard?",en:"What is my gold worth?",de:"Was ist mein Gold wert?",tr:"Altınım ne eder?"},
+valLead:{nl:"Kies wat je hebt en vul het gewicht of aantal in. Je ziet de smeltwaarde: wat het pure goud erin vandaag waard is.",en:"Choose what you have and enter the weight or number. You see the melt value: what the pure gold inside is worth today.",de:"Wähle aus, was du hast, und gib Gewicht oder Anzahl ein. Du siehst den Materialwert: was das reine Gold darin heute wert ist.",tr:"Elindekini seç, ağırlığını ya da adedini gir. Eritme değerini görürsün: içindeki saf altının bugünkü değeri."},
+valItem:{nl:"Wat heb je?",en:"What do you have?",de:"Was hast du?",tr:"Elinde ne var?"},
+valGrams:{nl:"Gewicht (gram)",en:"Weight (grams)",de:"Gewicht (Gramm)",tr:"Ağırlık (gram)"},
+valCount:{nl:"Aantal",en:"Number",de:"Anzahl",tr:"Adet"},
+valValue:{nl:"Waarde",en:"Value",de:"Wert",tr:"Değer"},
+valAdd:{nl:"+ Nog iets toevoegen",en:"+ Add another item",de:"+ Weiteres hinzufügen",tr:"+ Başka ekle"},
+valRemove:{nl:"Verwijderen",en:"Remove",de:"Entfernen",tr:"Kaldır"},
+valTotal:{nl:"Totale smeltwaarde",en:"Total melt value",de:"Gesamter Materialwert",tr:"Toplam eritme değeri"},
+valTotalNote:{nl:"Op basis van de live goudprijs",en:"Based on the live gold price",de:"Auf Basis des Live-Goldpreises",tr:"Canlı altın fiyatına göre"},
+valFair:{nl:"Een eerlijk bod bij verkoop ligt meestal tussen 85% en 97% hiervan:",en:"A fair offer when selling is usually between 85% and 97% of this:",de:"Ein faires Angebot beim Verkauf liegt meist zwischen 85 % und 97 % davon:",tr:"Satışta adil bir teklif genelde bunun %85 ile %97'si arasındadır:"},
+valTip:{nl:"Tip: vraag bij verkoop altijd naar de prijs per gram en het gewicht op een bon. Consumentenprogramma's vonden opkopers die maar een fractie van de waarde boden. Vergelijk minstens twee biedingen.",en:"Tip: when selling, always ask for the price per gram and the weight on a receipt. Consumer programmes found buyers offering only a fraction of the value. Compare at least two offers.",de:"Tipp: Frag beim Verkauf immer nach dem Grammpreis und lass dir das Gewicht quittieren. Verbrauchertests fanden Ankäufer, die nur einen Bruchteil des Werts boten. Vergleiche mindestens zwei Angebote.",tr:"İpucu: Satarken her zaman gram fiyatını ve ağırlığı fişe yazdır. Tüketici programları değerin çok altında teklif veren alıcılar buldu. En az iki teklifi karşılaştır."},
+
+costTitle:{nl:"Wat is de goedkoopste manier om goud te hebben?",en:"What is the cheapest way to own gold?",de:"Wie besitzt man Gold am günstigsten?",tr:"Altın sahibi olmanın en ucuz yolu hangisi?"},
+costLead:{nl:"Elke manier heeft andere kosten: opslag, het verschil tussen koop- en verkoopprijs, en vaste kosten. Hier zie je ze naast elkaar.",en:"Every way has different costs: storage, the gap between buying and selling price, and fixed fees. Here you see them side by side.",de:"Jeder Weg hat andere Kosten: Lagerung, die Spanne zwischen Kauf- und Verkaufspreis und feste Gebühren. Hier siehst du sie nebeneinander.",tr:"Her yolun maliyeti farklı: saklama ücreti, alış ile satış fiyatı arasındaki fark ve sabit ücretler. Burada hepsini yan yana görürsün."},
+costMode:{nl:"Hoe leg je in?",en:"How do you invest?",de:"Wie legst du an?",tr:"Nasıl yatırırsın?"},
+costMonthly:{nl:"Elke maand een bedrag",en:"A monthly amount",de:"Monatlich ein Betrag",tr:"Her ay bir miktar"},
+costOnce:{nl:"Eén keer een bedrag",en:"A one-off amount",de:"Einmal ein Betrag",tr:"Tek seferlik bir miktar"},
+costAmtM:{nl:"Bedrag per maand ({0})",en:"Amount per month ({0})",de:"Betrag pro Monat ({0})",tr:"Aylık tutar ({0})"},
+costAmtO:{nl:"Bedrag ({0})",en:"Amount ({0})",de:"Betrag ({0})",tr:"Tutar ({0})"},
+costYears:{nl:"Hoeveel jaar?",en:"How many years?",de:"Wie viele Jahre?",tr:"Kaç yıl?"},
+costHead:{nl:"Totale kosten na {0} jaar",en:"Total costs after {0} years",de:"Gesamtkosten nach {0} Jahren",tr:"{0} yıl sonunda toplam maliyet"},
+costInvested:{nl:"Ingelegd: {0}",en:"Invested: {0}",de:"Eingezahlt: {0}",tr:"Yatırılan: {0}"},
+costKeep:{nl:"je houdt {0} over",en:"you keep {0}",de:"dir bleiben {0}",tr:"elinde {0} kalır"},
+costBest:{nl:"goedkoopst",en:"cheapest",de:"am günstigsten",tr:"en ucuz"},
+costAssume:{nl:"Aanname: de goudprijs blijft gelijk, zodat je alleen de kosten ziet. Belasting is niet meegenomen. Inclusief verkoop aan het eind.",en:"Assumption: the gold price stays the same, so you only see the costs. Tax is not included. Includes selling at the end.",de:"Annahme: Der Goldpreis bleibt gleich, damit du nur die Kosten siehst. Steuern sind nicht berücksichtigt. Inklusive Verkauf am Ende.",tr:"Varsayım: altın fiyatı sabit kalıyor, böylece yalnızca maliyetleri görürsün. Vergi dahil değil. Sonda satış dahildir."},
+costEdit:{nl:"Kosten per manier bekijken of aanpassen",en:"View or change the costs per method",de:"Kosten je Weg ansehen oder anpassen",tr:"Her yolun maliyetini gör veya değiştir"},
+costSrc:{nl:"Standaardwaarden zijn typische kosten uit openbare tarieven van aanbieders (2024–2026). Ze verschillen per aanbieder; vul gerust je eigen tarieven in.",en:"Default values are typical costs from providers' public price lists (2024–2026). They differ per provider; feel free to enter your own rates.",de:"Die Standardwerte sind typische Kosten aus öffentlichen Preislisten (2024–2026). Sie unterscheiden sich je Anbieter; trage gern deine eigenen Konditionen ein.",tr:"Varsayılan değerler, sağlayıcıların açık fiyat listelerinden alınmış tipik maliyetlerdir (2024–2026). Sağlayıcıya göre değişir; kendi oranlarını girebilirsin."},
+costReset:{nl:"Standaardwaarden terugzetten",en:"Restore defaults",de:"Standardwerte wiederherstellen",tr:"Varsayılanlara dön"},
+costNote:{nl:"Dit is informatie, geen advies. Naast kosten tellen ook veiligheid, zelf vasthouden en belasting. Bij een ETC heb je geen goud in huis, bij een baar wel.",en:"This is information, not advice. Besides costs, safety, holding it yourself and tax also matter. With an ETC you hold no gold at home; with a bar you do.",de:"Das ist eine Information, keine Beratung. Neben den Kosten zählen auch Sicherheit, eigener Besitz und Steuern. Bei einem ETC hast du kein Gold zu Hause, bei einem Barren schon.",tr:"Bu bir bilgidir, tavsiye değildir. Maliyetin yanında güvenlik, altını elinde tutmak ve vergi de önemlidir. ETC'de evde altın olmaz, külçede olur."},
+cBuy:{nl:"Kosten bij kopen",en:"Cost when buying",de:"Kosten beim Kauf",tr:"Alış maliyeti"},
+cSell:{nl:"Kosten bij verkopen",en:"Cost when selling",de:"Kosten beim Verkauf",tr:"Satış maliyeti"},
+cStore:{nl:"Opslag per jaar",en:"Storage per year",de:"Lagerung pro Jahr",tr:"Yıllık saklama"},
+cMin:{nl:"Minimum per jaar",en:"Minimum per year",de:"Minimum pro Jahr",tr:"Yıllık asgari"},
+cMethod:{nl:"Manier",en:"Method",de:"Weg",tr:"Yöntem"},
+r_etc:{nl:"Goud-ETC via een broker",en:"Gold ETC via a broker",de:"Gold-ETC über einen Broker",tr:"Aracı kurumda altın ETC"},
+r_etc_d:{nl:"beursproduct gedekt door goud, bv. Xetra-Gold",en:"exchange product backed by gold, e.g. Xetra-Gold",de:"börsengehandelt und mit Gold hinterlegt, z. B. Xetra-Gold",tr:"altınla desteklenen borsa ürünü, örn. Xetra-Gold"},
+r_app:{nl:"Goud in een app",en:"Gold in an app",de:"Gold in einer App",tr:"Uygulamada altın"},
+r_app_d:{nl:"digitaal goud in een beleggingsapp",en:"digital gold in an investing app",de:"digitales Gold in einer Anlage-App",tr:"yatırım uygulamasında dijital altın"},
+r_vault:{nl:"Kluisrekening",en:"Vault account",de:"Tresorkonto",tr:"Kasa hesabı"},
+r_vault_d:{nl:"echt goud op jouw naam in een kluis",en:"real gold in your name in a vault",de:"echtes Gold auf deinen Namen im Tresor",tr:"kasada senin adına gerçek altın"},
+r_plan:{nl:"Goudspaarplan bij een handelaar",en:"Gold savings plan at a dealer",de:"Goldsparplan beim Händler",tr:"Satıcıda altın birikim planı"},
+r_plan_d:{nl:"maandelijks kopen, handelaar bewaart",en:"buy monthly, dealer stores it",de:"monatlich kaufen, Händler lagert",tr:"her ay alım, satıcı saklar"},
+r_coin:{nl:"Eén keer per jaar een munt",en:"One coin per year",de:"Einmal im Jahr eine Münze",tr:"Yılda bir sikke"},
+r_coin_d:{nl:"sparen, dan 1 oz kopen en thuis bewaren",en:"save, then buy 1 oz and keep it at home",de:"sparen, dann 1 Unze kaufen und zu Hause lagern",tr:"biriktir, sonra 1 ons al ve evde sakla"},
+r_coin_once:{nl:"Munten of baren in één keer",en:"Coins or bars in one go",de:"Münzen oder Barren auf einmal",tr:"Tek seferde sikke ya da külçe"},
+r_coin_once_d:{nl:"1 oz munten of 100 g baren, thuis bewaren",en:"1 oz coins or 100 g bars, kept at home",de:"1-Unzen-Münzen oder 100-g-Barren, zu Hause gelagert",tr:"1 ons sikke ya da 100 g külçe, evde saklanır"},
+r_gram:{nl:"Elke maand een baartje van 1 gram",en:"A 1 gram bar every month",de:"Jeden Monat ein 1-Gramm-Barren",tr:"Her ay 1 gramlık külçe"},
+r_gram_d:{nl:"kleine baartjes hebben een hoge opslag",en:"small bars carry a high premium",de:"kleine Barren haben hohe Aufgelder",tr:"küçük külçelerin primi yüksektir"},
+
+taxTitle:{nl:"Belasting op goud",en:"Tax on gold",de:"Steuern auf Gold",tr:"Altında vergi"},
+taxLead:{nl:"De regels verschillen per land. Kies je land.",en:"The rules differ per country. Choose your country.",de:"Die Regeln sind je Land verschieden. Wähle dein Land.",tr:"Kurallar ülkeye göre değişir. Ülkeni seç."},
+cDE:{nl:"Duitsland",en:"Germany",de:"Deutschland",tr:"Almanya"}, cNL:{nl:"Nederland",en:"Netherlands",de:"Niederlande",tr:"Hollanda"}, cUK:{nl:"Verenigd Koninkrijk",en:"United Kingdom",de:"Vereinigtes Königreich",tr:"Birleşik Krallık"},
+tProd:{nl:"Wat heb je?",en:"What do you have?",de:"Was hast du?",tr:"Elinde ne var?"},
+tPhys:{nl:"Fysiek goud, Xetra-Gold of Euwax Gold",en:"Physical gold, Xetra-Gold or Euwax Gold",de:"Physisches Gold, Xetra-Gold oder Euwax Gold",tr:"Fiziki altın, Xetra-Gold veya Euwax Gold"},
+tEtf:{nl:"Goud-ETF of ETC zonder leveringsrecht",en:"Gold ETF or ETC without delivery right",de:"Gold-ETF oder ETC ohne Lieferanspruch",tr:"Teslim hakkı olmayan altın ETF/ETC"},
+tBuyDate:{nl:"Gekocht op",en:"Bought on",de:"Gekauft am",tr:"Alış tarihi"},
+tSellDate:{nl:"Verkocht op",en:"Sold on",de:"Verkauft am",tr:"Satış tarihi"},
+tBuyAmt:{nl:"Aankoopbedrag (€, incl. kosten)",en:"Purchase amount (€, incl. costs)",de:"Kaufpreis (€, inkl. Kosten)",tr:"Alış tutarı (€, masraflar dahil)"},
+tSellAmt:{nl:"Verkoopbedrag (€, na kosten)",en:"Sale amount (€, after costs)",de:"Verkaufserlös (€, nach Kosten)",tr:"Satış tutarı (€, masraflar düşülmüş)"},
+tOther:{nl:"Andere winst uit privéverkopen dit jaar (€)",en:"Other gains from private sales this year (€)",de:"Andere Gewinne aus privaten Veräußerungen dieses Jahr (€)",tr:"Bu yıl diğer özel satış kazançları (€)"},
+tRate:{nl:"Je persoonlijke belastingtarief (%)",en:"Your personal tax rate (%)",de:"Dein persönlicher Steuersatz (%)",tr:"Kişisel vergi oranın (%)"},
+tAllow:{nl:"Nog vrije Sparer-Pauschbetrag (€)",en:"Remaining saver's allowance (€)",de:"Noch freier Sparer-Pauschbetrag (€)",tr:"Kalan tasarruf muafiyeti (€)"},
+tResult:{nl:"Uitkomst (indicatie)",en:"Result (indication)",de:"Ergebnis (Richtwert)",tr:"Sonuç (tahmini)"},
+tFree:{nl:"Belastingvrij",en:"Tax-free",de:"Steuerfrei",tr:"Vergiden muaf"},
+tTaxed:{nl:"Belasting: {0}",en:"Tax: {0}",de:"Steuer: {0}",tr:"Vergi: {0}"},
+tLoss:{nl:"Verlies, geen belasting",en:"Loss, no tax",de:"Verlust, keine Steuer",tr:"Zarar, vergi yok"},
+tHold:{nl:"Looptijd",en:"Holding period",de:"Haltedauer",tr:"Elde tutma süresi"},
+tDays:{nl:"{0} dagen",en:"{0} days",de:"{0} Tage",tr:"{0} gün"},
+tGain:{nl:"Winst",en:"Gain",de:"Gewinn",tr:"Kazanç"},
+tNet:{nl:"Netto over",en:"Net left",de:"Netto übrig",tr:"Net kalan"},
+tFreeFrom:{nl:"Belastingvrij vanaf",en:"Tax-free from",de:"Steuerfrei ab",tr:"Vergisiz olduğu tarih"},
+tExplFree:{nl:"Je hield het goud langer dan één jaar. Dan is de winst in Duitsland belastingvrij (§ 23 EStG).",en:"You held the gold for more than one year. In Germany the gain is then tax-free (§ 23 EStG).",de:"Du hast das Gold länger als ein Jahr gehalten. Dann ist der Gewinn steuerfrei (§ 23 EStG).",tr:"Altını bir yıldan uzun tuttun. Almanya'da kazanç bu durumda vergiden muaftır (§ 23 EStG)."},
+tExplUnder:{nl:"Binnen een jaar verkocht, maar je totale winst uit privéverkopen dit jaar blijft onder € 1.000. Dan betaal je niets (vrijgrens).",en:"Sold within a year, but your total private-sale gains this year stay below €1,000. Then you pay nothing (exemption limit).",de:"Innerhalb eines Jahres verkauft, aber deine gesamten privaten Veräußerungsgewinne bleiben dieses Jahr unter 1.000 €. Dann zahlst du nichts (Freigrenze).",tr:"Bir yıl içinde sattın, ama bu yılki toplam özel satış kazancın 1.000 €'nun altında. Bu durumda vergi yok (muafiyet sınırı)."},
+tExplTax:{nl:"Binnen een jaar verkocht en je totale winst uit privéverkopen is € 1.000 of meer. Dan is de hele winst belast tegen je persoonlijke tarief (zonder kerkbelasting). Wacht je tot de datum hieronder, dan is het belastingvrij.",en:"Sold within a year and your total private-sale gains are €1,000 or more. Then the whole gain is taxed at your personal rate (excluding church tax). If you wait until the date below, it is tax-free.",de:"Innerhalb eines Jahres verkauft und deine privaten Veräußerungsgewinne liegen bei 1.000 € oder mehr. Dann ist der ganze Gewinn mit deinem persönlichen Steuersatz zu versteuern (ohne Kirchensteuer). Wartest du bis zum Datum unten, ist er steuerfrei.",tr:"Bir yıl içinde sattın ve toplam özel satış kazancın 1.000 € veya fazla. Bu durumda kazancın tamamı kişisel oranından vergilendirilir (kilise vergisi hariç). Aşağıdaki tarihe kadar beklersen vergisiz olur."},
+tExplEtf:{nl:"Een goud-ETF zonder leveringsrecht is in Duitsland altijd belast met afgeltingsheffing: 25% plus 5,5% solidariteitstoeslag (zonder kerkbelasting), na de Sparer-Pauschbetrag van € 1.000. Hoe lang je het hield maakt niet uit.",en:"A gold ETF without a delivery right is always taxed in Germany with flat-rate withholding tax: 25% plus 5.5% solidarity surcharge (without church tax), after the €1,000 saver's allowance. The holding period does not matter.",de:"Ein Gold-ETF ohne Lieferanspruch unterliegt immer der Abgeltungsteuer: 25 % plus 5,5 % Solidaritätszuschlag (ohne Kirchensteuer), nach dem Sparer-Pauschbetrag von 1.000 €. Die Haltedauer spielt keine Rolle.",tr:"Teslim hakkı olmayan bir altın ETF'i Almanya'da her zaman stopaj vergisine tabidir: %25 artı %5,5 dayanışma vergisi (kilise vergisi hariç), 1.000 € tasarruf muafiyetinden sonra. Elde tutma süresi önemli değildir."},
+tExplLoss:{nl:"Je verkocht met verlies. Dan betaal je geen belasting.",en:"You sold at a loss. Then you pay no tax.",de:"Du hast mit Verlust verkauft. Dann zahlst du keine Steuer.",tr:"Zararına sattın. Bu durumda vergi ödemezsin."},
+tExplDates:{nl:"Vul geldige data in (verkoop na aankoop).",en:"Enter valid dates (sale after purchase).",de:"Gib gültige Daten ein (Verkauf nach Kauf).",tr:"Geçerli tarihler gir (satış alıştan sonra)."},
+nlTitle:{nl:"Nederland: geen belasting bij verkoop",en:"Netherlands: no tax when selling",de:"Niederlande: keine Steuer beim Verkauf",tr:"Hollanda: satışta vergi yok"},
+nlBody:{nl:"In Nederland betaal je geen belasting over de winst als je goud verkoopt. Goud telt wel mee in box 3: de waarde op 1 januari hoort bij je vermogen, en daarover kan vermogensbelasting gelden boven het heffingsvrije vermogen. Beleggingsgoud (baren en munten van minstens 99,5% en 90% zuiver) is vrij van btw.",en:"In the Netherlands you pay no tax on the gain when you sell gold. Gold does count in box 3: its value on 1 January is part of your wealth, which may be taxed above the tax-free allowance. Investment gold (bars and coins of at least 99.5% and 90% purity) is exempt from VAT.",de:"In den Niederlanden zahlst du beim Verkauf von Gold keine Steuer auf den Gewinn. Gold zählt aber in „Box 3“: Sein Wert am 1. Januar gehört zu deinem Vermögen, auf das oberhalb des Freibetrags Vermögensteuer anfallen kann. Anlagegold (Barren ab 99,5 % und Münzen ab 90 % Feinheit) ist mehrwertsteuerfrei.",tr:"Hollanda'da altın satınca kazanç üzerinden vergi ödemezsin. Ancak altın 3. kutuda (box 3) sayılır: 1 Ocak'taki değeri servetinin parçasıdır ve vergisiz sınırın üzerinde servet vergisi çıkabilir. Yatırım altını (en az %99,5 saflıkta külçe ve %90 saflıkta sikke) KDV'den muaftır."},
+ukTitle:{nl:"Verenigd Koninkrijk: let op welke munt",en:"United Kingdom: it depends on the coin",de:"Vereinigtes Königreich: es kommt auf die Münze an",tr:"Birleşik Krallık: sikkeye bağlı"},
+ukBody:{nl:"Britse munten die wettig betaalmiddel zijn, zoals de Sovereign en de Britannia, zijn vrijgesteld van vermogenswinstbelasting (CGT). Voor baren en buitenlandse munten geldt CGT over winst boven de jaarlijkse vrijstelling van £ 3.000. Beleggingsgoud is vrij van btw.",en:"British coins that are legal tender, such as the Sovereign and the Britannia, are exempt from Capital Gains Tax (CGT). For bars and foreign coins, CGT applies to gains above the annual exempt amount of £3,000. Investment gold is exempt from VAT.",de:"Britische Münzen mit gesetzlichem Zahlungsmittelstatus, etwa Sovereign und Britannia, sind von der Kapitalertragsteuer (CGT) befreit. Für Barren und ausländische Münzen gilt CGT auf Gewinne über dem jährlichen Freibetrag von 3.000 £. Anlagegold ist mehrwertsteuerfrei.",tr:"Sovereign ve Britannia gibi yasal ödeme aracı olan İngiliz sikkeleri sermaye kazancı vergisinden (CGT) muaftır. Külçe ve yabancı sikkelerde yıllık 3.000 £ muafiyetin üzerindeki kazanca CGT uygulanır. Yatırım altını KDV'den muaftır."},
+taxNote:{nl:"Dit is een indicatie en geen belastingadvies. Regels kunnen veranderen; check je eigen situatie bij een adviseur of de belastingdienst.",en:"This is an indication, not tax advice. Rules can change; check your own situation with an adviser or the tax office.",de:"Das ist ein Richtwert und keine Steuerberatung. Regeln können sich ändern; prüfe deine Situation mit einem Steuerberater oder dem Finanzamt.",tr:"Bu bir tahmindir, vergi tavsiyesi değildir. Kurallar değişebilir; kendi durumunu bir danışmana veya vergi dairesine danış."},
+
+buyTitle:{nl:"Wat hoort goud te kosten?",en:"What should gold cost?",de:"Was sollte Gold kosten?",tr:"Altın ne kadar olmalı?"},
+buyLead:{nl:"Een winkel rekent altijd een opslag bovenop de goudwaarde. Hoe kleiner het stuk, hoe hoger de opslag. Zo zie je of een prijs redelijk is.",en:"A shop always charges a premium on top of the gold value. The smaller the piece, the higher the premium. This shows whether a price is reasonable.",de:"Ein Händler verlangt immer ein Aufgeld auf den Goldwert. Je kleiner das Stück, desto höher das Aufgeld. So siehst du, ob ein Preis fair ist.",tr:"Satıcı her zaman altın değerinin üzerine bir prim ekler. Parça ne kadar küçükse prim o kadar yüksek olur. Böylece bir fiyatın makul olup olmadığını görürsün."},
+buyPhase:{nl:"Prototype: hier komen straks de echte, actuele prijzen van handelaren naast elkaar. Nu zie je de live goudwaarde en een gangbare prijsband.",en:"Prototype: this is where dealers' real, current prices will appear side by side. For now you see the live gold value and a typical price band.",de:"Prototyp: Hier erscheinen später die echten, aktuellen Händlerpreise nebeneinander. Jetzt siehst du den Live-Goldwert und eine übliche Preisspanne.",tr:"Prototip: Burada yakında satıcıların gerçek, güncel fiyatları yan yana olacak. Şimdilik canlı altın değerini ve olağan bir fiyat aralığını görüyorsun."},
+bProduct:{nl:"Product",en:"Product",de:"Produkt",tr:"Ürün"},
+bFine:{nl:"Puur goud",en:"Pure gold",de:"Feingold",tr:"Saf altın"},
+bValue:{nl:"Goudwaarde nu",en:"Gold value now",de:"Goldwert jetzt",tr:"Şu anki altın değeri"},
+bPrem:{nl:"Gangbare opslag",en:"Typical premium",de:"Übliches Aufgeld",tr:"Olağan prim"},
+bRange:{nl:"Redelijke prijs",en:"Reasonable price",de:"Fairer Preis",tr:"Makul fiyat"},
+buyFoot:{nl:"Opslag is een indicatie op basis van openbare prijzen van grote handelaren (2024–2026). Verzendkosten niet inbegrepen.",en:"Premium is an indication based on public prices of large dealers (2024–2026). Shipping not included.",de:"Das Aufgeld ist ein Richtwert auf Basis öffentlicher Preise großer Händler (2024–2026). Versand nicht inbegriffen.",tr:"Prim, büyük satıcıların açık fiyatlarına dayanan bir tahmindir (2024–2026). Kargo dahil değil."},
+buyDealers:{nl:"Bekende handelaren per land",en:"Well-known dealers by country",de:"Bekannte Händler nach Land",tr:"Ülkelere göre bilinen satıcılar"},
+buyDealersNote:{nl:"Alfabetisch, zonder betaalde volgorde. Geen aanbeveling.",en:"Alphabetical, no paid ranking. Not a recommendation.",de:"Alphabetisch, keine bezahlte Reihenfolge. Keine Empfehlung.",tr:"Alfabetik, ücretli sıralama yok. Tavsiye değildir."},
+
+newsTitle:{nl:"Goudnieuws",en:"Gold news",de:"Goldnachrichten",tr:"Altın haberleri"},
+newsLead:{nl:"Nieuws dat de goudprijs kan bewegen, automatisch verzameld uit betrouwbare bronnen. Berichten staan in hun oorspronkelijke taal.",en:"News that can move the gold price, collected automatically from reliable sources. Items are in their original language.",de:"Nachrichten, die den Goldpreis bewegen können, automatisch aus seriösen Quellen gesammelt. Meldungen stehen in ihrer Originalsprache.",tr:"Altın fiyatını etkileyebilecek haberler, güvenilir kaynaklardan otomatik toplanır. Haberler kendi orijinal dillerindedir."},
+nAll:{nl:"Alles",en:"All",de:"Alle",tr:"Tümü"},
+cat_gold:{nl:"Goud",en:"Gold",de:"Gold",tr:"Altın"}, cat_rates:{nl:"Rente",en:"Rates",de:"Zinsen",tr:"Faiz"},
+cat_economy:{nl:"Economie",en:"Economy",de:"Wirtschaft",tr:"Ekonomi"}, cat_currency:{nl:"Valuta",en:"Currency",de:"Währung",tr:"Döviz"},
+cat_conflict:{nl:"Conflict",en:"Conflict",de:"Konflikt",tr:"Çatışma"},
+nEmpty:{nl:"Geen berichten in deze categorie.",en:"No items in this category.",de:"Keine Meldungen in dieser Kategorie.",tr:"Bu kategoride haber yok."},
+nErr:{nl:"Nieuws is nu niet bereikbaar.",en:"News is not reachable right now.",de:"Nachrichten sind gerade nicht erreichbar.",tr:"Haberlere şu an ulaşılamıyor."},
+nUpd:{nl:"Nieuws bijgewerkt {0}",en:"News updated {0}",de:"Nachrichten aktualisiert {0}",tr:"Haberler güncellendi {0}"},
+
+aboutTitle:{nl:"Over Valoro",en:"About Valoro",de:"Über Valoro",tr:"Valoro hakkında"},
+aboutWho:{nl:"Wie zit erachter?",en:"Who is behind it?",de:"Wer steckt dahinter?",tr:"Arkasında kim var?"},
+aboutWhoBody:{nl:"Valoro is gemaakt door Furkan Kilic uit Nederland. Het doel: eerlijke, begrijpelijke informatie over goud en geld, in je eigen taal. Valoro is een werknaam; dit is een prototype.",en:"Valoro is made by Furkan Kilic from the Netherlands. The goal: honest, clear information about gold and money, in your own language. Valoro is a working name; this is a prototype.",de:"Valoro wird von Furkan Kilic aus den Niederlanden gemacht. Das Ziel: ehrliche, verständliche Informationen über Gold und Geld, in deiner Sprache. Valoro ist ein Arbeitstitel; dies ist ein Prototyp.",tr:"Valoro, Hollanda'dan Furkan Kilic tarafından yapıldı. Amaç: altın ve para hakkında dürüst, anlaşılır bilgi, kendi dilinde. Valoro geçici bir isimdir; bu bir prototiptir."},
+aboutMoney:{nl:"Hoe verdienen we?",en:"How do we earn money?",de:"Wie verdienen wir Geld?",tr:"Nasıl para kazanıyoruz?"},
+aboutMoneyBody:{nl:"Nu nog niet. Later kan een aanbieder ons een vergoeding geven als je via een link klant wordt. Dat verandert nooit de uitkomst van een calculator of de volgorde van een lijst. Elke betaalde link wordt duidelijk gemarkeerd.",en:"Not yet. Later a provider may pay us a fee if you become a customer via a link. That never changes a calculator's result or the order of a list. Every paid link will be clearly marked.",de:"Noch gar nicht. Später kann ein Anbieter uns eine Vergütung zahlen, wenn du über einen Link Kunde wirst. Das ändert nie das Ergebnis eines Rechners oder die Reihenfolge einer Liste. Jeder bezahlte Link wird klar gekennzeichnet.",tr:"Şimdilik kazanmıyoruz. İleride bir bağlantı üzerinden müşteri olursan sağlayıcı bize ücret ödeyebilir. Bu hiçbir zaman hesaplayıcının sonucunu ya da listenin sırasını değiştirmez. Her ücretli bağlantı açıkça belirtilir."},
+aboutData:{nl:"Waar komen de cijfers vandaan?",en:"Where do the numbers come from?",de:"Woher kommen die Zahlen?",tr:"Rakamlar nereden geliyor?"},
+aboutDataBody:{nl:"Live goud-, zilver- en platinaprijs: gold-api.com, met Binance (PAXG) als reserve. Wisselkoersen: Europese Centrale Bank via Frankfurter. Koershistorie: Binance. Nieuws: openbare RSS-feeds van onder meer NOS, BBC, ECB, Federal Reserve, DW en AA, elke 10 minuten verzameld.",en:"Live gold, silver and platinum price: gold-api.com, with Binance (PAXG) as backup. Exchange rates: European Central Bank via Frankfurter. Price history: Binance. News: public RSS feeds from NOS, BBC, ECB, Federal Reserve, DW, AA and others, collected every 10 minutes.",de:"Live-Preise für Gold, Silber und Platin: gold-api.com, mit Binance (PAXG) als Reserve. Wechselkurse: Europäische Zentralbank über Frankfurter. Kurshistorie: Binance. Nachrichten: öffentliche RSS-Feeds u. a. von NOS, BBC, EZB, Federal Reserve, DW und AA, alle 10 Minuten gesammelt.",tr:"Canlı altın, gümüş ve platin fiyatı: gold-api.com, yedek olarak Binance (PAXG). Döviz kurları: Frankfurter üzerinden Avrupa Merkez Bankası. Fiyat geçmişi: Binance. Haberler: NOS, BBC, ECB, Federal Reserve, DW, AA ve diğerlerinin açık RSS akışları, 10 dakikada bir toplanır."},
+aboutLegal:{nl:"Belangrijk om te weten",en:"Good to know",de:"Wichtig zu wissen",tr:"Bilinmesi gerekenler"},
+aboutLegalBody:{nl:"Alles op deze site is informatie, geen financieel of belastingadvies. We verkopen niets en bewaren geen geld of goud. Prijzen kunnen vertraagd zijn; controleer bij de aanbieder voordat je iets koopt of verkoopt.",en:"Everything on this site is information, not financial or tax advice. We sell nothing and hold no money or gold. Prices may be delayed; check with the provider before you buy or sell.",de:"Alles auf dieser Seite ist Information, keine Finanz- oder Steuerberatung. Wir verkaufen nichts und verwahren weder Geld noch Gold. Preise können verzögert sein; prüfe beim Anbieter, bevor du kaufst oder verkaufst.",tr:"Bu sitedeki her şey bilgidir, finansal veya vergi tavsiyesi değildir. Hiçbir şey satmıyoruz, para ya da altın saklamıyoruz. Fiyatlar gecikmeli olabilir; alım satım yapmadan önce sağlayıcıya danış."},
+foot1:{nl:"Valoro (werknaam) · prototype · niet definitief · door Furkan Kilic",en:"Valoro (working name) · prototype · not final · by Furkan Kilic",de:"Valoro (Arbeitstitel) · Prototyp · nicht final · von Furkan Kilic",tr:"Valoro (geçici isim) · prototip · kesin değil · Furkan Kilic"},
+foot2:{nl:"Informatie, geen advies. Gegevens: gold-api.com, ECB (Frankfurter), Binance, openbare nieuwsfeeds.",en:"Information, not advice. Data: gold-api.com, ECB (Frankfurter), Binance, public news feeds.",de:"Information, keine Beratung. Daten: gold-api.com, EZB (Frankfurter), Binance, öffentliche Nachrichtenfeeds.",tr:"Bilgidir, tavsiye değildir. Veriler: gold-api.com, ECB (Frankfurter), Binance, açık haber akışları."},
+};
+const ITEM_NAMES = {
+ g24:{nl:"Puur goud (24 karaat, baar)",en:"Pure gold (24 carat, bar)",de:"Feingold (24 Karat, Barren)",tr:"Saf altın (24 ayar, külçe)"},
+ k22:{nl:"Sieraad 22 karaat (916)",en:"Jewellery 22 carat (916)",de:"Schmuck 22 Karat (916)",tr:"22 ayar takı / bilezik (916)"},
+ k18:{nl:"Sieraad 18 karaat (750)",en:"Jewellery 18 carat (750)",de:"Schmuck 18 Karat (750)",tr:"18 ayar takı (750)"},
+ k14:{nl:"Sieraad 14 karaat (585)",en:"Jewellery 14 carat (585)",de:"Schmuck 14 Karat (585)",tr:"14 ayar takı (585)"},
+ k9:{nl:"Sieraad 9 karaat (375)",en:"Jewellery 9 carat (375)",de:"Schmuck 9 Karat (375)",tr:"9 ayar takı (375)"},
+ kr:{nl:"Krugerrand 1 oz",en:"Krugerrand 1 oz",de:"Krügerrand 1 oz",tr:"Krugerrand 1 ons"},
+ ml:{nl:"Maple Leaf 1 oz",en:"Maple Leaf 1 oz",de:"Maple Leaf 1 oz",tr:"Maple Leaf 1 ons"},
+ ph:{nl:"Wiener Philharmoniker 1 oz",en:"Vienna Philharmonic 1 oz",de:"Wiener Philharmoniker 1 oz",tr:"Viyana Filarmoni 1 ons"},
+ br:{nl:"Britannia 1 oz",en:"Britannia 1 oz",de:"Britannia 1 oz",tr:"Britannia 1 ons"},
+ sov:{nl:"Sovereign",en:"Sovereign",de:"Sovereign",tr:"Sovereign"},
+ g10:{nl:"10 gulden (Nederland)",en:"10 guilders (Netherlands)",de:"10 Gulden (Niederlande)",tr:"10 gulden (Hollanda)"},
+ duk:{nl:"Gouden dukaat (Nederland)",en:"Gold ducat (Netherlands)",de:"Golddukat (Niederlande)",tr:"Altın duka (Hollanda)"},
+ vre:{nl:"Vreneli 20 frank",en:"Vreneli 20 francs",de:"Vreneli 20 Franken",tr:"Vreneli 20 frank"},
+ nap:{nl:"Napoleon 20 frank",en:"Napoleon 20 francs",de:"Napoleon 20 Francs",tr:"Napolyon 20 frank"},
+ cey:{nl:"Çeyrek altın",en:"Çeyrek (quarter) gold coin",de:"Çeyrek Altın (Viertel)",tr:"Çeyrek altın"},
+ yar:{nl:"Yarım altın",en:"Yarım (half) gold coin",de:"Yarım Altın (Halb)",tr:"Yarım altın"},
+ tam:{nl:"Tam altın",en:"Tam (full) gold coin",de:"Tam Altın (Ganz)",tr:"Tam altın"},
+ ata:{nl:"Ata / Cumhuriyet altını",en:"Ata / Cumhuriyet gold coin",de:"Ata-/Cumhuriyet-Goldmünze",tr:"Ata / Cumhuriyet altını"},
+};
+// fine: gram puur goud per stuk; purity: zuiverheid per gram (voor gewicht-items)
+const ITEMS = [
+ {id:"g24", purity:.9999}, {id:"k22", purity:.916}, {id:"k18", purity:.75}, {id:"k14", purity:.585}, {id:"k9", purity:.375},
+ {id:"kr", fine:OZ}, {id:"ml", fine:OZ}, {id:"ph", fine:OZ}, {id:"br", fine:OZ}, {id:"sov", fine:7.3224},
+ {id:"g10", fine:6.056}, {id:"duk", fine:3.4346}, {id:"vre", fine:5.8065}, {id:"nap", fine:5.8065},
+ {id:"cey", fine:1.754*.916}, {id:"yar", fine:3.508*.916}, {id:"tam", fine:7.016*.916}, {id:"ata", fine:7.216*.916},
+];
+
+let lang = "nl", cur = "EUR";
+try { const p = JSON.parse(localStorage.getItem("valoro-pref")||"{}"); if (LANGS.includes(p.lang)) lang = p.lang; if (CURS.includes(p.cur)) cur = p.cur; } catch(e){}
+{ const q = new URLSearchParams(location.search).get("lang"); if (LANGS.includes(q)) lang = q;
+  else { try { if (!localStorage.getItem("valoro-pref")) { const n = (navigator.language||"en").slice(0,2); lang = LANGS.includes(n) ? n : "en"; if (lang==="tr") cur = "TRY"; if (lang==="en" && /GB/.test(navigator.language)) cur = "GBP"; } } catch(e){} } }
+const savePref = () => { try { localStorage.setItem("valoro-pref", JSON.stringify({lang, cur})); } catch(e){} };
+const t = (k, ...a) => { const e = T[k]; let s = e ? (e[lang] ?? e.en) : k; a.forEach((v,i)=> s = s.replace("{"+i+"}", v)); return s; };
+const nm = o => o[lang] ?? o.en;
+const loc = () => LOCALE[lang];
+const money = (v, d) => v==null || !isFinite(v) ? "—" : new Intl.NumberFormat(loc(), {style:"currency", currency:cur, currencyDisplay:"narrowSymbol", minimumFractionDigits:d??2, maximumFractionDigits:d??2}).format(v);
+const moneyIn = (v, c, d) => v==null || !isFinite(v) ? "—" : new Intl.NumberFormat(loc(), {style:"currency", currency:c, currencyDisplay:"narrowSymbol", minimumFractionDigits:d??2, maximumFractionDigits:d??2}).format(v);
+const numf = (v, d=2) => new Intl.NumberFormat(loc(), {minimumFractionDigits:d, maximumFractionDigits:d}).format(v);
+const pct = (v, d=2) => (v>0?"+":"") + numf(v, d) + "%";
+const parseNum = s => { s = String(s||"").trim().replace(/\s/g,""); if (!s) return NaN;
+  if (s.includes(",") && s.includes(".")) s = s.lastIndexOf(",") > s.lastIndexOf(".") ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,"");
+  else if (s.includes(",")) s = s.replace(",","."); return parseFloat(s); };
+
+/* ---------------- data ---------------- */
+const S = { oz:null, ag:null, pt:null, src:null, at:null, ok:false, fx:null /* units of cur per USD */, rates:null /* per EUR */, hist:{}, range:"D", news:null, newsErr:false, newsCat:"all" };
+async function getJSON(url, ms=9000){
+  const ctl = new AbortController(); const tm = setTimeout(()=>ctl.abort(), ms);
+  try { const r = await fetch(url, {signal:ctl.signal, cache:"no-store"}); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  finally { clearTimeout(tm); }
+}
+const BIN = ["https://data-api.binance.vision","https://api.binance.com"];
+async function binPrice(sym){ for (const b of BIN){ try { const j = await getJSON(`${b}/api/v3/ticker/price?symbol=${sym}`); if (+j.price>0) return +j.price; } catch(e){} } throw new Error("binance"); }
+async function updateFx(){
+  const srcs = [
+    async()=> (await getJSON("https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP,TRY")).rates,
+    async()=> (await getJSON("https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,TRY")).rates,
+    async()=> { const r = (await getJSON("https://open.er-api.com/v6/latest/EUR")).rates; return {USD:r.USD, GBP:r.GBP, TRY:r.TRY}; },
+    async()=> { const [e,g,tr] = await Promise.all([binPrice("EURUSDT"), binPrice("GBPUSDT"), binPrice("USDTTRY")]); return {USD:e, GBP:e/g, TRY:e*tr}; },
+  ];
+  for (const f of srcs){ try { const r = await f(); if (r.USD>0.5 && r.USD<2 && r.GBP>0.4 && r.TRY>1){ S.rates = {EUR:1, USD:+r.USD, GBP:+r.GBP, TRY:+r.TRY}; break; } } catch(e){} }
+  renderPrices(); renderAllTools();
+}
+const perUsd = c => S.rates ? S.rates[c] / S.rates.USD : null;   // units of currency c per 1 USD
+const ozCur = () => (S.oz!=null && perUsd(cur)) ? S.oz * perUsd(cur) : null;
+const gramCur = () => { const o = ozCur(); return o==null ? null : o / OZ; };
+async function updateMetals(){
+  let p = null, src = null;
+  try { const j = await getJSON("https://api.gold-api.com/price/XAU"); if (+j.price>500 && +j.price<50000){ p = +j.price; src = "gold-api.com"; } } catch(e){}
+  if (p==null){ try { const v = await binPrice("PAXGUSDT"); if (v>500 && v<50000){ p = v; src = "Binance PAXG"; } } catch(e){} }
+  if (p!=null){ S.oz = p; S.src = src; S.at = new Date(); S.ok = true; } else S.ok = false;
+  if (!S.rates) await updateFx();
+  renderPrices(); renderChart(); renderAllTools();
+}
+async function updateOther(){
+  for (const m of ["XAG","XPT"]){ try { const j = await getJSON("https://api.gold-api.com/price/"+m); if (+j.price>0) S[m==="XAG"?"ag":"pt"] = +j.price; } catch(e){} }
+  renderPrices();
+}
+/* history */
+const RANGES = { D:{iv:"15m",lim:96,ttl:6e4}, W:{iv:"1h",lim:168,ttl:3e5}, M:{iv:"4h",lim:180,ttl:9e5}, Y:{iv:"1d",lim:365,ttl:36e5}, "5":{iv:"1w",lim:260,ttl:36e5} };
+const FXSYM = { EUR:["EURUSDT","div"], GBP:["GBPUSDT","div"], TRY:["USDTTRY","mul"], USD:null };
+async function klines(sym, iv, lim){
+  let err; for (const b of BIN){ try { const j = await getJSON(`${b}/api/v3/klines?symbol=${sym}&interval=${iv}&limit=${lim}`); if (Array.isArray(j) && j.length) return j.map(k=>({o:k[0], t:Math.min(k[6], Date.now()), c:+k[4]})); } catch(e){ err = e; } }
+  throw err || new Error("klines");
+}
+async function loadHist(r, c){
+  const key = r+"|"+c, h = S.hist[key], R = RANGES[r];
+  if (h && (h.err ? Date.now()-h.at < 6e4 : Date.now()-h.at < R.ttl)) return;
+  if (h && h.loading) return;
+  S.hist[key] = Object.assign(h||{}, {loading:true});
+  try {
+    const fs = FXSYM[c];
+    const [pax, fx] = await Promise.all([klines("PAXGUSDT", R.iv, R.lim), fs ? klines(fs[0], R.iv, R.lim) : Promise.resolve(null)]);
+    const fm = new Map(fx ? fx.map(k=>[k.o, k.c]) : []); let last = fx && fx.length ? fx[0].c : null;
+    const pts = pax.map(k=>{ let f = 1; if (fs){ const v = fm.get(k.o) ?? last; if (v) last = v; f = fs[1]==="div" ? 1/v : v; } return [k.t, k.c * f / OZ]; }).filter(p=>isFinite(p[1]) && p[1]>0);
+    S.hist[key] = {pts, at:Date.now(), err:false, loading:false};
+  } catch(e){ S.hist[key] = {pts:h&&h.pts||null, at:Date.now(), err:true, loading:false}; }
+  if (r==="D" && c===cur) renderPrices();
+  renderChart();
+}
+function histPts(r, c){
+  const h = S.hist[r+"|"+c]; if (!h || !h.pts || !h.pts.length) return null;
+  const g = c===cur ? gramCur() : null, L = h.pts[h.pts.length-1][1];
+  const k = (g && g/L > .95 && g/L < 1.05) ? g/L : 1;
+  const pts = h.pts.map(p=>[p[0], p[1]*k]); if (g) pts.push([Date.now(), g]); return pts;
+}
+/* market hours (New York time): Sun 18:00 – Fri 17:00, daily break 17:00–18:00 */
+function nyParts(d){ const f = new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"numeric",hour12:false}).formatToParts(d);
+  return { wd:f.find(p=>p.type==="weekday").value, h:+f.find(p=>p.type==="hour").value % 24 }; }
+function marketOpen(d){ const {wd,h} = nyParts(d); if (wd==="Sat") return false; if (wd==="Sun") return h>=18; if (wd==="Fri") return h<17; return h!==17; }
+function nextOpen(){ let d = new Date(); d.setMinutes(0,0,0); for (let i=0;i<24*4;i++){ d = new Date(d.getTime()+36e5); if (marketOpen(d)) return d; } return null; }
+
+/* ---------------- rendering: static texts, selectors, nav ---------------- */
+const VIEWS = ["home","value","cost","tax","buy","news","about"];
+function applyTexts(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
+  document.title = "Valoro · " + t("tagline").split(" · ")[0];
+  $("langSeg").innerHTML = LANGS.map(l=>`<button data-l="${l}" aria-pressed="${l===lang}">${l.toUpperCase()}</button>`).join("");
+  $("curSeg").innerHTML = CURS.map(c=>`<button data-c="${c}" aria-pressed="${c===cur}">${{EUR:"€",USD:"$",GBP:"£",TRY:"₺"}[c]}<span class="cc"> ${c}</span></button>`).join("");
+  $("tabs").innerHTML = VIEWS.map(v=>`<a href="#${v}" data-v="${v}">${t("nav_"+v)}</a>`).join("");
+  $("rangeSeg").innerHTML = ["D","W","M","Y","5"].map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t({D:"rangeD",W:"rangeW",M:"rangeM",Y:"rangeY","5":"range5"}[r])}</button>`).join("");
+  $("toolLinks").innerHTML = ["value","cost","tax","buy"].map(v=>`<a href="#${v}"><b>${t("nav_"+v)}</b><span>${t("tool_"+v)}</span></a>`).join("");
+  $("taxSeg").innerHTML = ["DE","NL","UK"].map(c=>`<button data-tc="${c}" aria-pressed="${c===taxC}">${t("c"+c)}</button>`).join("");
+  $("chartFoot").textContent = t("chartFoot");
+  markNav();
+}
+function markNav(){ const v = currentView(); document.querySelectorAll("#tabs a").forEach(a=> a.dataset.v===v ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current")); }
+function currentView(){ const h = location.hash.slice(1); return VIEWS.includes(h) ? h : "home"; }
+function route(){ const v = currentView(); VIEWS.forEach(x=> $("v-"+x).hidden = x!==v); markNav(); if (v==="home") requestAnimationFrame(renderChart); if (v==="news") loadNews(); window.scrollTo({top:0}); }
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.l){ lang = b.dataset.l; savePref(); applyTexts(); renderEverything(); }
+  else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); }
+  else if (b.dataset.r){ S.range = b.dataset.r; applyTexts(); renderChart(); loadHist(S.range, cur); }
+  else if (b.dataset.tc){ taxC = b.dataset.tc; applyTexts(); renderTax(); }
+  else if (b.dataset.nc){ S.newsCat = b.dataset.nc; renderNews(); }
+});
+window.addEventListener("hashchange", route);
+
+/* ---------------- home ---------------- */
+function renderPrices(){
+  const g = gramCur(), o = ozCur();
+  $("pGram").textContent = money(g); $("pOz").textContent = money(o); $("pKg").textContent = money(g==null?null:g*1000, 0);
+  $("pGramS").textContent = t("gramNote");
+  const d = histPts("D", cur);
+  if (d && d.length>2 && g!=null){ const ch = (g/d[0][1]-1)*100, abs = g-d[0][1]; $("pCh").textContent = pct(ch); $("pCh").className = "v " + (ch>=0?"up":"down"); $("pChS").textContent = (abs>=0?"+":"") + money(abs) + " / g"; }
+  else { $("pCh").textContent = "—"; $("pCh").className = "v"; $("pChS").textContent = ""; }
+  const pu = perUsd(cur);
+  $("pAg").textContent = S.ag && pu ? money(S.ag*pu) : "—";
+  $("pPt").textContent = S.pt && pu ? money(S.pt*pu) : "—";
+  if (cur==="EUR"){ $("fxK").textContent = "EUR / USD"; $("pFx").textContent = S.rates ? numf(S.rates.USD, 4) : "—"; }
+  else { $("fxK").textContent = "EUR / " + cur; $("pFx").textContent = S.rates ? numf(S.rates[cur], cur==="TRY"?2:4) : "—"; }
+  const lp = $("livePill");
+  if (S.oz==null){ const failed = tries>0 && !S.ok; lp.className = "pill " + (failed ? "err" : ""); $("liveText").textContent = failed ? t("offline") : t("loading"); }
+  else if (S.ok){ lp.className = "pill open"; $("liveText").textContent = t("live"); }
+  else { lp.className = "pill err"; $("liveText").textContent = t("offline"); }
+  $("srcText").textContent = S.at ? t("src", S.src, S.at.toLocaleTimeString(loc(), {hour:"2-digit",minute:"2-digit",second:"2-digit"})) : "";
+  const open = marketOpen(new Date()), nx = open ? null : nextOpen();
+  $("mktPill").className = "pill " + (open ? "open" : "closed");
+  $("mktText").textContent = open ? t("mOpen") : t("mClosed", nx ? nx.toLocaleString(loc(), {weekday:"long", hour:"2-digit", minute:"2-digit"}) : "");
+  $("chartTitle").textContent = t("chartTitle", cur);
+}
+let tries = 0;
+/* chart */
+const cv = $("chart"), box = $("chartBox"); let chartGeom = null;
+function renderChart(){
+  if ($("v-home").hidden) return;
+  const pts = histPts(S.range, cur), h = S.hist[S.range+"|"+cur], msg = $("chartMsg");
+  const W = box.clientWidth, H = box.clientHeight, dpr = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = W*dpr; cv.height = H*dpr; const x = cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
+  if (!pts || pts.length<2){ msg.textContent = h && h.err ? t("chartErr") : t("chartLoad"); msg.hidden = false; chartGeom = null; return; }
+  msg.hidden = true;
+  const cs = getComputedStyle(document.documentElement), col = n => cs.getPropertyValue(n).trim();
+  const padL = 8, padR = 8, padT = 22, padB = 26;
+  const t0 = pts[0][0], t1 = pts[pts.length-1][0];
+  let lo = Infinity, hi = -Infinity; pts.forEach(p=>{ lo = Math.min(lo,p[1]); hi = Math.max(hi,p[1]); });
+  const span = (hi-lo) || hi*0.01; const ylo = lo - span*.12, yhi = hi + span*.12;
+  const X = tt => padL + (tt-t0)/(t1-t0||1)*(W-padL-padR), Y = v => padT + (1-(v-ylo)/(yhi-ylo))*(H-padT-padB);
+  // grid
+  x.strokeStyle = col("--rule"); x.lineWidth = 1; x.font = "11px " + col("--font"); x.fillStyle = col("--muted");
+  for (let i=0;i<=3;i++){ const yy = padT + i*(H-padT-padB)/3; x.beginPath(); x.moveTo(padL,yy); x.lineTo(W-padR,yy); x.stroke(); }
+  // area + line
+  const up = pts[pts.length-1][1] >= pts[0][1];
+  const g = x.createLinearGradient(0,padT,0,H-padB); const gc = col("--gold-2");
+  g.addColorStop(0, gc+"55"); g.addColorStop(1, gc+"00");
+  x.beginPath(); pts.forEach((p,i)=> i ? x.lineTo(X(p[0]),Y(p[1])) : x.moveTo(X(p[0]),Y(p[1]))); x.lineTo(X(t1),H-padB); x.lineTo(X(t0),H-padB); x.closePath(); x.fillStyle = g; x.fill();
+  x.beginPath(); pts.forEach((p,i)=> i ? x.lineTo(X(p[0]),Y(p[1])) : x.moveTo(X(p[0]),Y(p[1]))); x.strokeStyle = col("--gold"); x.lineWidth = 2; x.lineJoin = "round"; x.stroke();
+  // labels: high / low / change
+  const iHi = pts.reduce((a,p,i)=> p[1]>pts[a][1]?i:a, 0), iLo = pts.reduce((a,p,i)=> p[1]<pts[a][1]?i:a, 0);
+  x.fillStyle = col("--muted"); x.textBaseline = "bottom";
+  const lab = (i, txt, above) => { const px = X(pts[i][0]), py = Y(pts[i][1]); x.textAlign = px < W*.15 ? "left" : px > W*.85 ? "right" : "center"; x.textBaseline = above ? "bottom" : "top"; x.fillText(txt, px, above ? py-6 : py+6); };
+  lab(iHi, "▲ " + money(pts[iHi][1]), true); lab(iLo, "▼ " + money(pts[iLo][1]), false);
+  // time axis
+  x.textBaseline = "alphabetic"; x.fillStyle = col("--muted");
+  const fmt = S.range==="D" ? {hour:"2-digit",minute:"2-digit"} : (S.range==="W"||S.range==="M") ? {day:"numeric",month:"short"} : {month:"short",year:"2-digit"};
+  for (let i=0;i<=4;i++){ const tt = t0 + (t1-t0)*i/4; x.textAlign = i===0?"left":i===4?"right":"center"; x.fillText(new Date(tt).toLocaleString(loc(), fmt), X(tt), H-6); }
+  // change chip in title area
+  const ch = (pts[pts.length-1][1]/pts[0][1]-1)*100;
+  x.textAlign = "left"; x.textBaseline = "top"; x.font = "600 12px " + col("--font"); x.fillStyle = up ? col("--up") : col("--down");
+  x.fillText(pct(ch) + " " + t("inRange"), padL, 2);
+  chartGeom = {pts, X, Y, W};
+}
+function onHover(ev){
+  if (!chartGeom) return; const r = box.getBoundingClientRect(), mx = ev.clientX - r.left, {pts, X, Y} = chartGeom;
+  let best = 0, bd = Infinity; pts.forEach((p,i)=>{ const d = Math.abs(X(p[0])-mx); if (d<bd){ bd=d; best=i; } });
+  const p = pts[best], tip = $("tip"); tip.hidden = false;
+  const fmt = S.range==="D"||S.range==="W" ? {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"} : {day:"numeric",month:"short",year:"numeric"};
+  tip.textContent = money(p[1]) + " · " + new Date(p[0]).toLocaleString(loc(), fmt);
+  tip.style.left = Math.max(70, Math.min(r.width-70, X(p[0]))) + "px"; tip.style.top = Y(p[1]) + "px";
+}
+box.addEventListener("pointermove", onHover); box.addEventListener("pointerleave", ()=> $("tip").hidden = true);
+window.addEventListener("resize", ()=> renderChart());
+
+/* ---------------- value calculator ---------------- */
+let vRows = [{id:"k22", q:"10"}, {id:"cey", q:"2"}];
+try { const s = JSON.parse(localStorage.getItem("valoro-value")||"null"); if (Array.isArray(s) && s.length) vRows = s.filter(r=>ITEMS.some(i=>i.id===r.id)); } catch(e){}
+const saveV = () => { try { localStorage.setItem("valoro-value", JSON.stringify(vRows)); } catch(e){} };
+function buildValue(){
+  const opts = ITEMS.map(i=>`<option value="${i.id}">${nm(ITEM_NAMES[i.id])}</option>`).join("");
+  $("vRows").innerHTML = vRows.map((r,ix)=>{ const it = ITEMS.find(i=>i.id===r.id);
+    return `<div class="row vrow" data-ix="${ix}">
+      <label><span>${t("valItem")}</span><select data-f="id">${opts}</select></label>
+      <label><span>${it.purity ? t("valGrams") : t("valCount")}</span><input class="num" data-f="q" inputmode="decimal" value="${r.q}"></label>
+      <div class="out"><span class="xs muted" style="display:block;font-family:var(--font)">${t("valValue")}</span><span data-o></span></div>
+      <button class="btn icon rm" data-rm="${ix}" aria-label="${t("valRemove")}" title="${t("valRemove")}">✕</button></div>`; }).join("");
+  $("vRows").querySelectorAll(".vrow").forEach(el=>{ el.querySelector("select").value = vRows[+el.dataset.ix].id; });
+  renderValue();
+}
+function renderValue(){
+  const g = gramCur(); let tot = 0, any = false;
+  $("vRows").querySelectorAll(".vrow").forEach(el=>{ const r = vRows[+el.dataset.ix], it = ITEMS.find(i=>i.id===r.id), q = parseNum(r.q);
+    const fine = isFinite(q) && q>=0 ? (it.purity ? q*it.purity : q*it.fine) : NaN;
+    const v = g!=null && isFinite(fine) ? fine*g : null; if (v!=null){ tot += v; any = true; }
+    el.querySelector("[data-o]").textContent = money(v); });
+  $("vTotal").textContent = any ? money(tot) : "—";
+  $("vFair").textContent = any ? money(tot*.85) + " – " + money(tot*.97) : "—";
+}
+$("vRows").addEventListener("input", e=>{ const row = e.target.closest(".vrow"); if (!row) return; const r = vRows[+row.dataset.ix];
+  if (e.target.dataset.f==="q"){ r.q = e.target.value; saveV(); renderValue(); } });
+$("vRows").addEventListener("change", e=>{ const row = e.target.closest(".vrow"); if (!row || e.target.dataset.f!=="id") return; vRows[+row.dataset.ix].id = e.target.value; saveV(); buildValue(); });
+$("vRows").addEventListener("click", e=>{ const b = e.target.closest("[data-rm]"); if (!b) return; vRows.splice(+b.dataset.rm,1); if (!vRows.length) vRows.push({id:"g24",q:"1"}); saveV(); buildValue(); });
+$("vAdd").addEventListener("click", ()=>{ vRows.push({id:"g24", q:"1"}); saveV(); buildValue(); });
+
+/* ---------------- cost calculator ---------------- */
+// buy/sell in %, store in % per year, min = minimum storage per year in EUR (converted), freq: m=monthly, y=yearly, o=once
+const ROUTES_DEF = [
+  {id:"etc",   buy:.5, sell:.5, store:.25, min:0},
+  {id:"app",   buy:.75, sell:.75, store:0, min:0},
+  {id:"vault", buy:.5, sell:.5, store:.15, min:45},
+  {id:"plan",  buy:3, sell:2, store:.6, min:0},
+  {id:"coin",  buy:4, sell:2, store:0, min:0, freq:"y"},
+  {id:"gram",  buy:15, sell:5, store:0, min:0},
+];
+let ROUTES = JSON.parse(JSON.stringify(ROUTES_DEF));
+try { const s = JSON.parse(localStorage.getItem("valoro-cost")||"null"); if (s && Array.isArray(s.r) && s.r.length===ROUTES_DEF.length) ROUTES = s.r; if (s && s.mode){ $("cMode").value = s.mode; $("cAmt").value = s.amt; $("cYears").value = s.years; } } catch(e){}
+const saveC = () => { try { localStorage.setItem("valoro-cost", JSON.stringify({r:ROUTES, mode:$("cMode").value, amt:$("cAmt").value, years:$("cYears").value})); } catch(e){} };
+function simulate(rt, mode, amt, years){
+  const months = Math.round(years*12); let gold = 0 /* value in money, price constant */, cash = 0, paid = 0;
+  const minMonthly = (rt.min||0) * (S.rates ? S.rates[cur] : 1) / 12;
+  const once = mode==="o"; const isCoinYearly = rt.freq==="y" && !once;
+  const buy = (money) => { gold += money / (1 + rt.buy/100); };
+  for (let m=0; m<months; m++){
+    if (once){ if (m===0){ paid += amt; buy(amt); } }
+    else { paid += amt; if (isCoinYearly){ cash += amt; if ((m+1)%12===0){ buy(cash); cash = 0; } } else buy(amt); }
+    if (gold>0){ const fee = Math.max(gold * rt.store/100/12, minMonthly); gold = Math.max(0, gold - fee); }
+  }
+  if (cash>0){ buy(cash); cash = 0; }   // remaining savings for the yearly coin bought at the end
+  const end = gold * (1 - rt.sell/100);
+  return {paid, end, cost: paid - end};
+}
+function renderCost(){
+  const mode = $("cMode").value, amt = parseNum($("cAmt").value), years = Math.min(50, Math.max(1, Math.round(parseNum($("cYears").value)||0)));
+  $("cAmtL").textContent = t(mode==="m"?"costAmtM":"costAmtO", cur);
+  const ok = isFinite(amt) && amt>0;
+  $("cHead").textContent = t("costHead", years);
+  if (!ok){ $("cBars").innerHTML = ""; $("cInvested").textContent = ""; return; }
+  const list = ROUTES.map(rt=>{ const id = (rt.id==="coin" && mode==="o") ? "coin_once" : rt.id; return {rt, id, ...simulate(rt, mode, amt, years)}; }).sort((a,b)=>a.cost-b.cost);
+  const max = Math.max(...list.map(l=>l.cost), 1);
+  $("cInvested").textContent = t("costInvested", money(list[0].paid, 0));
+  $("cBars").innerHTML = list.map((l,i)=>`<div class="brow${i===0?" best":""}">
+      <div class="lbl"><b>${t("r_"+l.id)}${i===0?`<span class="tag best">${t("costBest")}</span>`:""}</b><span>${t("r_"+l.id+"_d")}</span></div>
+      <div class="track"><i style="width:${Math.max(2, l.cost/max*100)}%"></i></div>
+      <div class="val">${money(l.cost, 0)}<small>${numf(l.cost/l.paid*100,1)}% · ${t("costKeep", money(l.end, 0))}</small></div></div>`).join("");
+  saveC();
+}
+function buildCostTable(){
+  $("cTable").innerHTML = `<thead><tr><th>${t("cMethod")}</th><th class="r">${t("cBuy")} (%)</th><th class="r">${t("cSell")} (%)</th><th class="r">${t("cStore")} (%)</th><th class="r">${t("cMin")} (€)</th></tr></thead><tbody>` +
+    ROUTES.map((rt,i)=>`<tr><td>${t("r_"+rt.id)}</td>${["buy","sell","store","min"].map(f=>`<td class="r"><input class="num" data-ri="${i}" data-rf="${f}" inputmode="decimal" value="${numf(rt[f], f==="min"?0:2)}"></td>`).join("")}</tr>`).join("") + "</tbody>";
+}
+["cMode","cAmt","cYears"].forEach(id=> $(id).addEventListener("input", renderCost));
+$("cMode").addEventListener("change", ()=>{ $("cAmt").value = $("cMode").value==="m" ? "100" : "10000"; renderCost(); });
+$("cTable").addEventListener("input", e=>{ const i = e.target.dataset.ri; if (i==null) return; const v = parseNum(e.target.value); if (isFinite(v) && v>=0 && v<100){ ROUTES[+i][e.target.dataset.rf] = v; renderCost(); } });
+$("cReset").addEventListener("click", ()=>{ ROUTES = JSON.parse(JSON.stringify(ROUTES_DEF)); buildCostTable(); renderCost(); });
+
+/* ---------------- tax ---------------- */
+let taxC = lang==="nl" ? "NL" : lang==="en" && cur==="GBP" ? "UK" : "DE";
+const iso = d => d.toISOString().slice(0,10);
+{ const now = new Date(); const b = new Date(now); b.setMonth(b.getMonth()-8); $("tBuyD").value = iso(b); $("tSellD").value = iso(now); }
+function addYear(d){ const x = new Date(d); x.setFullYear(x.getFullYear()+1); return x; }
+function renderTax(){
+  $("taxDE").hidden = taxC!=="DE"; $("taxNL").hidden = taxC!=="NL"; $("taxUK").hidden = taxC!=="UK";
+  if (taxC!=="DE") return;
+  const etf = $("tProd").value==="etf";
+  $("tOtherL").hidden = etf; $("tRateL").hidden = etf; $("tAllowL").hidden = !etf;
+  const bd = new Date($("tBuyD").value+"T12:00:00"), sd = new Date($("tSellD").value+"T12:00:00");
+  const ba = parseNum($("tBuyA").value), sa = parseNum($("tSellA").value), other = parseNum($("tOther").value)||0, rate = parseNum($("tRate").value), allow = Math.max(0, parseNum($("tAllow").value)||0);
+  const eur = v => moneyIn(v, "EUR");
+  const kv = []; let verdict = "—", expl = "";
+  if (isNaN(bd) || isNaN(sd) || sd < bd || !isFinite(ba) || !isFinite(sa)){ $("tVerdict").textContent = "—"; $("tKv").innerHTML = ""; $("tExplain").textContent = t("tExplDates"); return; }
+  const days = Math.round((sd-bd)/864e5), gain = sa-ba, freeFrom = new Date(addYear(bd).getTime()+864e5);
+  kv.push([t("tHold"), t("tDays", days)], [t("tGain"), eur(gain)]);
+  let tax = 0;
+  if (gain <= 0){ verdict = t("tLoss"); expl = t("tExplLoss"); }
+  else if (etf){ const base = Math.max(0, gain - allow); tax = base * .26375; verdict = tax>0 ? t("tTaxed", eur(tax)) : t("tFree"); expl = t("tExplEtf"); }
+  else if (sd > addYear(bd)){ verdict = t("tFree"); expl = t("tExplFree"); }
+  else if (gain + Math.max(0, other) < 1000){ verdict = t("tFree"); expl = t("tExplUnder"); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
+  else { tax = gain * (isFinite(rate) ? Math.min(45, Math.max(0, rate)) : 30) / 100; verdict = t("tTaxed", eur(tax)); expl = t("tExplTax"); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
+  kv.push([t("tNet"), eur(sa - tax)]);
+  $("tVerdict").textContent = verdict; $("tVerdict").className = "verdict " + (tax>0 ? "down" : "up");
+  $("tKv").innerHTML = kv.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("tExplain").textContent = expl;
+}
+["tProd","tBuyD","tSellD","tBuyA","tSellA","tOther","tRate","tAllow"].forEach(id=> $(id).addEventListener("input", renderTax));
+$("tProd").addEventListener("change", renderTax);
+
+/* ---------------- buy guide ---------------- */
+const PRODUCTS = [
+  {n:{nl:"Baartje 1 gram",en:"1 gram bar",de:"1-Gramm-Barren",tr:"1 gram külçe"}, fine:1, lo:10, hi:25},
+  {n:{nl:"Baar 10 gram",en:"10 gram bar",de:"10-Gramm-Barren",tr:"10 gram külçe"}, fine:10, lo:4, hi:8},
+  {n:{nl:"Krugerrand 1 oz",en:"Krugerrand 1 oz",de:"Krügerrand 1 oz",tr:"Krugerrand 1 ons"}, fine:OZ, lo:3, hi:6},
+  {n:{nl:"Baar 100 gram",en:"100 gram bar",de:"100-Gramm-Barren",tr:"100 gram külçe"}, fine:100, lo:2, hi:4},
+  {n:{nl:"Baar 1 kilo",en:"1 kilo bar",de:"1-Kilo-Barren",tr:"1 kilo külçe"}, fine:1000, lo:1, hi:2.5},
+];
+const DEALERS = [
+  {c:"cNL", list:[["GoldRepublic","https://www.goldrepublic.nl"],["Holland Gold","https://www.hollandgold.nl"],["The Silver Mountain","https://www.thesilvermountain.nl"]]},
+  {c:"cDE", list:[["Degussa","https://www.degussa-goldhandel.de"],["Kettner Edelmetalle","https://www.kettner-edelmetalle.de"],["philoro","https://philoro.de"],["pro aurum","https://www.proaurum.de"]]},
+  {c:"cUK", list:[["BullionByPost","https://www.bullionbypost.co.uk"],["Chards","https://www.chards.co.uk"],["The Royal Mint","https://www.royalmint.com"]]},
+];
+function renderBuy(){
+  const g = gramCur();
+  $("bTable").innerHTML = `<thead><tr><th>${t("bProduct")}</th><th class="r">${t("bFine")}</th><th class="r">${t("bValue")}</th><th class="r">${t("bPrem")}</th><th class="r">${t("bRange")}</th></tr></thead><tbody>` +
+    PRODUCTS.map(p=>{ const v = g==null ? null : g*p.fine; return `<tr><td>${nm(p.n)}</td><td class="r num">${numf(p.fine, p.fine<5?2:p.fine===OZ?2:0)} g</td><td class="r num">${money(v, v>5000?0:2)}</td><td class="r">${numf(p.lo,0)}–${numf(p.hi,p.hi%1?1:0)}%</td><td class="r num">${v==null?"—":money(v*(1+p.lo/100), v>5000?0:2)+" – "+money(v*(1+p.hi/100), v>5000?0:2)}</td></tr>`; }).join("") + "</tbody>";
+  $("bDealers").innerHTML = DEALERS.map(d=>`<div class="card"><h3>${t(d.c)}</h3><ul>${d.list.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener nofollow">${n}</a></li>`).join("")}</ul></div>`).join("");
+}
+
+/* ---------------- news ---------------- */
+const NEWS_URLS = ["https://raw.githubusercontent.com/klcfurkan/goudprijs/data/news.json", "../news.json"];
+let newsAt = 0;
+async function loadNews(force){
+  if (!force && Date.now()-newsAt < 3e5 && S.news) { renderNews(); return; }
+  for (const u of NEWS_URLS){ try { const j = await getJSON(u + (u.startsWith("http") ? "?t="+Math.floor(Date.now()/6e4) : "")); if (j && Array.isArray(j.items)){ S.news = j; S.newsErr = false; newsAt = Date.now(); break; } } catch(e){ S.newsErr = true; } }
+  renderNews();
+}
+function ago(sec){ const d = Date.now()/1000 - sec, rtf = new Intl.RelativeTimeFormat(loc(), {numeric:"auto"});
+  if (d<3600) return rtf.format(-Math.max(1, Math.round(d/60)), "minute"); if (d<86400) return rtf.format(-Math.round(d/3600), "hour"); return rtf.format(-Math.round(d/86400), "day"); }
+function renderNews(){
+  const cats = ["all","gold","rates","economy","currency","conflict"];
+  $("nFilters").innerHTML = cats.map(c=>`<button class="chip" data-nc="${c}" aria-pressed="${c===S.newsCat}">${c==="all"?t("nAll"):t("cat_"+c)}</button>`).join("");
+  if (!S.news){ $("nList").innerHTML = `<p class="muted">${S.newsErr ? t("nErr") : t("loading")}</p>`; $("nUpd").textContent = ""; return; }
+  const items = S.news.items.filter(i=> S.newsCat==="all" || i.cat===S.newsCat).sort((a,b)=>b.ts-a.ts);
+  const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  $("nList").innerHTML = items.length ? items.map(i=>`<a href="${esc(i.u)}" target="_blank" rel="noopener"><b>${esc(i.t)}</b><span class="meta"><span class="cat">${T["cat_"+i.cat] ? t("cat_"+i.cat) : esc(i.cat)}</span><span>${esc(i.s)}</span><span>${ago(i.ts)}</span><span>${String(i.lang||"").toUpperCase()}</span></span></a>`).join("") : `<p class="muted">${t("nEmpty")}</p>`;
+  $("nUpd").textContent = S.news.updated ? t("nUpd", ago(S.news.updated)) : "";
+}
+
+/* ---------------- glue ---------------- */
+function renderAllTools(){ renderValue(); renderCost(); renderBuy(); }
+function renderEverything(){ renderPrices(); renderChart(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); renderNews(); }
+applyTexts(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); route();
+(async()=>{ await updateFx(); tries++; await updateMetals(); updateOther(); loadHist("D", cur); if (S.range!=="D") loadHist(S.range, cur); })();
+setInterval(()=>{ tries++; updateMetals(); }, 15000);
+setInterval(updateFx, 10*60*1000);
+setInterval(updateOther, 60*1000);
+setInterval(()=>{ loadHist("D", cur); loadHist(S.range, cur); }, 60*1000);
+setInterval(()=>{ renderPrices(); if (currentView()==="news") loadNews(); }, 60*1000);
+})();
+</script>
+</body>
+</html>
