@@ -18,9 +18,11 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
-  :root{ --bg:#0e0f12; --card:#16181d; --ink:#f3f4f6; --soft:#d1d5db; --muted:#9ca3af; --rule:#2a2d34;
+  :root:not([data-theme="light"]){ --bg:#0e0f12; --card:#16181d; --ink:#f3f4f6; --soft:#d1d5db; --muted:#9ca3af; --rule:#2a2d34;
          --gold:#e8b830; --gold-2:#e8b830; --gold-bg:#2a2410; --up:#31d17f; --down:#ff6b85; color-scheme:dark; }
 }
+:root[data-theme="dark"]{ --bg:#0e0f12; --card:#16181d; --ink:#f3f4f6; --soft:#d1d5db; --muted:#9ca3af; --rule:#2a2d34;
+         --gold:#e8b830; --gold-2:#e8b830; --gold-bg:#2a2410; --up:#31d17f; --down:#ff6b85; color-scheme:dark; }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -45,6 +47,7 @@ p{margin:0}
 .sel{display:flex;gap:8px;align-items:center}
 .seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;background:var(--card);padding:2px}
 .seg button{font:600 12.5px var(--font);border:0;background:transparent;color:var(--soft);padding:6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.sel{flex-wrap:wrap}
 @media (max-width:520px){.seg button{padding:6px 8px}.cc{display:none}.sel{width:100%;justify-content:space-between}}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;margin:0 -4px}
@@ -166,6 +169,7 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
       <div class="sel">
         <div class="seg" id="langSeg" role="group" aria-label="Language"></div>
         <div class="seg" id="curSeg" role="group" aria-label="Currency"></div>
+        <div class="seg" id="themeSeg" role="group" aria-label="Theme"></div>
       </div>
     </div>
     <nav class="tabs" id="tabs"></nav>
@@ -373,6 +377,7 @@ silver:{nl:"Zilver",en:"Silver",de:"Silber",tr:"Gümüş"},
 platinum:{nl:"Platina",en:"Platinum",de:"Platin",tr:"Platin"},
 perOzShort:{nl:"per troy ounce",en:"per troy ounce",de:"pro Feinunze",tr:"ons başına"},
 fxNote:{nl:"wisselkoers (ECB)",en:"exchange rate (ECB)",de:"Wechselkurs (EZB)",tr:"döviz kuru (ECB)"},
+thLight:{nl:"Licht",en:"Light",de:"Hell",tr:"Açık"},thDark:{nl:"Donker",en:"Dark",de:"Dunkel",tr:"Koyu"},
 live:{nl:"Live",en:"Live",de:"Live",tr:"Canlı"},
 offline:{nl:"Geen verbinding, laatste prijs blijft staan",en:"No connection, last price kept",de:"Keine Verbindung, letzter Preis bleibt stehen",tr:"Bağlantı yok, son fiyat gösteriliyor"},
 loading:{nl:"Prijs laden…",en:"Loading price…",de:"Preis wird geladen…",tr:"Fiyat yükleniyor…"},
@@ -575,7 +580,11 @@ const DEFAULT_CHECK = { nl:"k14", de:"kr", en:"sov", tr:"cey" };
 function orderedItems(){ const out = []; for (const g of GROUP_ORDER[lang]){ let list = ITEMS.filter(i=>i.g===g); if (g==="jew") list = JEW_ORDER[lang].map(id=>list.find(i=>i.id===id)); out.push([g, list]); } return out; }
 function itemOptions(){ return orderedItems().map(([g,list])=>`<optgroup label="${t("grp_"+g)}">${list.map(i=>`<option value="${i.id}">${nm(ITEM_NAMES[i.id])}</option>`).join("")}</optgroup>`).join(""); }
 
-let lang = "nl", cur = "EUR";
+let lang = "nl", cur = "EUR", theme = null;
+try { const th = localStorage.getItem("valoro-theme"); if (th==="light"||th==="dark") theme = th; } catch(e){}
+const effTheme = () => theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+const applyTheme = () => { if (theme) document.documentElement.dataset.theme = theme; else delete document.documentElement.dataset.theme; };
+applyTheme();
 try { const p = JSON.parse(localStorage.getItem("valoro-pref")||"{}"); if (LANGS.includes(p.lang)) lang = p.lang; if (CURS.includes(p.cur)) cur = p.cur; } catch(e){}
 { const q = new URLSearchParams(location.search).get("lang"); if (LANGS.includes(q)) lang = q;
   else { try { if (!localStorage.getItem("valoro-pref")) { const n = (navigator.language||"en").slice(0,2); lang = LANGS.includes(n) ? n : "en"; if (lang==="tr") cur = "TRY"; if (lang==="en" && /GB/.test(navigator.language)) cur = "GBP"; } } catch(e){} } }
@@ -668,6 +677,7 @@ function applyTexts(){
   document.title = "Valoro · " + t("tagline").split(" · ")[0];
   $("langSeg").innerHTML = LANGS.map(l=>`<button data-l="${l}" aria-pressed="${l===lang}">${l.toUpperCase()}</button>`).join("");
   $("curSeg").innerHTML = CURS.map(c=>`<button data-c="${c}" aria-pressed="${c===cur}">${{EUR:"€",USD:"$",GBP:"£",TRY:"₺"}[c]}<span class="cc"> ${c}</span></button>`).join("");
+  $("themeSeg").innerHTML = ["light","dark"].map(m=>`<button data-th="${m}" aria-pressed="${m===effTheme()}" title="${t(m==="light"?"thLight":"thDark")}">${m==="light"?"☀":"☾"}<span class="cc"> ${t(m==="light"?"thLight":"thDark")}</span></button>`).join("");
   $("tabs").innerHTML = VIEWS.map(v=>`<a href="#${v}" data-v="${v}">${t("nav_"+v)}</a>`).join("");
   $("rangeSeg").innerHTML = ["D","W","M","Y","5"].map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t({D:"rangeD",W:"rangeW",M:"rangeM",Y:"rangeY","5":"range5"}[r])}</button>`).join("");
   $("toolLinks").innerHTML = ["value","cost","tax","buy"].map(v=>`<a href="#${v}"><b>${t("nav_"+v)}</b><span>${t("tool_"+v)}</span></a>`).join("");
@@ -682,6 +692,7 @@ document.addEventListener("click", e=>{
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.l){ lang = b.dataset.l; savePref(); applyTexts(); renderEverything(); }
   else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); }
+  else if (b.dataset.th){ theme = b.dataset.th; try { localStorage.setItem("valoro-theme", theme); } catch(e){} applyTheme(); applyTexts(); renderChart(); }
   else if (b.dataset.r){ S.range = b.dataset.r; applyTexts(); renderChart(); loadHist(S.range, cur); }
   else if (b.dataset.tc){ taxC = b.dataset.tc; applyTexts(); renderTax(); }
   else if (b.dataset.nc){ S.newsCat = b.dataset.nc; renderNews(); }
