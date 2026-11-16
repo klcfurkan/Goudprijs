@@ -142,6 +142,10 @@ details[open] summary{margin-bottom:12px}
 .news .meta{font-size:12.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
 .cat{font-weight:700;color:var(--gold)}
 
+.gauge{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--up) 0%,var(--up) 16%,var(--gold-2) 16%,var(--gold-2) 40%,var(--down) 40%,var(--down) 100%);opacity:.85;margin-top:6px}
+.gauge i{position:absolute;top:-5px;width:4px;height:22px;border-radius:2px;background:var(--ink);transform:translateX(-50%);transition:left .3s}
+.gscale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.verdict.mid{color:var(--gold)}
 .links{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .links a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px}
 .links a:hover{border-color:var(--gold-2)}
@@ -216,6 +220,27 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
       <div class="total" style="border-top:0;padding-top:4px">
         <span class="small" data-t="valFair"></span>
         <span class="num" id="vFair">—</span>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card result">
+        <h3 data-t="chkTitle"></h3>
+        <p class="small muted" data-t="chkLead"></p>
+        <div class="seg" id="chkMode" role="group" style="align-self:flex-start"></div>
+        <div class="fields">
+          <label style="grid-column:1/-1"><span data-t="valItem"></span><select id="chkItem"></select></label>
+          <label><span id="chkQtyL"></span><input class="num" id="chkQty" inputmode="decimal" value="1"></label>
+          <label><span id="chkPriceL"></span><input class="num" id="chkPrice" inputmode="decimal" placeholder=""></label>
+        </div>
+        <div class="gauge" aria-hidden="true"><i id="chkMark" style="left:0"></i></div>
+        <div class="gscale"><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span><span>25%+</span></div>
+        <p class="verdict" id="chkOut" style="font-size:17px"></p>
+        <p class="small muted" id="chkNote"></p>
+      </div>
+      <div class="card result">
+        <h3 data-t="tblTitle"></h3>
+        <p class="small muted" data-t="tblLead"></p>
+        <div class="tbl"><table id="coinTbl"></table></div>
       </div>
     </div>
     <p class="note" data-t="valTip"></p>
@@ -378,6 +403,35 @@ valRemove:{nl:"Verwijderen",en:"Remove",de:"Entfernen",tr:"Kaldır"},
 valTotal:{nl:"Totale smeltwaarde",en:"Total melt value",de:"Gesamter Materialwert",tr:"Toplam eritme değeri"},
 valTotalNote:{nl:"Op basis van de live goudprijs",en:"Based on the live gold price",de:"Auf Basis des Live-Goldpreises",tr:"Canlı altın fiyatına göre"},
 valFair:{nl:"Een eerlijk bod bij verkoop ligt meestal tussen 85% en 97% hiervan:",en:"A fair offer when selling is usually between 85% and 97% of this:",de:"Ein faires Angebot beim Verkauf liegt meist zwischen 85 % und 97 % davon:",tr:"Satışta adil bir teklif genelde bunun %85 ile %97'si arasındadır:"},
+grp_jew:{nl:"Sieraden en baren (per gram)",en:"Jewellery and bars (per gram)",de:"Schmuck und Barren (pro Gramm)",tr:"Takı ve külçe (gram)"},
+grp_inv:{nl:"Beleggingsmunten",en:"Bullion coins",de:"Anlagemünzen",tr:"Yatırım sikkeleri"},
+grp_nl:{nl:"Nederlandse munten",en:"Dutch coins",de:"Niederländische Münzen",tr:"Hollanda sikkeleri"},
+grp_tr:{nl:"Turkse munten",en:"Turkish coins",de:"Türkische Münzen",tr:"Türk altınları"},
+grp_oth:{nl:"Britse, Zwitserse en Franse munten",en:"British, Swiss and French coins",de:"Britische, Schweizer und französische Münzen",tr:"İngiliz, İsviçre ve Fransız sikkeleri"},
+chkTitle:{nl:"Krijg ik een eerlijke prijs?",en:"Am I getting a fair price?",de:"Bekomme ich einen fairen Preis?",tr:"Adil bir fiyat mı alıyorum?"},
+chkLead:{nl:"Vul in wat de winkel vraagt of biedt. Je ziet direct hoe dat zich verhoudt tot de goudwaarde.",en:"Enter what the shop asks or offers. You instantly see how it compares with the gold value.",de:"Gib ein, was der Händler verlangt oder bietet. Du siehst sofort, wie das im Vergleich zum Goldwert liegt.",tr:"Dükkânın istediği ya da teklif ettiği fiyatı gir. Altın değerine göre nerede olduğunu hemen görürsün."},
+chkBuy:{nl:"Ik koop",en:"I'm buying",de:"Ich kaufe",tr:"Alıyorum"},
+chkSell:{nl:"Ik verkoop",en:"I'm selling",de:"Ich verkaufe",tr:"Satıyorum"},
+chkAsk:{nl:"Prijs van de winkel ({0})",en:"Shop's price ({0})",de:"Preis des Händlers ({0})",tr:"Dükkânın fiyatı ({0})"},
+chkBid:{nl:"Bod van de winkel ({0})",en:"Shop's offer ({0})",de:"Angebot des Händlers ({0})",tr:"Dükkânın teklifi ({0})"},
+chkEmpty:{nl:"De goudwaarde is {0}. Vul de prijs van de winkel in.",en:"The gold value is {0}. Enter the shop's price.",de:"Der Goldwert beträgt {0}. Gib den Preis des Händlers ein.",tr:"Altın değeri {0}. Dükkânın fiyatını gir."},
+chkQty0:{nl:"Vul het gewicht of aantal in.",en:"Enter the weight or number.",de:"Gib Gewicht oder Anzahl ein.",tr:"Ağırlığı ya da adedi gir."},
+chkB_under:{nl:"Je betaalt {1} onder de goudwaarde. Dat is uitzonderlijk: controleer of gewicht en karaat kloppen.",en:"You pay {1} below the gold value. That is unusual: check that weight and carat are right.",de:"Du zahlst {1} unter dem Goldwert. Das ist ungewöhnlich: prüfe Gewicht und Karat.",tr:"Altın değerinin {1} altında ödüyorsun. Bu olağandışı: ağırlık ve ayarı kontrol et."},
+chkB_good:{nl:"Scherp: {0} ({1}) boven de goudwaarde.",en:"Sharp: {0} ({1}) above the gold value.",de:"Günstig: {0} ({1}) über dem Goldwert.",tr:"İyi fiyat: altın değerinin {0} ({1}) üzerinde."},
+chkB_ok:{nl:"Normaal: {0} ({1}) boven de goudwaarde.",en:"Normal: {0} ({1}) above the gold value.",de:"Üblich: {0} ({1}) über dem Goldwert.",tr:"Normal: altın değerinin {0} ({1}) üzerinde."},
+chkB_high:{nl:"Hoog: {0} ({1}) boven de goudwaarde. Vergelijk met een andere winkel.",en:"High: {0} ({1}) above the gold value. Compare with another shop.",de:"Hoch: {0} ({1}) über dem Goldwert. Vergleiche mit einem anderen Händler.",tr:"Yüksek: altın değerinin {0} ({1}) üzerinde. Başka bir dükkânla karşılaştır."},
+chkS_over:{nl:"Uitstekend bod: {1} boven de goudwaarde.",en:"Excellent offer: {1} above the gold value.",de:"Ausgezeichnetes Angebot: {1} über dem Goldwert.",tr:"Mükemmel teklif: altın değerinin {1} üzerinde."},
+chkS_good:{nl:"Goed bod: maar {0} ({1}) onder de goudwaarde.",en:"Good offer: only {0} ({1}) below the gold value.",de:"Gutes Angebot: nur {0} ({1}) unter dem Goldwert.",tr:"İyi teklif: altın değerinin sadece {0} ({1}) altında."},
+chkS_ok:{nl:"Gebruikelijk bod: {0} ({1}) onder de goudwaarde.",en:"Usual offer: {0} ({1}) below the gold value.",de:"Übliches Angebot: {0} ({1}) unter dem Goldwert.",tr:"Olağan teklif: altın değerinin {0} ({1}) altında."},
+chkS_low:{nl:"Laag bod: {0} ({1}) onder de goudwaarde. Vraag ook ergens anders.",en:"Low offer: {0} ({1}) below the gold value. Ask somewhere else too.",de:"Niedriges Angebot: {0} ({1}) unter dem Goldwert. Frag auch woanders.",tr:"Düşük teklif: altın değerinin {0} ({1}) altında. Başka yere de sor."},
+chkGoldVal:{nl:"Goudwaarde: {0}.",en:"Gold value: {0}.",de:"Goldwert: {0}.",tr:"Altın değeri: {0}."},
+chkNoteBuyJ:{nl:"Bij sieraden zit er arbeidsloon in de prijs. Dan is 10 tot 25% boven de goudwaarde niet vreemd. Bij munten en baren is 2 tot 6% gebruikelijk.",en:"Jewellery prices include labour. Then 10 to 25% above the gold value is not unusual. For coins and bars, 2 to 6% is common.",de:"Bei Schmuck ist Arbeitslohn im Preis enthalten. Dann sind 10 bis 25 % über dem Goldwert nicht ungewöhnlich. Bei Münzen und Barren sind 2 bis 6 % üblich.",tr:"Takıda fiyatın içinde işçilik vardır. Bu yüzden altın değerinin %10 ile %25 üzerinde olması tuhaf değildir. Sikke ve külçede %2 ile %6 olağandır."},
+chkNoteBuyC:{nl:"Voor munten en baren is 2 tot 6% boven de goudwaarde gebruikelijk. Kleine stukken zijn relatief duurder.",en:"For coins and bars, 2 to 6% above the gold value is common. Small pieces are relatively more expensive.",de:"Bei Münzen und Barren sind 2 bis 6 % über dem Goldwert üblich. Kleine Stücke sind verhältnismäßig teurer.",tr:"Sikke ve külçede altın değerinin %2 ile %6 üzeri olağandır. Küçük parçalar görece daha pahalıdır."},
+chkNoteSell:{nl:"Bij verkoop houdt de winkel meestal een paar procent in. Het arbeidsloon van sieraden krijg je bij verkoop meestal niet terug.",en:"When selling, the shop usually keeps a few percent. You usually don't get the labour cost of jewellery back.",de:"Beim Verkauf behält der Händler meist ein paar Prozent ein. Den Arbeitslohn von Schmuck bekommst du meist nicht zurück.",tr:"Satışta dükkân genelde yüzde birkaç keser. Takının işçilik bedelini satışta genelde geri alamazsın."},
+tblTitle:{nl:"Waarde per munt en per gram",en:"Value per coin and per gram",de:"Wert pro Münze und pro Gramm",tr:"Sikke ve gram başına değer"},
+tblLead:{nl:"Goudwaarde nu, op basis van het pure goud erin.",en:"Gold value now, based on the pure gold content.",de:"Goldwert jetzt, auf Basis des Feingoldgehalts.",tr:"İçindeki saf altına göre şu anki değer."},
+tblItem:{nl:"Wat",en:"Item",de:"Was",tr:"Ne"},
+tblPerG:{nl:"per gram",en:"per gram",de:"pro Gramm",tr:"gram başına"},
 valTip:{nl:"Tip: vraag bij verkoop altijd naar de prijs per gram en het gewicht op een bon. Consumentenprogramma's vonden opkopers die maar een fractie van de waarde boden. Vergelijk minstens twee biedingen.",en:"Tip: when selling, always ask for the price per gram and the weight on a receipt. Consumer programmes found buyers offering only a fraction of the value. Compare at least two offers.",de:"Tipp: Frag beim Verkauf immer nach dem Grammpreis und lass dir das Gewicht quittieren. Verbrauchertests fanden Ankäufer, die nur einen Bruchteil des Werts boten. Vergleiche mindestens zwei Angebote.",tr:"İpucu: Satarken her zaman gram fiyatını ve ağırlığı fişe yazdır. Tüketici programları değerin çok altında teklif veren alıcılar buldu. En az iki teklifi karşılaştır."},
 
 costTitle:{nl:"Wat is de goedkoopste manier om goud te hebben?",en:"What is the cheapest way to own gold?",de:"Wie besitzt man Gold am günstigsten?",tr:"Altın sahibi olmanın en ucuz yolu hangisi?"},
@@ -507,11 +561,19 @@ const ITEM_NAMES = {
 };
 // fine: gram puur goud per stuk; purity: zuiverheid per gram (voor gewicht-items)
 const ITEMS = [
- {id:"g24", purity:.9999}, {id:"k22", purity:.916}, {id:"k18", purity:.75}, {id:"k14", purity:.585}, {id:"k9", purity:.375},
- {id:"kr", fine:OZ}, {id:"ml", fine:OZ}, {id:"ph", fine:OZ}, {id:"br", fine:OZ}, {id:"sov", fine:7.3224},
- {id:"g10", fine:6.056}, {id:"duk", fine:3.4346}, {id:"vre", fine:5.8065}, {id:"nap", fine:5.8065},
- {id:"cey", fine:1.754*.916}, {id:"yar", fine:3.508*.916}, {id:"tam", fine:7.016*.916}, {id:"ata", fine:7.216*.916},
+ {id:"g24", g:"jew", purity:.9999}, {id:"k22", g:"jew", purity:.916}, {id:"k18", g:"jew", purity:.75}, {id:"k14", g:"jew", purity:.585}, {id:"k9", g:"jew", purity:.375},
+ {id:"kr", g:"inv", fine:OZ}, {id:"ml", g:"inv", fine:OZ}, {id:"ph", g:"inv", fine:OZ}, {id:"br", g:"inv", fine:OZ},
+ {id:"g10", g:"nl", fine:6.056}, {id:"duk", g:"nl", fine:3.4346},
+ {id:"cey", g:"tr", fine:1.754*.916}, {id:"yar", g:"tr", fine:3.508*.916}, {id:"tam", g:"tr", fine:7.016*.916}, {id:"ata", g:"tr", fine:7.216*.916},
+ {id:"sov", g:"oth", fine:7.3224}, {id:"vre", g:"oth", fine:5.8065}, {id:"nap", g:"oth", fine:5.8065},
 ];
+// welke groepen eerst, per taal; alles blijft voor iedereen beschikbaar
+const GROUP_ORDER = { nl:["jew","nl","inv","tr","oth"], de:["jew","inv","oth","tr","nl"], en:["inv","oth","jew","tr","nl"], tr:["tr","jew","inv","oth","nl"] };
+const JEW_ORDER = { nl:["k14","k18","k22","k9","g24"], de:["k14","k18","k22","k9","g24"], en:["k9","k18","k22","k14","g24"], tr:["k22","k14","k18","g24","k9"] };
+const DEFAULT_ROWS = { nl:[{id:"k14",q:"10"},{id:"g10",q:"1"}], de:[{id:"k14",q:"10"},{id:"kr",q:"1"}], en:[{id:"k9",q:"10"},{id:"sov",q:"1"}], tr:[{id:"k22",q:"20"},{id:"cey",q:"2"}] };
+const DEFAULT_CHECK = { nl:"k14", de:"kr", en:"sov", tr:"cey" };
+function orderedItems(){ const out = []; for (const g of GROUP_ORDER[lang]){ let list = ITEMS.filter(i=>i.g===g); if (g==="jew") list = JEW_ORDER[lang].map(id=>list.find(i=>i.id===id)); out.push([g, list]); } return out; }
+function itemOptions(){ return orderedItems().map(([g,list])=>`<optgroup label="${t("grp_"+g)}">${list.map(i=>`<option value="${i.id}">${nm(ITEM_NAMES[i.id])}</option>`).join("")}</optgroup>`).join(""); }
 
 let lang = "nl", cur = "EUR";
 try { const p = JSON.parse(localStorage.getItem("valoro-pref")||"{}"); if (LANGS.includes(p.lang)) lang = p.lang; if (CURS.includes(p.cur)) cur = p.cur; } catch(e){}
@@ -524,7 +586,8 @@ const loc = () => LOCALE[lang];
 const money = (v, d) => v==null || !isFinite(v) ? "—" : new Intl.NumberFormat(loc(), {style:"currency", currency:cur, currencyDisplay:"narrowSymbol", minimumFractionDigits:d??2, maximumFractionDigits:d??2}).format(v);
 const moneyIn = (v, c, d) => v==null || !isFinite(v) ? "—" : new Intl.NumberFormat(loc(), {style:"currency", currency:c, currencyDisplay:"narrowSymbol", minimumFractionDigits:d??2, maximumFractionDigits:d??2}).format(v);
 const numf = (v, d=2) => new Intl.NumberFormat(loc(), {minimumFractionDigits:d, maximumFractionDigits:d}).format(v);
-const pct = (v, d=2) => (v>0?"+":"") + numf(v, d) + "%";
+const pctN = (v, d=1, sign=false) => new Intl.NumberFormat(loc(), {style:"percent", minimumFractionDigits:d, maximumFractionDigits:d, signDisplay: sign ? "exceptZero" : "auto"}).format(v/100);
+const pct = (v, d=2) => pctN(v, d, true);
 const parseNum = s => { s = String(s||"").trim().replace(/\s/g,""); if (!s) return NaN;
   if (s.includes(",") && s.includes(".")) s = s.lastIndexOf(",") > s.lastIndexOf(".") ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,"");
   else if (s.includes(",")) s = s.replace(",","."); return parseFloat(s); };
@@ -700,11 +763,13 @@ box.addEventListener("pointermove", onHover); box.addEventListener("pointerleave
 window.addEventListener("resize", ()=> renderChart());
 
 /* ---------------- value calculator ---------------- */
-let vRows = [{id:"k22", q:"10"}, {id:"cey", q:"2"}];
-try { const s = JSON.parse(localStorage.getItem("valoro-value")||"null"); if (Array.isArray(s) && s.length) vRows = s.filter(r=>ITEMS.some(i=>i.id===r.id)); } catch(e){}
-const saveV = () => { try { localStorage.setItem("valoro-value", JSON.stringify(vRows)); } catch(e){} };
+let vRows = null, vEdited = false;
+try { const s = JSON.parse(localStorage.getItem("valoro-value")||"null"); if (Array.isArray(s) && s.length){ vRows = s.filter(r=>ITEMS.some(i=>i.id===r.id)); vEdited = vRows.length>0; } } catch(e){}
+if (!vEdited) vRows = JSON.parse(JSON.stringify(DEFAULT_ROWS[lang]));
+const saveV = () => { vEdited = true; try { localStorage.setItem("valoro-value", JSON.stringify(vRows)); } catch(e){} };
 function buildValue(){
-  const opts = ITEMS.map(i=>`<option value="${i.id}">${nm(ITEM_NAMES[i.id])}</option>`).join("");
+  if (!vEdited) vRows = JSON.parse(JSON.stringify(DEFAULT_ROWS[lang]));
+  const opts = itemOptions();
   $("vRows").innerHTML = vRows.map((r,ix)=>{ const it = ITEMS.find(i=>i.id===r.id);
     return `<div class="row vrow" data-ix="${ix}">
       <label><span>${t("valItem")}</span><select data-f="id">${opts}</select></label>
@@ -720,6 +785,7 @@ function renderValue(){
     const fine = isFinite(q) && q>=0 ? (it.purity ? q*it.purity : q*it.fine) : NaN;
     const v = g!=null && isFinite(fine) ? fine*g : null; if (v!=null){ tot += v; any = true; }
     el.querySelector("[data-o]").textContent = money(v); });
+  renderCheck(); renderCoinTable();
   $("vTotal").textContent = any ? money(tot) : "—";
   $("vFair").textContent = any ? money(tot*.85) + " – " + money(tot*.97) : "—";
 }
@@ -728,6 +794,44 @@ $("vRows").addEventListener("input", e=>{ const row = e.target.closest(".vrow");
 $("vRows").addEventListener("change", e=>{ const row = e.target.closest(".vrow"); if (!row || e.target.dataset.f!=="id") return; vRows[+row.dataset.ix].id = e.target.value; saveV(); buildValue(); });
 $("vRows").addEventListener("click", e=>{ const b = e.target.closest("[data-rm]"); if (!b) return; vRows.splice(+b.dataset.rm,1); if (!vRows.length) vRows.push({id:"g24",q:"1"}); saveV(); buildValue(); });
 $("vAdd").addEventListener("click", ()=>{ vRows.push({id:"g24", q:"1"}); saveV(); buildValue(); });
+
+/* ---------------- fair price check ---------------- */
+let chkMode = "sell", chkItemSet = false;
+function buildCheck(){
+  const sel = $("chkItem"), prev = sel.value; sel.innerHTML = itemOptions();
+  sel.value = chkItemSet && prev ? prev : DEFAULT_CHECK[lang];
+  $("chkMode").innerHTML = ["buy","sell"].map(m=>`<button data-cm="${m}" aria-pressed="${m===chkMode}">${t(m==="buy"?"chkBuy":"chkSell")}</button>`).join("");
+  renderCheck();
+}
+function renderCheck(){
+  const it = ITEMS.find(i=>i.id===$("chkItem").value); if (!it) return;
+  const q = parseNum($("chkQty").value), price = parseNum($("chkPrice").value), g = gramCur();
+  $("chkQtyL").textContent = it.purity ? t("valGrams") : t("valCount");
+  $("chkPriceL").textContent = t(chkMode==="buy" ? "chkAsk" : "chkBid", cur);
+  $("chkMode").querySelectorAll("button").forEach(b=> b.setAttribute("aria-pressed", String(b.dataset.cm===chkMode)));
+  const out = $("chkOut"), note = $("chkNote"), mark = $("chkMark"); out.className = "verdict";
+  if (g==null){ out.textContent = t("loading"); note.textContent = ""; return; }
+  if (!(q>0)){ out.textContent = t("chkQty0"); note.textContent = ""; mark.style.left = "0%"; return; }
+  const value = (it.purity ? q*it.purity : q*it.fine) * g;
+  if (!(price>0)){ out.textContent = t("chkEmpty", money(value)); note.textContent = ""; mark.style.left = "0%"; return; }
+  const pv = chkMode==="buy" ? (price/value-1)*100 : (1-price/value)*100, abs = money(Math.abs(price-value)), ps = pctN(Math.abs(pv),1);
+  mark.style.left = Math.max(0, Math.min(100, pv/25*100)) + "%";
+  let k, cls;
+  if (chkMode==="buy"){ if (pv<0){k="chkB_under";cls="up";} else if (pv<=4){k="chkB_good";cls="up";} else if (pv<=10){k="chkB_ok";cls="mid";} else {k="chkB_high";cls="down";}
+    note.textContent = t(it.purity && it.id!=="g24" ? "chkNoteBuyJ" : "chkNoteBuyC"); }
+  else { if (pv<=0){k="chkS_over";cls="up";} else if (pv<=4){k="chkS_good";cls="up";} else if (pv<=10){k="chkS_ok";cls="mid";} else {k="chkS_low";cls="down";}
+    note.textContent = t("chkNoteSell"); }
+  out.classList.add(cls); out.textContent = t(k, ps, abs) + " " + t("chkGoldVal", money(value));
+}
+["chkQty","chkPrice"].forEach(id=> $(id).addEventListener("input", renderCheck));
+$("chkItem").addEventListener("change", ()=>{ chkItemSet = true; renderCheck(); });
+$("chkMode").addEventListener("click", e=>{ const b = e.target.closest("[data-cm]"); if (!b) return; chkMode = b.dataset.cm; renderCheck(); });
+function renderCoinTable(){
+  const g = gramCur();
+  $("coinTbl").innerHTML = `<thead><tr><th>${t("tblItem")}</th><th class="r">${t("bFine")}</th><th class="r">${t("valValue")}</th></tr></thead><tbody>` +
+    orderedItems().map(([grp,list])=>`<tr><th colspan="3" style="text-transform:none;letter-spacing:0;font-size:12.5px">${t("grp_"+grp)}</th></tr>` + list.map(i=>{ const f = i.purity || i.fine;
+      return `<tr><td>${nm(ITEM_NAMES[i.id])}${i.purity?` <span class="muted xs">· ${t("tblPerG")}</span>`:""}</td><td class="r num">${numf(f, i.purity?3:2)} g</td><td class="r num">${money(g==null?null:f*g)}</td></tr>`; }).join("")).join("") + "</tbody>";
+}
 
 /* ---------------- cost calculator ---------------- */
 // buy/sell in %, store in % per year, min = minimum storage per year in EUR (converted), freq: m=monthly, y=yearly, o=once
@@ -768,7 +872,7 @@ function renderCost(){
   $("cBars").innerHTML = list.map((l,i)=>`<div class="brow${i===0?" best":""}">
       <div class="lbl"><b>${t("r_"+l.id)}${i===0?`<span class="tag best">${t("costBest")}</span>`:""}</b><span>${t("r_"+l.id+"_d")}</span></div>
       <div class="track"><i style="width:${Math.max(2, l.cost/max*100)}%"></i></div>
-      <div class="val">${money(l.cost, 0)}<small>${numf(l.cost/l.paid*100,1)}% · ${t("costKeep", money(l.end, 0))}</small></div></div>`).join("");
+      <div class="val">${money(l.cost, 0)}<small>${pctN(l.cost/l.paid*100,1)} · ${t("costKeep", money(l.end, 0))}</small></div></div>`).join("");
   saveC();
 }
 function buildCostTable(){
@@ -827,8 +931,9 @@ const DEALERS = [
 function renderBuy(){
   const g = gramCur();
   $("bTable").innerHTML = `<thead><tr><th>${t("bProduct")}</th><th class="r">${t("bFine")}</th><th class="r">${t("bValue")}</th><th class="r">${t("bPrem")}</th><th class="r">${t("bRange")}</th></tr></thead><tbody>` +
-    PRODUCTS.map(p=>{ const v = g==null ? null : g*p.fine; return `<tr><td>${nm(p.n)}</td><td class="r num">${numf(p.fine, p.fine<5?2:p.fine===OZ?2:0)} g</td><td class="r num">${money(v, v>5000?0:2)}</td><td class="r">${numf(p.lo,0)}–${numf(p.hi,p.hi%1?1:0)}%</td><td class="r num">${v==null?"—":money(v*(1+p.lo/100), v>5000?0:2)+" – "+money(v*(1+p.hi/100), v>5000?0:2)}</td></tr>`; }).join("") + "</tbody>";
-  $("bDealers").innerHTML = DEALERS.map(d=>`<div class="card"><h3>${t(d.c)}</h3><ul>${d.list.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener nofollow">${n}</a></li>`).join("")}</ul></div>`).join("");
+    PRODUCTS.map(p=>{ const v = g==null ? null : g*p.fine; return `<tr><td>${nm(p.n)}</td><td class="r num">${numf(p.fine, p.fine<5?2:p.fine===OZ?2:0)} g</td><td class="r num">${money(v, v>5000?0:2)}</td><td class="r">${pctN(p.lo,0)} – ${pctN(p.hi,p.hi%1?1:0)}</td><td class="r num">${v==null?"—":money(v*(1+p.lo/100), v>5000?0:2)+" – "+money(v*(1+p.hi/100), v>5000?0:2)}</td></tr>`; }).join("") + "</tbody>";
+  const dOrder = {nl:["cNL","cDE","cUK"], de:["cDE","cNL","cUK"], en:["cUK","cNL","cDE"], tr:["cNL","cDE","cUK"]}[lang];
+  $("bDealers").innerHTML = dOrder.map(c=>DEALERS.find(d=>d.c===c)).map(d=>`<div class="card"><h3>${t(d.c)}</h3><ul>${d.list.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener nofollow">${n}</a></li>`).join("")}</ul></div>`).join("");
 }
 
 /* ---------------- news ---------------- */
@@ -853,8 +958,8 @@ function renderNews(){
 
 /* ---------------- glue ---------------- */
 function renderAllTools(){ renderValue(); renderCost(); renderBuy(); }
-function renderEverything(){ renderPrices(); renderChart(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); renderNews(); }
-applyTexts(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); route();
+function renderEverything(){ renderPrices(); renderChart(); buildCheck(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); renderNews(); }
+applyTexts(); buildCheck(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); route();
 (async()=>{ await updateFx(); tries++; await updateMetals(); updateOther(); loadHist("D", cur); if (S.range!=="D") loadHist(S.range, cur); })();
 setInterval(()=>{ tries++; updateMetals(); }, 15000);
 setInterval(updateFx, 10*60*1000);
