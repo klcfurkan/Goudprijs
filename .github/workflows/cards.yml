@@ -1,0 +1,36 @@
+name: Dagelijkse prijskaarten
+
+# Maakt elke ochtend per taal een prijskaart (PNG) voor sociale media
+# en zet die op de cards-branch. Ook handmatig te starten.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cards
+  cancel-in-progress: true
+
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Kaarten maken
+        env:
+          CHROME: google-chrome
+        run: python3 scripts/cards.py /tmp/cards
+      - name: Publiceren op de cards-branch
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd /tmp/cards
+          rm -f *.html
+          git init -q -b cards
+          git add .
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Prijskaarten $(date -u +%F)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" cards
