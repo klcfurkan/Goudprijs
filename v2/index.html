@@ -281,20 +281,8 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
   <section class="view" id="v-tax" hidden>
     <div class="head"><h1 data-t="taxTitle"></h1><p data-t="taxLead"></p></div>
     <div class="seg" id="taxSeg" role="group" aria-label="Country" style="align-self:flex-start"></div>
-    <div id="taxDE" class="grid g2">
-      <div class="card">
-        <div class="fields">
-          <label><span data-t="tProd"></span>
-            <select id="tProd"><option value="phys" data-t="tPhys"></option><option value="etf" data-t="tEtf"></option></select></label>
-          <label><span data-t="tBuyDate"></span><input type="date" id="tBuyD"></label>
-          <label><span data-t="tSellDate"></span><input type="date" id="tSellD"></label>
-          <label><span data-t="tBuyAmt"></span><input class="num" id="tBuyA" inputmode="decimal" value="5000"></label>
-          <label><span data-t="tSellAmt"></span><input class="num" id="tSellA" inputmode="decimal" value="6200"></label>
-          <label id="tOtherL"><span data-t="tOther"></span><input class="num" id="tOther" inputmode="decimal" value="0"></label>
-          <label id="tRateL"><span data-t="tRate"></span><input class="num" id="tRate" inputmode="decimal" value="30"></label>
-          <label id="tAllowL" hidden><span data-t="tAllow"></span><input class="num" id="tAllow" inputmode="decimal" value="1000"></label>
-        </div>
-      </div>
+    <div id="taxCalc" class="grid g2">
+      <div class="card"><div class="fields" id="txFields"></div></div>
       <div class="card result">
         <span class="small muted" data-t="tResult"></span>
         <span class="verdict" id="tVerdict">—</span>
@@ -302,8 +290,7 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
         <p class="small muted" id="tExplain"></p>
       </div>
     </div>
-    <div id="taxNL" class="card" hidden><div class="result"><h3 data-t="nlTitle"></h3><p data-t="nlBody"></p></div></div>
-    <div id="taxUK" class="card" hidden><div class="result"><h3 data-t="ukTitle"></h3><p data-t="ukBody"></p></div></div>
+    <div id="taxInfo" class="card" hidden><div class="result"><h3 id="txInfoT"></h3><p id="txInfoB"></p></div></div>
     <p class="note" data-t="taxNote"></p>
   </section>
 
@@ -508,6 +495,52 @@ nlTitle:{nl:"Nederland: geen belasting bij verkoop",en:"Netherlands: no tax when
 nlBody:{nl:"In Nederland betaal je geen belasting over de winst als je goud verkoopt. Goud telt wel mee in box 3: de waarde op 1 januari hoort bij je vermogen, en daarover kan vermogensbelasting gelden boven het heffingsvrije vermogen. Beleggingsgoud (baren en munten van minstens 99,5% en 90% zuiver) is vrij van btw.",en:"In the Netherlands you pay no tax on the gain when you sell gold. Gold does count in box 3: its value on 1 January is part of your wealth, which may be taxed above the tax-free allowance. Investment gold (bars and coins of at least 99.5% and 90% purity) is exempt from VAT.",de:"In den Niederlanden zahlst du beim Verkauf von Gold keine Steuer auf den Gewinn. Gold zählt aber in „Box 3“: Sein Wert am 1. Januar gehört zu deinem Vermögen, auf das oberhalb des Freibetrags Vermögensteuer anfallen kann. Anlagegold (Barren ab 99,5 % und Münzen ab 90 % Feinheit) ist mehrwertsteuerfrei.",tr:"Hollanda'da altın satınca kazanç üzerinden vergi ödemezsin. Ancak altın 3. kutuda (box 3) sayılır: 1 Ocak'taki değeri servetinin parçasıdır ve vergisiz sınırın üzerinde servet vergisi çıkabilir. Yatırım altını (en az %99,5 saflıkta külçe ve %90 saflıkta sikke) KDV'den muaftır."},
 ukTitle:{nl:"Verenigd Koninkrijk: let op welke munt",en:"United Kingdom: it depends on the coin",de:"Vereinigtes Königreich: es kommt auf die Münze an",tr:"Birleşik Krallık: sikkeye bağlı"},
 ukBody:{nl:"Britse munten die wettig betaalmiddel zijn, zoals de Sovereign en de Britannia, zijn vrijgesteld van vermogenswinstbelasting (CGT). Voor baren en buitenlandse munten geldt CGT over winst boven de jaarlijkse vrijstelling van £ 3.000. Beleggingsgoud is vrij van btw.",en:"British coins that are legal tender, such as the Sovereign and the Britannia, are exempt from Capital Gains Tax (CGT). For bars and foreign coins, CGT applies to gains above the annual exempt amount of £3,000. Investment gold is exempt from VAT.",de:"Britische Münzen mit gesetzlichem Zahlungsmittelstatus, etwa Sovereign und Britannia, sind von der Kapitalertragsteuer (CGT) befreit. Für Barren und ausländische Münzen gilt CGT auf Gewinne über dem jährlichen Freibetrag von 3.000 £. Anlagegold ist mehrwertsteuerfrei.",tr:"Sovereign ve Britannia gibi yasal ödeme aracı olan İngiliz sikkeleri sermaye kazancı vergisinden (CGT) muaftır. Külçe ve yabancı sikkelerde yıllık 3.000 £ muafiyetin üzerindeki kazanca CGT uygulanır. Yatırım altını KDV'den muaftır."},
+cBE:{nl:"België",en:"Belgium",de:"Belgien",tr:"Belçika"}, cAT:{nl:"Oostenrijk",en:"Austria",de:"Österreich",tr:"Avusturya"}, cCH:{nl:"Zwitserland",en:"Switzerland",de:"Schweiz",tr:"İsviçre"}, cTR:{nl:"Turkije",en:"Turkey",de:"Türkei",tr:"Türkiye"},
+no:{nl:"Nee",en:"No",de:"Nein",tr:"Hayır"}, yes:{nl:"Ja",en:"Yes",de:"Ja",tr:"Evet"},
+atPhys:{nl:"Fysiek goud (baren, munten)",en:"Physical gold (bars, coins)",de:"Physisches Gold (Barren, Münzen)",tr:"Fiziki altın (külçe, sikke)"},
+atEtf:{nl:"Goud-ETC of -ETF",en:"Gold ETC or ETF",de:"Gold-ETC oder -ETF",tr:"Altın ETC veya ETF"},
+atExplFree:{nl:"Je hield het goud langer dan één jaar. Dan is de winst in Oostenrijk belastingvrij.",en:"You held the gold for more than one year. In Austria the gain is then tax-free.",de:"Du hast das Gold länger als ein Jahr gehalten. Dann ist der Gewinn in Österreich steuerfrei.",tr:"Altını bir yıldan uzun tuttun. Avusturya'da kazanç bu durumda vergiden muaftır."},
+atExplUnder:{nl:"Binnen een jaar verkocht, maar je totale winst uit zulke verkopen blijft dit jaar onder € 440. Dan betaal je niets (vrijgrens).",en:"Sold within a year, but your total gains from such sales stay below €440 this year. Then you pay nothing (exemption limit).",de:"Innerhalb eines Jahres verkauft, aber deine Gewinne aus solchen Verkäufen bleiben dieses Jahr unter 440 €. Dann zahlst du nichts (Freigrenze).",tr:"Bir yıl içinde sattın, ama bu yılki toplam kazancın 440 €'nun altında. Bu durumda vergi yok (muafiyet sınırı)."},
+atExplTax:{nl:"Binnen een jaar verkocht en je winst is € 440 of meer. Dan is de hele winst belast tegen je persoonlijke tarief. Wacht je tot de datum hieronder, dan is het belastingvrij.",en:"Sold within a year and your gain is €440 or more. Then the whole gain is taxed at your personal rate. If you wait until the date below, it is tax-free.",de:"Innerhalb eines Jahres verkauft und dein Gewinn liegt bei 440 € oder mehr. Dann ist der ganze Gewinn mit deinem persönlichen Steuersatz zu versteuern. Wartest du bis zum Datum unten, ist er steuerfrei.",tr:"Bir yıl içinde sattın ve kazancın 440 € veya fazla. Bu durumda kazancın tamamı kişisel oranından vergilendirilir. Aşağıdaki tarihe kadar beklersen vergisiz olur."},
+atExplEtf:{nl:"Een goud-ETC of -ETF is in Oostenrijk altijd belast met 27,5% kapitaalopbrengstbelasting (KESt), hoe lang je hem ook hield.",en:"A gold ETC or ETF is always taxed in Austria at 27.5% capital gains tax (KESt), however long you held it.",de:"Ein Gold-ETC oder -ETF unterliegt in Österreich immer der Kapitalertragsteuer (KESt) von 27,5 %, egal wie lange du ihn gehalten hast.",tr:"Altın ETC veya ETF'i Avusturya'da ne kadar tutarsan tut her zaman %27,5 sermaye kazancı vergisine (KESt) tabidir."},
+nlGold:{nl:"Waarde van je goud op 1 januari 2026 (€)",en:"Value of your gold on 1 January 2026 (€)",de:"Wert deines Goldes am 1. Januar 2026 (€)",tr:"1 Ocak 2026'da altınının değeri (€)"},
+nlBank:{nl:"Spaargeld op de bank op 1 januari (€)",en:"Bank savings on 1 January (€)",de:"Bankguthaben am 1. Januar (€)",tr:"1 Ocak'ta bankadaki birikim (€)"},
+nlInv:{nl:"Andere beleggingen op 1 januari (€)",en:"Other investments on 1 January (€)",de:"Andere Geldanlagen am 1. Januar (€)",tr:"1 Ocak'ta diğer yatırımlar (€)"},
+nlDebt:{nl:"Schulden op 1 januari, zonder hypotheek eigen huis (€)",en:"Debts on 1 January, excluding mortgage on your own home (€)",de:"Schulden am 1. Januar, ohne Hypothek fürs eigene Haus (€)",tr:"1 Ocak'ta borçlar, kendi evinin ipoteği hariç (€)"},
+nlPartner:{nl:"Fiscale partner?",en:"Tax partner?",de:"Steuerlicher Partner?",tr:"Vergi partnerin var mı?"},
+nlFree:{nl:"Heffingsvrij vermogen",en:"Tax-free allowance",de:"Steuerfreies Vermögen",tr:"Vergisiz servet sınırı"},
+nlTotal:{nl:"Box 3-belasting over 2026",en:"Box 3 tax for 2026",de:"Box-3-Steuer für 2026",tr:"2026 box 3 vergisi"},
+nlGoldPart:{nl:"Waarvan door je goud",en:"Of which due to your gold",de:"Davon wegen deines Goldes",tr:"Bunun altınından kaynaklanan kısmı"},
+nlPerYear:{nl:"Kosten per jaar t.o.v. goudwaarde",en:"Yearly cost relative to gold value",de:"Jährliche Kosten im Verhältnis zum Goldwert",tr:"Altın değerine göre yıllık maliyet"},
+nlNone:{nl:"Geen box 3-belasting",en:"No box 3 tax",de:"Keine Box-3-Steuer",tr:"Box 3 vergisi yok"},
+nlExpl:{nl:"In Nederland betaal je geen belasting bij verkoop van goud. Wel telt goud in box 3: de Belastingdienst rekent in 2026 met een vast rendement van 6,00% op bezittingen zoals goud, 1,28% op spaargeld en 2,70% op schulden, en heft daarover 36% boven € 59.357 per persoon. Was je echte rendement lager (bijvoorbeeld omdat goud daalde), dan kun je dat laten zien met de tegenbewijsregeling. De percentages voor spaargeld en schulden zijn nog voorlopig.",en:"In the Netherlands you pay no tax when selling gold. Gold does count in box 3: for 2026 the tax office assumes a fixed return of 6.00% on assets such as gold, 1.28% on savings and 2.70% on debts, and taxes that at 36% above €59,357 per person. If your real return was lower (for example because gold fell), you can show that under the rebuttal scheme. The savings and debt rates are still provisional.",de:"In den Niederlanden zahlst du beim Verkauf von Gold keine Steuer. Gold zählt aber in „Box 3“: Für 2026 nimmt das Finanzamt eine feste Rendite von 6,00 % auf Vermögen wie Gold, 1,28 % auf Ersparnisse und 2,70 % auf Schulden an und besteuert das mit 36 % oberhalb von 59.357 € pro Person. War deine echte Rendite niedriger (z. B. weil Gold gefallen ist), kannst du das per Gegenbeweis nachweisen. Die Sätze für Ersparnisse und Schulden sind noch vorläufig.",tr:"Hollanda'da altın satınca vergi ödemezsin. Ama altın 3. kutuda (box 3) sayılır: 2026 için vergi dairesi altın gibi varlıklarda %6,00, birikimde %1,28 ve borçlarda %2,70 sabit getiri varsayar ve kişi başı 59.357 €'nun üzerini %36 vergilendirir. Gerçek getirin daha düşükse (örneğin altın düştüyse) bunu karşı kanıt düzenlemesiyle gösterebilirsin. Birikim ve borç oranları henüz geçicidir."},
+beInv:{nl:"Beleggingsgoud (baren, munten)",en:"Investment gold (bars, coins)",de:"Anlagegold (Barren, Münzen)",tr:"Yatırım altını (külçe, sikke)"},
+beJew:{nl:"Sieraden",en:"Jewellery",de:"Schmuck",tr:"Takı"},
+beBuy:{nl:"Aankoopprijs (vóór 2026 gekocht: waarde op 31-12-2025) (€)",en:"Purchase price (bought before 2026: value on 31-12-2025) (€)",de:"Kaufpreis (vor 2026 gekauft: Wert am 31.12.2025) (€)",tr:"Alış fiyatı (2026'dan önce alındıysa: 31.12.2025 değeri) (€)"},
+beSell:{nl:"Verkoopprijs (€)",en:"Sale price (€)",de:"Verkaufspreis (€)",tr:"Satış fiyatı (€)"},
+beEx:{nl:"Nog vrije vrijstelling dit jaar (€)",en:"Remaining exemption this year (€)",de:"Noch freier Freibetrag dieses Jahr (€)",tr:"Bu yıl kalan muafiyet (€)"},
+beFreeUsed:{nl:"Gebruikte vrijstelling",en:"Exemption used",de:"Genutzter Freibetrag",tr:"Kullanılan muafiyet"},
+beExplTax:{nl:"Sinds 2026 betaal je in België 10% belasting op de winst bij verkoop van beleggingsgoud, boven een vrijstelling van € 10.000 per jaar. Kocht je vóór 2026, dan telt de waarde op 31 december 2025 als aankoopprijs. Je moet de winst zelf aangeven.",en:"Since 2026 Belgium taxes the gain on selling investment gold at 10%, above an exemption of €10,000 per year. If you bought before 2026, the value on 31 December 2025 counts as purchase price. You must declare the gain yourself.",de:"Seit 2026 besteuert Belgien den Gewinn aus dem Verkauf von Anlagegold mit 10 %, oberhalb eines Freibetrags von 10.000 € pro Jahr. Bei Kauf vor 2026 gilt der Wert am 31. Dezember 2025 als Kaufpreis. Den Gewinn musst du selbst angeben.",tr:"Belçika 2026'dan beri yatırım altını satışından elde edilen kazancı, yıllık 10.000 € muafiyetin üzerinde %10 vergilendirir. 2026'dan önce aldıysan 31 Aralık 2025 değeri alış fiyatı sayılır. Kazancı kendin beyan etmelisin."},
+beExplFree:{nl:"Je winst valt binnen de jaarlijkse vrijstelling van € 10.000. Dan betaal je niets, maar je moet de winst wel aangeven.",en:"Your gain falls within the annual €10,000 exemption. You pay nothing, but you must still declare the gain.",de:"Dein Gewinn liegt innerhalb des jährlichen Freibetrags von 10.000 €. Du zahlst nichts, musst den Gewinn aber angeben.",tr:"Kazancın yıllık 10.000 € muafiyetin içinde. Vergi ödemezsin ama kazancı yine de beyan etmelisin."},
+beExplJew:{nl:"Sieraden vallen niet onder de nieuwe Belgische meerwaardebelasting. Bij normaal beheer van je privévermogen betaal je bij verkoop dus geen belasting.",en:"Jewellery is not covered by the new Belgian capital gains tax. With normal management of your private wealth, you pay no tax when selling.",de:"Schmuck fällt nicht unter die neue belgische Wertzuwachssteuer. Bei normaler Verwaltung deines Privatvermögens zahlst du beim Verkauf also keine Steuer.",tr:"Takılar Belçika'nın yeni sermaye kazancı vergisine girmez. Özel servetin olağan yönetiminde satışta vergi ödemezsin."},
+ukLegal:{nl:"Sovereign of Britannia (wettig betaalmiddel)",en:"Sovereign or Britannia (legal tender)",de:"Sovereign oder Britannia (gesetzliches Zahlungsmittel)",tr:"Sovereign veya Britannia (yasal ödeme aracı)"},
+ukBar:{nl:"Baren en andere munten",en:"Bars and other coins",de:"Barren und andere Münzen",tr:"Külçe ve diğer sikkeler"},
+ukJew:{nl:"Sieraden",en:"Jewellery",de:"Schmuck",tr:"Takı"},
+ukBuy:{nl:"Aankoopprijs (£)",en:"Purchase price (£)",de:"Kaufpreis (£)",tr:"Alış fiyatı (£)"},
+ukSell:{nl:"Verkoopprijs (£)",en:"Sale price (£)",de:"Verkaufspreis (£)",tr:"Satış fiyatı (£)"},
+ukAea:{nl:"Nog vrije jaarvrijstelling (£)",en:"Remaining annual exempt amount (£)",de:"Noch freier Jahresfreibetrag (£)",tr:"Kalan yıllık muafiyet (£)"},
+ukBand:{nl:"Je inkomensschijf",en:"Your income band",de:"Deine Einkommensstufe",tr:"Gelir dilimin"},
+ukBasic:{nl:"Basistarief (18%)",en:"Basic rate (18%)",de:"Basissatz (18 %)",tr:"Temel oran (%18)"},
+ukHigher:{nl:"Hoger tarief (24%)",en:"Higher rate (24%)",de:"Höherer Satz (24 %)",tr:"Yüksek oran (%24)"},
+ukCapped:{nl:"Belastbare winst (begrensd)",en:"Taxable gain (capped)",de:"Steuerpflichtiger Gewinn (gedeckelt)",tr:"Vergilendirilebilir kazanç (sınırlı)"},
+ukExplLegal:{nl:"Britse munten die wettig betaalmiddel zijn, zoals de Sovereign en de Britannia, zijn vrijgesteld van vermogenswinstbelasting (CGT).",en:"British coins that are legal tender, such as the Sovereign and the Britannia, are exempt from Capital Gains Tax (CGT).",de:"Britische Münzen mit gesetzlichem Zahlungsmittelstatus, wie Sovereign und Britannia, sind von der Kapitalertragsteuer (CGT) befreit.",tr:"Sovereign ve Britannia gibi yasal ödeme aracı olan İngiliz sikkeleri sermaye kazancı vergisinden (CGT) muaftır."},
+ukExplBar:{nl:"Op baren en buitenlandse munten betaal je CGT over winst boven de jaarvrijstelling van £ 3.000: 18% in het basistarief, 24% daarboven.",en:"On bars and foreign coins you pay CGT on gains above the £3,000 annual exempt amount: 18% at the basic rate, 24% above it.",de:"Auf Barren und ausländische Münzen zahlst du CGT auf Gewinne über dem Jahresfreibetrag von 3.000 £: 18 % im Basissatz, 24 % darüber.",tr:"Külçe ve yabancı sikkelerde 3.000 £ yıllık muafiyetin üzerindeki kazanca CGT ödersin: temel oranda %18, üzerinde %24."},
+ukExplChattel:{nl:"Sieraden zijn 'roerende zaken'. Bij een verkoopprijs tot £ 6.000 is de winst vrijgesteld.",en:"Jewellery counts as a chattel. If the sale price is £6,000 or less, the gain is exempt.",de:"Schmuck gilt als bewegliche Sache (chattel). Bei einem Verkaufspreis bis 6.000 £ ist der Gewinn befreit.",tr:"Takılar taşınır mal (chattel) sayılır. Satış fiyatı 6.000 £ veya altındaysa kazanç muaftır."},
+ukExplJew:{nl:"Sieraden boven £ 6.000: de belastbare winst is maximaal 5/3 van het deel boven £ 6.000. Daarover betaal je CGT boven de jaarvrijstelling.",en:"Jewellery above £6,000: the taxable gain is at most 5/3 of the amount above £6,000. CGT applies above the annual exempt amount.",de:"Schmuck über 6.000 £: Der steuerpflichtige Gewinn beträgt höchstens 5/3 des Betrags über 6.000 £. Darauf fällt CGT über dem Jahresfreibetrag an.",tr:"6.000 £ üzerindeki takılarda vergilendirilebilir kazanç en fazla 6.000 £'u aşan kısmın 5/3'üdür. Yıllık muafiyetin üzerine CGT uygulanır."},
+chTitle:{nl:"Zwitserland: geen belasting bij verkoop",en:"Switzerland: no tax when selling",de:"Schweiz: keine Steuer beim Verkauf",tr:"İsviçre: satışta vergi yok"},
+chBody:{nl:"Voor particulieren is winst op privévermogen in Zwitserland belastingvrij, dus ook winst op goud. Goud telt wel mee voor de kantonale vermogensbelasting, gewaardeerd volgens de koerslijst van de federale belastingdienst (ESTV).",en:"For private individuals in Switzerland, gains on private assets are tax-free, including gold. Gold does count towards cantonal wealth tax, valued using the federal tax administration's price list (ESTV).",de:"Für Privatpersonen sind Gewinne auf Privatvermögen in der Schweiz steuerfrei, auch auf Gold. Gold zählt aber zur kantonalen Vermögenssteuer und wird nach der Kursliste der ESTV bewertet.",tr:"İsviçre'de bireyler için özel servet kazançları, altın dahil, vergiden muaftır. Ancak altın kantonal servet vergisine dahildir ve federal vergi idaresinin (ESTV) kur listesine göre değerlenir."},
+trTitle:{nl:"Turkije: geen belasting bij verkoop van fysiek goud",en:"Turkey: no tax on selling physical gold",de:"Türkei: keine Steuer beim Verkauf von physischem Gold",tr:"Türkiye: fiziki altın satışında vergi yok"},
+trBody:{nl:"Wie in Turkije woont, betaalt bij af en toe verkopen van fysiek goud geen inkomstenbelasting. Bij aankoop via een goudrekening bij de bank geldt 0,2% BSMV. Goudfondsen gekocht vanaf 9 juli 2025 hebben 17,5% bronheffing. Woon je buiten Turkije, bijvoorbeeld in Duitsland of Nederland? Dan gelden de regels van je woonland: kies dat land hierboven.",en:"If you live in Turkey, occasional sales of physical gold are not subject to income tax. Buying via a bank gold account carries 0.2% BSMV. Gold funds bought from 9 July 2025 carry 17.5% withholding tax. Living outside Turkey, for example in Germany or the Netherlands? Then the rules of your country of residence apply: choose that country above.",de:"Wer in der Türkei lebt, zahlt beim gelegentlichen Verkauf von physischem Gold keine Einkommensteuer. Beim Kauf über ein Goldkonto der Bank fallen 0,2 % BSMV an. Goldfonds, die ab dem 9. Juli 2025 gekauft wurden, unterliegen 17,5 % Quellensteuer. Du wohnst außerhalb der Türkei, z. B. in Deutschland oder den Niederlanden? Dann gelten die Regeln deines Wohnlandes: wähle dieses Land oben.",tr:"Türkiye'de yaşayanlar ara sıra yaptıkları fiziki altın satışlarında gelir vergisi ödemez. Bankada altın hesabıyla alımda %0,2 BSMV uygulanır. 9 Temmuz 2025'ten itibaren alınan altın fonlarında %17,5 stopaj vardır. Türkiye dışında, örneğin Almanya veya Hollanda'da mı yaşıyorsun? O zaman ikamet ettiğin ülkenin kuralları geçerlidir: yukarıdan o ülkeyi seç."},
 taxNote:{nl:"Dit is een indicatie en geen belastingadvies. Regels kunnen veranderen; check je eigen situatie bij een adviseur of de belastingdienst.",en:"This is an indication, not tax advice. Rules can change; check your own situation with an adviser or the tax office.",de:"Das ist ein Richtwert und keine Steuerberatung. Regeln können sich ändern; prüfe deine Situation mit einem Steuerberater oder dem Finanzamt.",tr:"Bu bir tahmindir, vergi tavsiyesi değildir. Kurallar değişebilir; kendi durumunu bir danışmana veya vergi dairesine danış."},
 
 buyTitle:{nl:"Wat hoort goud te kosten?",en:"What should gold cost?",de:"Was sollte Gold kosten?",tr:"Altın ne kadar olmalı?"},
@@ -681,7 +714,7 @@ function applyTexts(){
   $("tabs").innerHTML = VIEWS.map(v=>`<a href="#${v}" data-v="${v}">${t("nav_"+v)}</a>`).join("");
   $("rangeSeg").innerHTML = ["D","W","M","Y","5"].map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t({D:"rangeD",W:"rangeW",M:"rangeM",Y:"rangeY","5":"range5"}[r])}</button>`).join("");
   $("toolLinks").innerHTML = ["value","cost","tax","buy"].map(v=>`<a href="#${v}"><b>${t("nav_"+v)}</b><span>${t("tool_"+v)}</span></a>`).join("");
-  $("taxSeg").innerHTML = ["DE","NL","UK"].map(c=>`<button data-tc="${c}" aria-pressed="${c===taxC}">${t("c"+c)}</button>`).join("");
+  $("taxSeg").innerHTML = TAX_COUNTRIES.map(c=>`<button data-tc="${c}" aria-pressed="${c===taxC}">${t("c"+c)}</button>`).join("");
   $("chartFoot").textContent = t("chartFoot");
   markNav();
 }
@@ -694,7 +727,7 @@ document.addEventListener("click", e=>{
   else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); }
   else if (b.dataset.th){ theme = b.dataset.th; try { localStorage.setItem("fairvio-theme", theme); } catch(e){} applyTheme(); applyTexts(); renderChart(); }
   else if (b.dataset.r){ S.range = b.dataset.r; applyTexts(); renderChart(); loadHist(S.range, cur); }
-  else if (b.dataset.tc){ taxC = b.dataset.tc; applyTexts(); renderTax(); }
+  else if (b.dataset.tc){ taxC = b.dataset.tc; if (taxC==="AT" && TX.prod!=="phys" && TX.prod!=="etf") TX.prod = "phys"; applyTexts(); renderTax(); }
   else if (b.dataset.nc){ S.newsCat = b.dataset.nc; renderNews(); }
 });
 window.addEventListener("hashchange", route);
@@ -896,35 +929,95 @@ $("cTable").addEventListener("input", e=>{ const i = e.target.dataset.ri; if (i=
 $("cReset").addEventListener("click", ()=>{ ROUTES = JSON.parse(JSON.stringify(ROUTES_DEF)); buildCostTable(); renderCost(); });
 
 /* ---------------- tax ---------------- */
-let taxC = lang==="nl" ? "NL" : lang==="en" && cur==="GBP" ? "UK" : "DE";
+// Regels 2026 per land. Elke taal kan elk land kiezen; de standaard volgt de taal.
+const TAX_COUNTRIES = ["DE","NL","BE","AT","UK","CH","TR"];
+let taxC = {nl:"NL", de:"DE", en:"DE", tr:"DE"}[lang] || "DE";
 const iso = d => d.toISOString().slice(0,10);
-{ const now = new Date(); const b = new Date(now); b.setMonth(b.getMonth()-8); $("tBuyD").value = iso(b); $("tSellD").value = iso(now); }
+const today = new Date(), eightAgo = new Date(today); eightAgo.setMonth(eightAgo.getMonth()-8);
+const TX = {}; // waarden per veld, gedeeld tussen landen
+const txDefaults = {prod:"phys", buyD:iso(eightAgo), sellD:iso(today), buyA:"5000", sellA:"6200", other:"0", rate:"30", allow:"1000",
+  nlGold:"20000", nlBank:"30000", nlInv:"0", nlDebt:"0", nlPartner:"no", beProd:"inv", beBuy:"5000", beSell:"18000", beEx:"10000",
+  ukProd:"bar", ukBuy:"5000", ukSell:"14000", ukAea:"3000", ukBand:"basic"};
+Object.assign(TX, txDefaults);
+const F = {
+  date:(k,lab)=>`<label><span>${t(lab)}</span><input type="date" data-tx="${k}" value="${TX[k]}"></label>`,
+  num:(k,lab,arg)=>`<label><span>${t(lab,arg)}</span><input class="num" data-tx="${k}" inputmode="decimal" value="${TX[k]}"></label>`,
+  sel:(k,lab,opts)=>`<label><span>${t(lab)}</span><select data-tx="${k}">${opts.map(([v,l])=>`<option value="${v}"${TX[k]===v?" selected":""}>${t(l)}</option>`).join("")}</select></label>`,
+};
 function addYear(d){ const x = new Date(d); x.setFullYear(x.getFullYear()+1); return x; }
-function renderTax(){
-  $("taxDE").hidden = taxC!=="DE"; $("taxNL").hidden = taxC!=="NL"; $("taxUK").hidden = taxC!=="UK";
-  if (taxC!=="DE") return;
-  const etf = $("tProd").value==="etf";
-  $("tOtherL").hidden = etf; $("tRateL").hidden = etf; $("tAllowL").hidden = !etf;
-  const bd = new Date($("tBuyD").value+"T12:00:00"), sd = new Date($("tSellD").value+"T12:00:00");
-  const ba = parseNum($("tBuyA").value), sa = parseNum($("tSellA").value), other = parseNum($("tOther").value)||0, rate = parseNum($("tRate").value), allow = Math.max(0, parseNum($("tAllow").value)||0);
-  const eur = v => moneyIn(v, "EUR");
-  const kv = []; let verdict = "—", expl = "";
-  if (isNaN(bd) || isNaN(sd) || sd < bd || !isFinite(ba) || !isFinite(sa)){ $("tVerdict").textContent = "—"; $("tKv").innerHTML = ""; $("tExplain").textContent = t("tExplDates"); return; }
+const eur = v => moneyIn(v, "EUR"), gbp = v => moneyIn(v, "GBP");
+const n0 = k => { const v = parseNum(TX[k]); return isFinite(v) ? v : NaN; };
+// --- Duitsland en Oostenrijk: speculatietermijn van één jaar
+function holdCalc(cfg){
+  const etf = TX.prod==="etf";
+  const bd = new Date(TX.buyD+"T12:00:00"), sd = new Date(TX.sellD+"T12:00:00"), ba = n0("buyA"), sa = n0("sellA");
+  if (isNaN(bd)||isNaN(sd)||sd<bd||!isFinite(ba)||!isFinite(sa)) return {expl:t("tExplDates")};
   const days = Math.round((sd-bd)/864e5), gain = sa-ba, freeFrom = new Date(addYear(bd).getTime()+864e5);
-  kv.push([t("tHold"), t("tDays", days)], [t("tGain"), eur(gain)]);
-  let tax = 0;
-  if (gain <= 0){ verdict = t("tLoss"); expl = t("tExplLoss"); }
-  else if (etf){ const base = Math.max(0, gain - allow); tax = base * .26375; verdict = tax>0 ? t("tTaxed", eur(tax)) : t("tFree"); expl = t("tExplEtf"); }
-  else if (sd > addYear(bd)){ verdict = t("tFree"); expl = t("tExplFree"); }
-  else if (gain + Math.max(0, other) < 1000){ verdict = t("tFree"); expl = t("tExplUnder"); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
-  else { tax = gain * (isFinite(rate) ? Math.min(45, Math.max(0, rate)) : 30) / 100; verdict = t("tTaxed", eur(tax)); expl = t("tExplTax"); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
-  kv.push([t("tNet"), eur(sa - tax)]);
-  $("tVerdict").textContent = verdict; $("tVerdict").className = "verdict " + (tax>0 ? "down" : "up");
-  $("tKv").innerHTML = kv.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
-  $("tExplain").textContent = expl;
+  const kv = [[t("tHold"), t("tDays", days)], [t("tGain"), eur(gain)]]; let tax = 0, v, e;
+  if (gain<=0){ v = t("tLoss"); e = t("tExplLoss"); }
+  else if (etf){ const base = cfg.etfAllow ? Math.max(0, gain - Math.max(0, n0("allow")||0)) : gain; tax = base*cfg.etfRate; v = tax>0 ? t("tTaxed", eur(tax)) : t("tFree"); e = t(cfg.etfExpl); }
+  else if (sd > addYear(bd)){ v = t("tFree"); e = t(cfg.freeExpl); }
+  else if (gain + Math.max(0, n0("other")||0) < cfg.limit){ v = t("tFree"); e = t(cfg.underExpl); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
+  else { const r = n0("rate"); tax = gain*(isFinite(r)?Math.min(55,Math.max(0,r)):30)/100; v = t("tTaxed", eur(tax)); e = t(cfg.taxExpl); kv.push([t("tFreeFrom"), freeFrom.toLocaleDateString(loc())]); }
+  kv.push([t("tNet"), eur(sa-tax)]); return {v, kv, e, tax};
 }
-["tProd","tBuyD","tSellD","tBuyA","tSellA","tOther","tRate","tAllow"].forEach(id=> $(id).addEventListener("input", renderTax));
-$("tProd").addEventListener("change", renderTax);
+const COUNTRY = {
+  DE:{ fields:()=>[F.sel("prod","tProd",[["phys","tPhys"],["etf","tEtf"]]), F.date("buyD","tBuyDate"), F.date("sellD","tSellDate"), F.num("buyA","tBuyAmt"), F.num("sellA","tSellAmt"),
+        TX.prod==="etf" ? F.num("allow","tAllow") : F.num("other","tOther"), TX.prod==="etf" ? "" : F.num("rate","tRate")].join(""),
+       calc:()=>holdCalc({limit:1000, etfRate:.26375, etfAllow:true, etfExpl:"tExplEtf", freeExpl:"tExplFree", underExpl:"tExplUnder", taxExpl:"tExplTax"}) },
+  AT:{ fields:()=>[F.sel("prod","tProd",[["phys","atPhys"],["etf","atEtf"]]), F.date("buyD","tBuyDate"), F.date("sellD","tSellDate"), F.num("buyA","tBuyAmt"), F.num("sellA","tSellAmt"),
+        TX.prod==="etf" ? "" : F.num("other","tOther"), TX.prod==="etf" ? "" : F.num("rate","tRate")].join(""),
+       calc:()=>holdCalc({limit:440, etfRate:.275, etfAllow:false, etfExpl:"atExplEtf", freeExpl:"atExplFree", underExpl:"atExplUnder", taxExpl:"atExplTax"}) },
+  NL:{ fields:()=>[F.num("nlGold","nlGold"), F.num("nlBank","nlBank"), F.num("nlInv","nlInv"), F.num("nlDebt","nlDebt"), F.sel("nlPartner","nlPartner",[["no","no"],["yes","yes"]])].join(""),
+       calc:()=>{
+         const p = TX.nlPartner==="yes" ? 2 : 1, free = 59357*p, drempel = 3800*p;
+         const g = Math.max(0,n0("nlGold")||0), bank = Math.max(0,n0("nlBank")||0), inv = Math.max(0,n0("nlInv")||0), debt = Math.max(0,n0("nlDebt")||0);
+         const box3 = (gold) => { const debtC = Math.max(0, debt - drempel); const base = bank + inv + gold - debtC; if (base<=0) return 0;
+           const ret = bank*.0128 + (inv+gold)*.06 - debtC*.027; const pctR = Math.max(0, ret/base); return Math.max(0, base - free) * pctR * .36; };
+         const all = box3(g), without = box3(0), part = all - without;
+         const kv = [[t("nlFree"), eur(free)], [t("nlTotal"), eur(all)], [t("nlGoldPart"), eur(part)], [t("nlPerYear"), g>0 ? pctN(part/g*100,2) : "—"]];
+         return {v: all>0 ? t("tTaxed", eur(all)) : t("nlNone"), kv, e: t("nlExpl"), tax: all};
+       } },
+  BE:{ fields:()=>[F.sel("beProd","tProd",[["inv","beInv"],["jew","beJew"]]), TX.beProd==="jew" ? "" : F.num("beBuy","beBuy"), TX.beProd==="jew" ? "" : F.num("beSell","beSell"), TX.beProd==="jew" ? "" : F.num("beEx","beEx")].join(""),
+       calc:()=>{
+         if (TX.beProd==="jew") return {v:t("tFree"), kv:[], e:t("beExplJew"), tax:0};
+         const ba = n0("beBuy"), sa = n0("beSell"), ex = Math.max(0, n0("beEx")||0); if (!isFinite(ba)||!isFinite(sa)) return {expl:t("tExplDates")};
+         const gain = sa-ba; if (gain<=0) return {v:t("tLoss"), kv:[[t("tGain"), eur(gain)]], e:t("tExplLoss"), tax:0};
+         const tax = Math.max(0, gain-ex)*.10;
+         return {v: tax>0 ? t("tTaxed", eur(tax)) : t("tFree"), kv:[[t("tGain"), eur(gain)], [t("beFreeUsed"), eur(Math.min(gain, ex))], [t("tNet"), eur(sa-tax)]], e:t(tax>0?"beExplTax":"beExplFree"), tax};
+       } },
+  UK:{ fields:()=>[F.sel("ukProd","tProd",[["legal","ukLegal"],["bar","ukBar"],["jew","ukJew"]]), F.num("ukBuy","ukBuy"), F.num("ukSell","ukSell"),
+        TX.ukProd==="legal" ? "" : F.num("ukAea","ukAea"), TX.ukProd==="legal" ? "" : F.sel("ukBand","ukBand",[["basic","ukBasic"],["higher","ukHigher"]])].join(""),
+       calc:()=>{
+         const ba = n0("ukBuy"), sa = n0("ukSell"), aea = Math.max(0, n0("ukAea")||0); if (!isFinite(ba)||!isFinite(sa)) return {expl:t("tExplDates")};
+         let gain = sa-ba; const kv = [[t("tGain"), gbp(gain)]];
+         if (gain<=0) return {v:t("tLoss"), kv, e:t("tExplLoss"), tax:0};
+         if (TX.ukProd==="legal") return {v:t("tFree"), kv, e:t("ukExplLegal"), tax:0};
+         if (TX.ukProd==="jew"){ if (sa<=6000) return {v:t("tFree"), kv, e:t("ukExplChattel"), tax:0}; gain = Math.min(gain, 5/3*(sa-6000)); kv.push([t("ukCapped"), gbp(gain)]); }
+         const tax = Math.max(0, gain-aea) * (TX.ukBand==="higher" ? .24 : .18);
+         kv.push([t("tNet"), gbp(sa-tax)]);
+         return {v: tax>0 ? t("tTaxed", gbp(tax)) : t("tFree"), kv, e:t(TX.ukProd==="jew" ? "ukExplJew" : "ukExplBar"), tax};
+       } },
+  CH:{ info:"ch" }, TR:{ info:"tr" },
+};
+function renderTax(){
+  const C = COUNTRY[taxC];
+  $("taxCalc").hidden = !!C.info; $("taxInfo").hidden = !C.info;
+  if (C.info){ $("txInfoT").textContent = t(C.info+"Title"); $("txInfoB").textContent = t(C.info+"Body"); return; }
+  const focus = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.tx : null;
+  $("txFields").innerHTML = C.fields();
+  if (focus){ const el = $("txFields").querySelector(`[data-tx="${focus}"]`); if (el){ el.focus(); if (el.setSelectionRange && el.type!=="date") { const L = el.value.length; try { el.setSelectionRange(L,L); } catch(e){} } } }
+  renderTaxResult();
+}
+function renderTaxResult(){
+  const C = COUNTRY[taxC]; if (C.info) return;
+  const r = C.calc();
+  $("tVerdict").textContent = r.v || "—"; $("tVerdict").className = "verdict " + (r.tax>0 ? "down" : "up");
+  $("tKv").innerHTML = (r.kv||[]).map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("tExplain").textContent = r.e || r.expl || "";
+}
+$("txFields").addEventListener("input", e=>{ const k = e.target.dataset.tx; if (!k) return; TX[k] = e.target.value; if (e.target.tagName==="SELECT") renderTax(); else renderTaxResult(); });
+$("txFields").addEventListener("change", e=>{ const k = e.target.dataset.tx; if (!k) return; TX[k] = e.target.value; renderTax(); });
 
 /* ---------------- buy guide ---------------- */
 const PRODUCTS = [
