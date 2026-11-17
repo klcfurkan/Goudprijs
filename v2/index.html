@@ -80,9 +80,21 @@ section.view{display:flex;flex-direction:column;gap:20px}
 .statusrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 /* chart */
-.chartbox{position:relative;height:300px}
+.chartbox{position:relative;height:340px;touch-action:pan-y;cursor:crosshair;user-select:none}
 .chartbox canvas{position:absolute;inset:0;width:100%;height:100%}
-.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 8px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-115%)}
+@media (max-width:640px){.chartbox{height:260px}}
+.chartnow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.chartnow .num{font-size:26px;font-weight:600}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.perf{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:14px}
+.perf div{background:var(--card);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.perf span{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.perf b{font:600 15px var(--mono);white-space:nowrap}
+.perf small{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:860px){.perf{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:480px){.perf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tip b{font-family:var(--mono)} .tip small{display:block;opacity:.75;font-size:11.5px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:7px 10px;border-radius:10px;white-space:nowrap;transform:translate(-50%,calc(-100% - 14px));box-shadow:0 6px 20px rgba(0,0,0,.18);z-index:2}
 .charthead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .chartmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:20px}
 
@@ -149,6 +161,8 @@ details[open] summary{margin-bottom:12px}
 .gauge i{position:absolute;top:-5px;width:4px;height:22px;border-radius:2px;background:var(--ink);transform:translateX(-50%);transition:left .3s}
 .gscale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
 .verdict.mid{color:var(--gold)}
+@media (max-width:560px){.hide-sm{display:none}}
+.faq details{border-bottom:1px solid var(--rule);padding:12px 0}.faq details:last-child{border-bottom:0}.faq summary{font-size:15.5px;color:var(--ink)}.faq p{color:var(--soft);margin-top:8px;max-width:75ch}
 .links{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .links a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px}
 .links a:hover{border-color:var(--gold-2)}
@@ -196,19 +210,28 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
     </div>
     <div class="card">
       <div class="charthead">
-        <h3 id="chartTitle"></h3>
-        <div class="seg" id="rangeSeg" role="group" aria-label="Range"></div>
+        <div><h3 id="chartTitle"></h3><div class="chartnow"><span class="num" id="cNow">—</span><span id="cChg" class="small"></span></div></div>
+        <div class="ctrls"><div class="seg" id="unitSeg" role="group" aria-label="Unit"></div><div class="seg" id="rangeSeg" role="group" aria-label="Range"></div></div>
       </div>
-      <div class="chartbox" id="chartBox"><canvas id="chart"></canvas><div class="chartmsg" id="chartMsg"></div><div class="tip" id="tip" hidden></div></div>
-      <p class="xs muted" style="margin-top:8px" id="chartFoot"></p>
+      <div class="chartbox" id="chartBox"><canvas id="chart"></canvas><canvas id="chartFx"></canvas><div class="chartmsg" id="chartMsg"></div><div class="tip" id="tip" hidden></div></div>
+      <p class="xs muted" style="margin-top:6px" data-t="chartHint"></p>
+      <div class="perf" id="perf"></div>
+      <p class="xs muted" style="margin-top:10px" id="chartFoot"></p>
     </div>
-    <div class="grid g3">
-      <div class="card stat"><span class="k" data-t="silver"></span><span class="v" id="pAg">—</span><span class="s" data-t="perOzShort"></span></div>
-      <div class="card stat"><span class="k" data-t="platinum"></span><span class="v" id="pPt">—</span><span class="s" data-t="perOzShort"></span></div>
+    <div class="grid g2">
+      <div class="card result"><h3 data-t="karTitle"></h3><p class="small muted" data-t="karLead"></p><div class="tbl"><table id="karTbl"></table></div></div>
+      <div class="card result"><h3 data-t="coinTitle"></h3><p class="small muted" data-t="coinLead"></p><div class="tbl"><table id="homeCoins"></table></div></div>
+    </div>
+    <div class="grid g4">
+      <div class="card stat"><span class="k" data-t="silver"></span><span class="v" id="pAg">—</span><span class="s" id="pAgS"></span></div>
+      <div class="card stat"><span class="k" data-t="platinum"></span><span class="v" id="pPt">—</span><span class="s" id="pPtS"></span></div>
+      <div class="card stat"><span class="k" data-t="palladium"></span><span class="v" id="pPd">—</span><span class="s" id="pPdS"></span></div>
       <div class="card stat"><span class="k" id="fxK"></span><span class="v" id="pFx">—</span><span class="s" data-t="fxNote"></span></div>
     </div>
     <h2 data-t="toolsTitle"></h2>
     <div class="links" id="toolLinks"></div>
+    <h2 data-t="faqTitle"></h2>
+    <div class="card faq" id="faq"></div>
   </section>
 
   <!-- VALUE -->
@@ -372,11 +395,46 @@ mOpen:{nl:"Goudmarkt open",en:"Gold market open",de:"Goldmarkt geöffnet",tr:"Al
 mClosed:{nl:"Goudmarkt dicht · opent {0}",en:"Gold market closed · opens {0}",de:"Goldmarkt geschlossen · öffnet {0}",tr:"Altın piyasası kapalı · açılış {0}"},
 src:{nl:"Bron: {0} · bijgewerkt {1}",en:"Source: {0} · updated {1}",de:"Quelle: {0} · aktualisiert {1}",tr:"Kaynak: {0} · güncellendi {1}"},
 chartTitle:{nl:"Koersverloop per gram in {0}",en:"Price per gram in {0}",de:"Kursverlauf pro Gramm in {0}",tr:"{0} cinsinden gram fiyatı"},
-chartFoot:{nl:"Historie: PAXG (1 token = 1 troy ounce goud) en wisselkoersen via Binance, afgestemd op de live prijs.",en:"History: PAXG (1 token = 1 troy ounce of gold) and exchange rates via Binance, aligned to the live price.",de:"Historie: PAXG (1 Token = 1 Feinunze Gold) und Wechselkurse über Binance, abgeglichen mit dem Live-Preis.",tr:"Geçmiş: PAXG (1 token = 1 ons altın) ve döviz kurları Binance üzerinden, canlı fiyata göre ayarlanmış."},
+chartFoot:{nl:"Historie: PAXG (1 token = 1 troy ounce goud, sinds september 2019) en wisselkoersen via Binance, afgestemd op de live prijs.",en:"History: PAXG (1 token = 1 troy ounce of gold) and exchange rates via Binance, aligned to the live price.",de:"Historie: PAXG (1 Token = 1 Feinunze Gold) und Wechselkurse über Binance, abgeglichen mit dem Live-Preis.",tr:"Geçmiş: PAXG (1 token = 1 ons altın) ve döviz kurları Binance üzerinden, canlı fiyata göre ayarlanmış."},
 chartErr:{nl:"De koershistorie is nu niet bereikbaar. De live prijs hierboven werkt wel.",en:"Price history is not reachable right now. The live price above still works.",de:"Die Kurshistorie ist gerade nicht erreichbar. Der Live-Preis oben funktioniert.",tr:"Fiyat geçmişine şu an ulaşılamıyor. Yukarıdaki canlı fiyat çalışıyor."},
 chartLoad:{nl:"Grafiek laden…",en:"Loading chart…",de:"Diagramm wird geladen…",tr:"Grafik yükleniyor…"},
 rangeD:{nl:"1D",en:"1D",de:"1T",tr:"1G"}, rangeW:{nl:"1W",en:"1W",de:"1W",tr:"1H"}, rangeM:{nl:"1M",en:"1M",de:"1M",tr:"1A"},
 rangeY:{nl:"1J",en:"1Y",de:"1J",tr:"1Y"}, range5:{nl:"5J",en:"5Y",de:"5J",tr:"5Y"},
+rangeQ:{nl:"3M",en:"3M",de:"3M",tr:"3A"}, rangeH:{nl:"6M",en:"6M",de:"6M",tr:"6A"}, rangeYTD:{nl:"Dit jaar",en:"YTD",de:"YTD",tr:"Bu yıl"}, rangeMAX:{nl:"Max",en:"Max",de:"Max",tr:"Tümü"},
+uG:{nl:"gram",en:"gram",de:"Gramm",tr:"gram"}, uOZ:{nl:"ounce",en:"ounce",de:"Unze",tr:"ons"}, uKG:{nl:"kilo",en:"kilo",de:"Kilo",tr:"kilo"},
+chartTitle2:{nl:"Goudprijs per {0} in {1}",en:"Gold price per {0} in {1}",de:"Goldpreis pro {0} in {1}",tr:"{1} cinsinden {0} altın fiyatı"},
+chartHint:{nl:"Beweeg over de grafiek voor de prijs op elk moment. Sleep om twee momenten te vergelijken.",en:"Move over the chart for the price at any moment. Drag to compare two moments.",de:"Fahre über das Diagramm für den Preis zu jedem Zeitpunkt. Ziehe, um zwei Zeitpunkte zu vergleichen.",tr:"Her andaki fiyat için grafiğin üzerinde gezin. İki anı karşılaştırmak için sürükle."},
+sinceStart:{nl:"{0} sinds begin periode",en:"{0} since start of period",de:"{0} seit Beginn des Zeitraums",tr:"dönem başından beri {0}"},
+perfRec:{nl:"Record",en:"Record high",de:"Rekordhoch",tr:"Rekor"},
+perfBelow:{nl:"nu {0} lager",en:"now {0} lower",de:"jetzt {0} tiefer",tr:"şu an {0} aşağıda"},
+perfAt:{nl:"op recordhoogte",en:"at record high",de:"auf Rekordhoch",tr:"rekor seviyede"},
+palladium:{nl:"Palladium",en:"Palladium",de:"Palladium",tr:"Paladyum"},
+karTitle:{nl:"Goudprijs per karaat vandaag",en:"Gold price per carat today",de:"Goldpreis pro Karat heute",tr:"Bugün ayara göre altın fiyatı"},
+karLead:{nl:"Wat het goud in een sieraad per gram waard is. Het getal in je sieraad (bijvoorbeeld 585) is het keurmerk: zoveel duizendste deel is puur goud.",en:"What the gold in a piece of jewellery is worth per gram. The number stamped on it (e.g. 585) is the hallmark: that many thousandths are pure gold.",de:"Was das Gold in einem Schmuckstück pro Gramm wert ist. Die Zahl im Schmuck (z. B. 585) ist der Feingehalt: so viele Tausendstel sind reines Gold.",tr:"Bir takıdaki altının gram başına değeri. Takının üzerindeki sayı (örneğin 916) ayar damgasıdır: binde o kadarı saf altındır."},
+karK:{nl:"Karaat",en:"Carat",de:"Karat",tr:"Ayar"}, karKs:{nl:"karaat",en:"carat",de:"Karat",tr:"ayar"},
+karMark:{nl:"Keurmerk · gehalte",en:"Hallmark · purity",de:"Stempel · Feingehalt",tr:"Damga · saflık"},
+karPerG:{nl:"Per gram",en:"Per gram",de:"Pro Gramm",tr:"Gram"}, karPer10:{nl:"Per 10 gram",en:"Per 10 grams",de:"Pro 10 Gramm",tr:"10 gram"},
+karEx24:{nl:"baren, beleggingsmunten",en:"bars, bullion coins",de:"Barren, Anlagemünzen",tr:"külçe, yatırım sikkeleri"},
+karEx22:{nl:"Krugerrand, Sovereign, Turkse en Indiase sieraden",en:"Krugerrand, Sovereign, Turkish and Indian jewellery",de:"Krügerrand, Sovereign, türkischer und indischer Schmuck",tr:"Krugerrand, Sovereign, çeyrek, bilezik"},
+karEx20:{nl:"sommige buitenlandse sieraden",en:"some foreign jewellery",de:"mancher ausländische Schmuck",tr:"bazı yabancı takılar"},
+karEx18:{nl:"hoogwaardige sieraden en horloges",en:"fine jewellery and watches",de:"hochwertiger Schmuck und Uhren",tr:"kaliteli takı ve saatler"},
+karEx14:{nl:"meest voorkomend in Nederland en Duitsland",en:"most common in the Netherlands and Germany",de:"am häufigsten in Deutschland",tr:"Avrupa'da en yaygın takı ayarı"},
+karEx9:{nl:"vooral Britse sieraden",en:"mainly British jewellery",de:"vor allem britischer Schmuck",tr:"çoğunlukla İngiliz takıları"},
+coinTitle:{nl:"Waarde van gouden munten vandaag",en:"Value of gold coins today",de:"Wert von Goldmünzen heute",tr:"Bugün altın sikkelerin değeri"},
+coinLead:{nl:"De goudwaarde per munt. Bij kopen betaal je meestal 3 tot 6% meer, bij verkopen krijg je meestal iets minder.",en:"The gold value per coin. When buying you usually pay 3 to 6% more; when selling you usually get a bit less.",de:"Der Goldwert pro Münze. Beim Kauf zahlst du meist 3 bis 6 % mehr, beim Verkauf bekommst du meist etwas weniger.",tr:"Sikke başına altın değeri. Alırken genelde %3 ile %6 fazla ödersin, satarken genelde biraz daha az alırsın."},
+faqTitle:{nl:"Veelgestelde vragen",en:"Frequently asked questions",de:"Häufige Fragen",tr:"Sık sorulan sorular"},
+faq1q:{nl:"Waarom is de prijs in de winkel anders dan deze goudprijs?",en:"Why is the shop price different from this gold price?",de:"Warum ist der Preis beim Händler anders als dieser Goldpreis?",tr:"Dükkândaki fiyat neden bu altın fiyatından farklı?"},
+faq1a:{nl:"Dit is de wereldprijs van puur goud. Een winkel rekent bij verkoop een opslag voor maken, verzenden en winst, en biedt bij inkoop iets minder. Hoe kleiner het stuk, hoe groter de opslag.",en:"This is the world price of pure gold. A shop adds a premium for production, shipping and profit when selling, and pays a bit less when buying. The smaller the piece, the bigger the premium.",de:"Das ist der Weltmarktpreis für reines Gold. Ein Händler schlägt beim Verkauf etwas für Herstellung, Versand und Gewinn auf und zahlt beim Ankauf etwas weniger. Je kleiner das Stück, desto höher das Aufgeld.",tr:"Bu saf altının dünya fiyatıdır. Dükkân satarken üretim, kargo ve kâr için prim ekler, alırken biraz daha az öder. Parça küçüldükçe prim artar."},
+faq2q:{nl:"Wat betekent 585, 750 of 916 in mijn sieraad?",en:"What does 585, 750 or 916 on my jewellery mean?",de:"Was bedeutet 585, 750 oder 916 in meinem Schmuck?",tr:"Takımdaki 585, 750 veya 916 ne anlama geliyor?"},
+faq2a:{nl:"Dat is het keurmerk: hoeveel duizendste deel puur goud is. 585 is 14 karaat (58,5%), 750 is 18 karaat (75%), 916 is 22 karaat (91,6%) en 999 is 24 karaat.",en:"That is the hallmark: how many thousandths are pure gold. 585 is 14 carat (58.5%), 750 is 18 carat (75%), 916 is 22 carat (91.6%) and 999 is 24 carat.",de:"Das ist der Feingehalt: wie viele Tausendstel reines Gold sind. 585 ist 14 Karat (58,5 %), 750 ist 18 Karat (75 %), 916 ist 22 Karat (91,6 %) und 999 ist 24 Karat.",tr:"Bu ayar damgasıdır: binde kaçının saf altın olduğunu gösterir. 585 = 14 ayar (%58,5), 750 = 18 ayar (%75), 916 = 22 ayar (%91,6), 999 = 24 ayar."},
+faq3q:{nl:"Wat is een troy ounce?",en:"What is a troy ounce?",de:"Was ist eine Feinunze?",tr:"Ons (troy ons) nedir?"},
+faq3a:{nl:"De gewichtseenheid waarin goud wereldwijd wordt verhandeld: 31,1035 gram. Een gewone ounce is lichter (28,35 gram).",en:"The unit in which gold is traded worldwide: 31.1035 grams. A regular ounce is lighter (28.35 grams).",de:"Die Gewichtseinheit, in der Gold weltweit gehandelt wird: 31,1035 Gramm. Eine normale Unze ist leichter (28,35 Gramm).",tr:"Altının dünyada işlem gördüğü ağırlık birimi: 31,1035 gram. Normal ons daha hafiftir (28,35 gram)."},
+faq4q:{nl:"Waarom gaat de goudprijs op en neer?",en:"Why does the gold price go up and down?",de:"Warum steigt und fällt der Goldpreis?",tr:"Altın fiyatı neden iner çıkar?"},
+faq4a:{nl:"Vooral door de rente, de koers van de dollar, onzekerheid in de wereld en aankopen door centrale banken. Omdat goud in dollars wordt verhandeld, verandert de prijs in euro's ook met de wisselkoers.",en:"Mainly because of interest rates, the dollar, global uncertainty and central bank buying. Because gold trades in dollars, the price in other currencies also moves with the exchange rate.",de:"Vor allem durch Zinsen, den Dollarkurs, weltweite Unsicherheit und Käufe der Zentralbanken. Da Gold in Dollar gehandelt wird, bewegt sich der Euro-Preis auch mit dem Wechselkurs.",tr:"Özellikle faiz, dolar kuru, dünyadaki belirsizlik ve merkez bankası alımları nedeniyle. Altın dolarla işlem gördüğü için euro ve lira fiyatı kurla da değişir."},
+faq5q:{nl:"Hoe actueel zijn de prijzen?",en:"How current are the prices?",de:"Wie aktuell sind die Preise?",tr:"Fiyatlar ne kadar güncel?"},
+faq5a:{nl:"De goudprijs wordt elke 15 seconden opgehaald, zilver, platina en palladium elke minuut, en de wisselkoersen elke 10 minuten. In het weekend is de goudmarkt dicht en blijft de prijs staan.",en:"The gold price is fetched every 15 seconds, silver, platinum and palladium every minute, and exchange rates every 10 minutes. At weekends the gold market is closed and the price stays put.",de:"Der Goldpreis wird alle 15 Sekunden abgerufen, Silber, Platin und Palladium jede Minute, die Wechselkurse alle 10 Minuten. Am Wochenende ist der Goldmarkt geschlossen und der Preis bleibt stehen.",tr:"Altın fiyatı 15 saniyede bir, gümüş, platin ve paladyum dakikada bir, döviz kurları 10 dakikada bir alınır. Hafta sonu altın piyasası kapalıdır ve fiyat sabit kalır."},
+faq6q:{nl:"Wat is verguld goud waard?",en:"What is gold-plated jewellery worth?",de:"Was ist vergoldeter Schmuck wert?",tr:"Altın kaplama takı ne eder?"},
+faq6a:{nl:"Vrijwel niets aan goud: er zit maar een flinterdun laagje op. Staat er geen keurmerk in, of iets als GP of 'gold plated', dan is het meestal verguld.",en:"Almost nothing in gold terms: it is only a very thin layer. If there is no hallmark, or something like GP or 'gold plated', it is usually plated.",de:"Vom Goldwert her fast nichts: Es ist nur eine hauchdünne Schicht. Steht kein Feingehalt darin, oder etwa GP oder „vergoldet“, ist es meist vergoldet.",tr:"Altın değeri olarak neredeyse hiç: sadece çok ince bir kaplamadır. Damga yoksa ya da GP veya 'gold plated' yazıyorsa genelde kaplamadır."},
 inRange:{nl:"in deze periode",en:"in this period",de:"in diesem Zeitraum",tr:"bu dönemde"},
 toolsTitle:{nl:"Wat wil je weten?",en:"What would you like to know?",de:"Was möchtest du wissen?",tr:"Ne öğrenmek istersin?"},
 tool_value:{nl:"Reken uit wat je sieraden, munten of baren waard zijn.",en:"Work out what your jewellery, coins or bars are worth.",de:"Berechne, was dein Schmuck, deine Münzen oder Barren wert sind.",tr:"Takılarının, sikkelerinin ya da külçelerinin değerini hesapla."},
@@ -635,7 +693,7 @@ const parseNum = s => { s = String(s||"").trim().replace(/\s/g,""); if (!s) retu
   else if (s.includes(",")) s = s.replace(",","."); return parseFloat(s); };
 
 /* ---------------- data ---------------- */
-const S = { oz:null, ag:null, pt:null, src:null, at:null, ok:false, fx:null /* units of cur per USD */, rates:null /* per EUR */, hist:{}, range:"D", news:null, newsErr:false, newsCat:"all" };
+const S = { unit:"g", oz:null, ag:null, pt:null, src:null, at:null, ok:false, fx:null /* units of cur per USD */, rates:null /* per EUR */, hist:{}, range:"D", news:null, newsErr:false, newsCat:"all" };
 async function getJSON(url, ms=9000){
   const ctl = new AbortController(); const tm = setTimeout(()=>ctl.abort(), ms);
   try { const r = await fetch(url, {signal:ctl.signal, cache:"no-store"}); if (!r.ok) throw new Error(r.status); return await r.json(); }
@@ -665,11 +723,16 @@ async function updateMetals(){
   renderPrices(); renderChart(); renderAllTools();
 }
 async function updateOther(){
-  for (const m of ["XAG","XPT"]){ try { const j = await getJSON("https://api.gold-api.com/price/"+m); if (+j.price>0) S[m==="XAG"?"ag":"pt"] = +j.price; } catch(e){} }
+  for (const m of ["XAG","XPT","XPD"]){ try { const j = await getJSON("https://api.gold-api.com/price/"+m); if (+j.price>0) S[{XAG:"ag",XPT:"pt",XPD:"pd"}[m]] = +j.price; } catch(e){} }
   renderPrices();
 }
 /* history */
-const RANGES = { D:{iv:"15m",lim:96,ttl:6e4}, W:{iv:"1h",lim:168,ttl:3e5}, M:{iv:"4h",lim:180,ttl:9e5}, Y:{iv:"1d",lim:365,ttl:36e5}, "5":{iv:"1w",lim:260,ttl:36e5} };
+const ytdDays = () => { const n = new Date(), j = new Date(n.getFullYear(),0,1); return Math.max(2, Math.ceil((n-j)/864e5)+1); };
+const RANGES = { D:{iv:"15m",lim:96,ttl:6e4}, W:{iv:"1h",lim:168,ttl:3e5}, M:{iv:"4h",lim:180,ttl:9e5}, Q:{iv:"1d",lim:92,ttl:36e5}, H:{iv:"1d",lim:183,ttl:36e5},
+  YTD:{iv:"1d",get lim(){ return ytdDays(); },ttl:36e5}, Y:{iv:"1d",lim:365,ttl:36e5}, "5":{iv:"1w",lim:260,ttl:36e5}, MAX:{iv:"1w",lim:1000,ttl:36e5} };
+const RANGE_ORDER = ["D","W","M","Q","H","YTD","Y","5","MAX"];
+const RANGE_KEY = {D:"rangeD",W:"rangeW",M:"rangeM",Q:"rangeQ",H:"rangeH",YTD:"rangeYTD",Y:"rangeY","5":"range5",MAX:"rangeMAX"};
+const UNITS = {g:1, oz:OZ, kg:1000};
 const FXSYM = { EUR:["EURUSDT","div"], GBP:["GBPUSDT","div"], TRY:["USDTTRY","mul"], USD:null };
 async function klines(sym, iv, lim){
   let err; for (const b of BIN){ try { const j = await getJSON(`${b}/api/v3/klines?symbol=${sym}&interval=${iv}&limit=${lim}`); if (Array.isArray(j) && j.length) return j.map(k=>({o:k[0], t:Math.min(k[6], Date.now()), c:+k[4]})); } catch(e){ err = e; } }
@@ -712,7 +775,9 @@ function applyTexts(){
   $("curSeg").innerHTML = CURS.map(c=>`<button data-c="${c}" aria-pressed="${c===cur}">${{EUR:"€",USD:"$",GBP:"£",TRY:"₺"}[c]}<span class="cc"> ${c}</span></button>`).join("");
   $("themeSeg").innerHTML = ["light","dark"].map(m=>`<button data-th="${m}" aria-pressed="${m===effTheme()}" title="${t(m==="light"?"thLight":"thDark")}">${m==="light"?"☀":"☾"}<span class="cc"> ${t(m==="light"?"thLight":"thDark")}</span></button>`).join("");
   $("tabs").innerHTML = VIEWS.map(v=>`<a href="#${v}" data-v="${v}">${t("nav_"+v)}</a>`).join("");
-  $("rangeSeg").innerHTML = ["D","W","M","Y","5"].map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t({D:"rangeD",W:"rangeW",M:"rangeM",Y:"rangeY","5":"range5"}[r])}</button>`).join("");
+  $("rangeSeg").innerHTML = RANGE_ORDER.map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t(RANGE_KEY[r])}</button>`).join("");
+  renderFaq();
+  $("unitSeg").innerHTML = ["g","oz","kg"].map(u=>`<button data-u="${u}" aria-pressed="${u===S.unit}">${t({g:"uG",oz:"uOZ",kg:"uKG"}[u])}</button>`).join("");
   $("toolLinks").innerHTML = ["value","cost","tax","buy"].map(v=>`<a href="#${v}"><b>${t("nav_"+v)}</b><span>${t("tool_"+v)}</span></a>`).join("");
   $("taxSeg").innerHTML = TAX_COUNTRIES.map(c=>`<button data-tc="${c}" aria-pressed="${c===taxC}">${t("c"+c)}</button>`).join("");
   $("chartFoot").textContent = t("chartFoot");
@@ -724,9 +789,10 @@ function route(){ const v = currentView(); VIEWS.forEach(x=> $("v-"+x).hidden = 
 document.addEventListener("click", e=>{
   const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.l){ lang = b.dataset.l; savePref(); applyTexts(); renderEverything(); }
-  else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); }
+  else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); loadPerf(); }
   else if (b.dataset.th){ theme = b.dataset.th; try { localStorage.setItem("fairvio-theme", theme); } catch(e){} applyTheme(); applyTexts(); renderChart(); }
-  else if (b.dataset.r){ S.range = b.dataset.r; applyTexts(); renderChart(); loadHist(S.range, cur); }
+  else if (b.dataset.r){ S.range = b.dataset.r; saveChartPref(); applyTexts(); renderChart(); loadHist(S.range, cur); }
+  else if (b.dataset.u){ S.unit = b.dataset.u; saveChartPref(); applyTexts(); renderChart(); }
   else if (b.dataset.tc){ taxC = b.dataset.tc; if (taxC==="AT" && TX.prod!=="phys" && TX.prod!=="etf") TX.prod = "phys"; applyTexts(); renderTax(); }
   else if (b.dataset.nc){ S.newsCat = b.dataset.nc; renderNews(); }
 });
@@ -741,8 +807,9 @@ function renderPrices(){
   if (d && d.length>2 && g!=null){ const ch = (g/d[0][1]-1)*100, abs = g-d[0][1]; $("pCh").textContent = pct(ch); $("pCh").className = "v " + (ch>=0?"up":"down"); $("pChS").textContent = (abs>=0?"+":"") + money(abs) + " / g"; }
   else { $("pCh").textContent = "—"; $("pCh").className = "v"; $("pChS").textContent = ""; }
   const pu = perUsd(cur);
-  $("pAg").textContent = S.ag && pu ? money(S.ag*pu) : "—";
-  $("pPt").textContent = S.pt && pu ? money(S.pt*pu) : "—";
+  for (const [k,id] of [["ag","pAg"],["pt","pPt"],["pd","pPd"]]){ const v = S[k] && pu ? S[k]*pu : null;
+    $(id).textContent = money(v); $(id+"S").textContent = v==null ? "" : t("perOzShort") + " · " + money(v/OZ) + " / g · " + money(v/OZ*1000, 0) + " / kg"; }
+  renderKarat(); renderHomeCoins();
   if (cur==="EUR"){ $("fxK").textContent = "EUR / USD"; $("pFx").textContent = S.rates ? numf(S.rates.USD, 4) : "—"; }
   else { $("fxK").textContent = "EUR / " + cur; $("pFx").textContent = S.rates ? numf(S.rates[cur], cur==="TRY"?2:4) : "—"; }
   const lp = $("livePill");
@@ -753,57 +820,123 @@ function renderPrices(){
   const open = marketOpen(new Date()), nx = open ? null : nextOpen();
   $("mktPill").className = "pill " + (open ? "open" : "closed");
   $("mktText").textContent = open ? t("mOpen") : t("mClosed", nx ? nx.toLocaleString(loc(), {weekday:"long", hour:"2-digit", minute:"2-digit"}) : "");
-  $("chartTitle").textContent = t("chartTitle", cur);
+  $("chartTitle").textContent = t("chartTitle2", t({g:"uG",oz:"uOZ",kg:"uKG"}[S.unit]), cur);
 }
 let tries = 0;
+/* karat + coin tables on home */
+const KARATS = [[24,"999",.999,"karEx24"],[22,"916",.916,"karEx22"],[20,"833",.833,"karEx20"],[18,"750",.75,"karEx18"],[14,"585",.585,"karEx14"],[9,"375",.375,"karEx9"]];
+function karOrder(){ return {tr:[22,24,18,14,20,9], en:[24,22,18,9,14,20], nl:[24,22,18,14,9,20], de:[24,22,18,14,20,9]}[lang]; }
+function renderKarat(){
+  const g = gramCur();
+  $("karTbl").innerHTML = `<thead><tr><th>${t("karK")}</th><th>${t("karMark")}</th><th class="r">${t("karPerG")}</th><th class="r hide-sm">${t("karPer10")}</th></tr></thead><tbody>` +
+    karOrder().map(k=>{ const r = KARATS.find(x=>x[0]===k); const v = g==null ? null : g*r[2];
+      return `<tr><td><b>${k}</b> <span class="muted xs">${t("karKs")}</span><br><span class="xs muted">${t(r[3])}</span></td><td class="num">${r[1]} · ${pctN(r[2]*100,1)}</td><td class="r num">${money(v)}</td><td class="r num hide-sm">${money(v==null?null:v*10)}</td></tr>`; }).join("") + "</tbody>";
+}
+function renderHomeCoins(){
+  const g = gramCur();
+  $("homeCoins").innerHTML = `<thead><tr><th>${t("tblItem")}</th><th class="r">${t("bFine")}</th><th class="r">${t("valValue")}</th></tr></thead><tbody>` +
+    orderedItems().filter(([grp])=>grp!=="jew").map(([grp,list])=>`<tr><th colspan="3" style="text-transform:none;letter-spacing:0;font-size:12.5px">${t("grp_"+grp)}</th></tr>` + list.map(i=>
+      `<tr><td>${nm(ITEM_NAMES[i.id])}</td><td class="r num">${numf(i.fine,2)} g</td><td class="r num">${money(g==null?null:i.fine*g)}</td></tr>`).join("")).join("") + "</tbody>";
+}
+const FAQ = ["faq1","faq2","faq3","faq4","faq5","faq6"];
+function renderFaq(){ $("faq").innerHTML = FAQ.map(k=>`<details><summary>${t(k+"q")}</summary><p>${t(k+"a")}</p></details>`).join(""); }
+
 /* chart */
-const cv = $("chart"), box = $("chartBox"); let chartGeom = null;
+try { const cp = JSON.parse(localStorage.getItem("fairvio-chart")||"{}"); if (RANGES[cp.range]) S.range = cp.range; if (UNITS[cp.unit]) S.unit = cp.unit; } catch(e){}
+const saveChartPref = () => { try { localStorage.setItem("fairvio-chart", JSON.stringify({range:S.range, unit:S.unit})); } catch(e){} };
+const cv = $("chart"), fx = $("chartFx"), box = $("chartBox"); let chartGeom = null, anim = {key:"", start:0}, drag = null;
+const um = (v) => money(v*UNITS[S.unit], S.unit==="kg" ? 0 : 2);
+function axisFmt(r){ return r==="D" ? {hour:"2-digit",minute:"2-digit"} : (r==="W"||r==="M"||r==="Q") ? {day:"numeric",month:"short"} : (r==="H"||r==="YTD") ? {day:"numeric",month:"short"} : {month:"short",year:"numeric"}; }
+function tipFmt(r){ return (r==="D"||r==="W"||r==="M") ? {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"} : {day:"numeric",month:"short",year:"numeric"}; }
 function renderChart(){
   if ($("v-home").hidden) return;
+  renderPerf();
   const pts = histPts(S.range, cur), h = S.hist[S.range+"|"+cur], msg = $("chartMsg");
   const W = box.clientWidth, H = box.clientHeight, dpr = Math.min(window.devicePixelRatio||1, 2);
-  cv.width = W*dpr; cv.height = H*dpr; const x = cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
-  if (!pts || pts.length<2){ msg.textContent = h && h.err ? t("chartErr") : t("chartLoad"); msg.hidden = false; chartGeom = null; return; }
+  [cv,fx].forEach(c=>{ c.width = W*dpr; c.height = H*dpr; });
+  const x = cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H); fx.getContext("2d").clearRect(0,0,fx.width,fx.height);
+  const g = gramCur(); $("cNow").textContent = g==null ? "—" : um(g);
+  if (!pts || pts.length<2){ msg.textContent = h && h.err ? t("chartErr") : t("chartLoad"); msg.hidden = false; chartGeom = null; $("cChg").textContent = ""; return; }
   msg.hidden = true;
   const cs = getComputedStyle(document.documentElement), col = n => cs.getPropertyValue(n).trim();
-  const padL = 8, padR = 8, padT = 22, padB = 26;
+  x.font = "11.5px " + col("--font");
   const t0 = pts[0][0], t1 = pts[pts.length-1][0];
   let lo = Infinity, hi = -Infinity; pts.forEach(p=>{ lo = Math.min(lo,p[1]); hi = Math.max(hi,p[1]); });
-  const span = (hi-lo) || hi*0.01; const ylo = lo - span*.12, yhi = hi + span*.12;
+  const span = (hi-lo) || hi*0.01; const ylo = lo - span*.08, yhi = hi + span*.1;
+  const labW = Math.max(...[0,1,2,3].map(i=> x.measureText(um(yhi - i*(yhi-ylo)/3)).width));
+  const padL = 4, padR = labW + 14, padT = 14, padB = 26;
   const X = tt => padL + (tt-t0)/(t1-t0||1)*(W-padL-padR), Y = v => padT + (1-(v-ylo)/(yhi-ylo))*(H-padT-padB);
-  // grid
-  x.strokeStyle = col("--rule"); x.lineWidth = 1; x.font = "11px " + col("--font"); x.fillStyle = col("--muted");
-  for (let i=0;i<=3;i++){ const yy = padT + i*(H-padT-padB)/3; x.beginPath(); x.moveTo(padL,yy); x.lineTo(W-padR,yy); x.stroke(); }
-  // area + line
-  const up = pts[pts.length-1][1] >= pts[0][1];
-  const g = x.createLinearGradient(0,padT,0,H-padB); const gc = col("--gold-2");
-  g.addColorStop(0, gc+"55"); g.addColorStop(1, gc+"00");
-  x.beginPath(); pts.forEach((p,i)=> i ? x.lineTo(X(p[0]),Y(p[1])) : x.moveTo(X(p[0]),Y(p[1]))); x.lineTo(X(t1),H-padB); x.lineTo(X(t0),H-padB); x.closePath(); x.fillStyle = g; x.fill();
-  x.beginPath(); pts.forEach((p,i)=> i ? x.lineTo(X(p[0]),Y(p[1])) : x.moveTo(X(p[0]),Y(p[1]))); x.strokeStyle = col("--gold"); x.lineWidth = 2; x.lineJoin = "round"; x.stroke();
-  // labels: high / low / change
-  const iHi = pts.reduce((a,p,i)=> p[1]>pts[a][1]?i:a, 0), iLo = pts.reduce((a,p,i)=> p[1]<pts[a][1]?i:a, 0);
-  x.fillStyle = col("--muted"); x.textBaseline = "bottom";
-  const lab = (i, txt, above) => { const px = X(pts[i][0]), py = Y(pts[i][1]); x.textAlign = px < W*.15 ? "left" : px > W*.85 ? "right" : "center"; x.textBaseline = above ? "bottom" : "top"; x.fillText(txt, px, above ? py-6 : py+6); };
-  lab(iHi, "▲ " + money(pts[iHi][1]), true); lab(iLo, "▼ " + money(pts[iLo][1]), false);
+  // grid + y labels
+  x.strokeStyle = col("--rule"); x.lineWidth = 1; x.fillStyle = col("--muted"); x.textAlign = "left"; x.textBaseline = "middle";
+  for (let i=0;i<=3;i++){ const v = yhi - i*(yhi-ylo)/3, yy = Y(v); x.beginPath(); x.setLineDash([3,4]); x.moveTo(padL,yy); x.lineTo(W-padR+4,yy); x.stroke(); x.setLineDash([]); x.fillText(um(v), W-padR+10, yy); }
   // time axis
-  x.textBaseline = "alphabetic"; x.fillStyle = col("--muted");
-  const fmt = S.range==="D" ? {hour:"2-digit",minute:"2-digit"} : (S.range==="W"||S.range==="M") ? {day:"numeric",month:"short"} : {month:"short",year:"2-digit"};
-  for (let i=0;i<=4;i++){ const tt = t0 + (t1-t0)*i/4; x.textAlign = i===0?"left":i===4?"right":"center"; x.fillText(new Date(tt).toLocaleString(loc(), fmt), X(tt), H-6); }
-  // change chip in title area
-  const ch = (pts[pts.length-1][1]/pts[0][1]-1)*100;
-  x.textAlign = "left"; x.textBaseline = "top"; x.font = "600 12px " + col("--font"); x.fillStyle = up ? col("--up") : col("--down");
-  x.fillText(pct(ch) + " " + t("inRange"), padL, 2);
-  chartGeom = {pts, X, Y, W};
+  x.textBaseline = "alphabetic"; const fmt = axisFmt(S.range);
+  for (let i=0;i<=4;i++){ const tt = t0 + (t1-t0)*i/4; x.textAlign = i===0?"left":i===4?"right":"center"; x.fillText(new Date(tt).toLocaleString(loc(), fmt), X(tt) - (i===4?0:0), H-7); }
+  // reveal animation on range/unit/currency change
+  const key = S.range+S.unit+cur; if (anim.key!==key){ anim = {key, start:performance.now()}; }
+  const prog = Math.min(1, (performance.now()-anim.start)/550), ease = 1-Math.pow(1-prog,3);
+  x.save(); x.beginPath(); x.rect(0,0,padL+(W-padL-padR)*ease+2,H); x.clip();
+  const up = pts[pts.length-1][1] >= pts[0][1], lc = up ? col("--up") : col("--down");
+  const grd = x.createLinearGradient(0,padT,0,H-padB); const gc = col("--gold-2"); grd.addColorStop(0, gc+"40"); grd.addColorStop(1, gc+"00");
+  const path = () => { x.beginPath(); pts.forEach((p,i)=> i ? x.lineTo(X(p[0]),Y(p[1])) : x.moveTo(X(p[0]),Y(p[1]))); };
+  path(); x.lineTo(X(t1),H-padB); x.lineTo(X(t0),H-padB); x.closePath(); x.fillStyle = grd; x.fill();
+  path(); x.strokeStyle = col("--gold"); x.lineWidth = 2.2; x.lineJoin = "round"; x.lineCap = "round"; x.stroke();
+  // start reference line
+  x.setLineDash([2,4]); x.strokeStyle = col("--muted"); x.globalAlpha = .55; x.beginPath(); x.moveTo(padL, Y(pts[0][1])); x.lineTo(W-padR, Y(pts[0][1])); x.stroke(); x.setLineDash([]); x.globalAlpha = 1;
+  x.restore();
+  // last point + live pulse
+  const lx = X(t1), ly = Y(pts[pts.length-1][1]);
+  if (ease>=1){ x.fillStyle = col("--gold"); x.beginPath(); x.arc(lx,ly,4,0,7); x.fill(); x.strokeStyle = col("--card"); x.lineWidth = 2; x.stroke();
+    // price tag on axis
+    const tag = um(pts[pts.length-1][1]); x.font = "600 11.5px " + col("--font"); const tw = x.measureText(tag).width + 10;
+    x.fillStyle = col("--ink"); x.beginPath(); x.roundRect ? x.roundRect(W-padR+5, ly-10, tw, 20, 5) : x.rect(W-padR+5, ly-10, tw, 20); x.fill();
+    x.fillStyle = col("--bg"); x.textAlign = "left"; x.textBaseline = "middle"; x.fillText(tag, W-padR+10, ly+.5); }
+  const ch = (pts[pts.length-1][1]/pts[0][1]-1)*100, abs = (pts[pts.length-1][1]-pts[0][1]);
+  $("cChg").innerHTML = `<b class="${ch>=0?"up":"down"}">${pct(ch)} · ${abs>=0?"+":"−"}${um(Math.abs(abs))}</b> <span class="muted">${t("inRange")}</span>`;
+  chartGeom = {pts, X, Y, W, H, padT, padB, padL, padR, lc};
+  if (prog<1) requestAnimationFrame(renderChart);
 }
-function onHover(ev){
-  if (!chartGeom) return; const r = box.getBoundingClientRect(), mx = ev.clientX - r.left, {pts, X, Y} = chartGeom;
-  let best = 0, bd = Infinity; pts.forEach((p,i)=>{ const d = Math.abs(X(p[0])-mx); if (d<bd){ bd=d; best=i; } });
-  const p = pts[best], tip = $("tip"); tip.hidden = false;
-  const fmt = S.range==="D"||S.range==="W" ? {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"} : {day:"numeric",month:"short",year:"numeric"};
-  tip.textContent = money(p[1]) + " · " + new Date(p[0]).toLocaleString(loc(), fmt);
-  tip.style.left = Math.max(70, Math.min(r.width-70, X(p[0]))) + "px"; tip.style.top = Y(p[1]) + "px";
+function nearest(mx){ const {pts, X} = chartGeom; let lo = 0, hi = pts.length-1; while (hi-lo>1){ const m = (lo+hi)>>1; if (X(pts[m][0]) < mx) lo = m; else hi = m; } return Math.abs(X(pts[lo][0])-mx) < Math.abs(X(pts[hi][0])-mx) ? lo : hi; }
+function drawFx(i){
+  const c = fx.getContext("2d"), dpr = fx.width / box.clientWidth; c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,fx.width,fx.height);
+  if (!chartGeom || i==null) return;
+  const {pts, X, Y, H, W, padT, padB, padR} = chartGeom, cs = getComputedStyle(document.documentElement), col = n => cs.getPropertyValue(n).trim();
+  const p = pts[i], px = X(p[0]), py = Y(p[1]), tip = $("tip");
+  if (drag && drag.a!=null && drag.a!==i){
+    const a = Math.min(drag.a,i), b = Math.max(drag.a,i), up = pts[b][1] >= pts[a][1];
+    c.fillStyle = (up ? col("--up") : col("--down")) + "22"; c.fillRect(X(pts[a][0]), padT, X(pts[b][0])-X(pts[a][0]), H-padT-padB);
+    [a,b].forEach(k=>{ c.strokeStyle = col("--ink"); c.globalAlpha = .5; c.setLineDash([3,3]); c.beginPath(); c.moveTo(X(pts[k][0]),padT); c.lineTo(X(pts[k][0]),H-padB); c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
+      c.fillStyle = col("--gold"); c.beginPath(); c.arc(X(pts[k][0]),Y(pts[k][1]),5,0,7); c.fill(); c.strokeStyle = col("--card"); c.lineWidth = 2; c.stroke(); });
+    const d = (pts[b][1]/pts[a][1]-1)*100, ad = pts[b][1]-pts[a][1], f = tipFmt(S.range);
+    tip.innerHTML = `<b class="${d>=0?"up":"down"}" style="color:inherit">${pct(d)} · ${ad>=0?"+":"−"}${um(Math.abs(ad))}</b><small>${new Date(pts[a][0]).toLocaleString(loc(),f)} → ${new Date(pts[b][0]).toLocaleString(loc(),f)}</small>`;
+    tip.hidden = false; tip.style.left = Math.max(110, Math.min(box.clientWidth-110, (X(pts[a][0])+X(pts[b][0]))/2)) + "px"; tip.style.top = (padT+30) + "px"; return;
+  }
+  c.strokeStyle = col("--ink"); c.globalAlpha = .45; c.setLineDash([3,3]);
+  c.beginPath(); c.moveTo(px,padT); c.lineTo(px,H-padB); c.stroke(); c.beginPath(); c.moveTo(0,py); c.lineTo(W-padR,py); c.stroke(); c.setLineDash([]); c.globalAlpha = 1;
+  c.fillStyle = col("--gold-2") + "33"; c.beginPath(); c.arc(px,py,11,0,7); c.fill();
+  c.fillStyle = col("--gold"); c.beginPath(); c.arc(px,py,5,0,7); c.fill(); c.strokeStyle = col("--card"); c.lineWidth = 2; c.stroke();
+  const d = (p[1]/pts[0][1]-1)*100;
+  tip.innerHTML = `<b>${um(p[1])}</b><small>${new Date(p[0]).toLocaleString(loc(), tipFmt(S.range))} · ${t("sinceStart", pct(d))}</small>`;
+  tip.hidden = false; tip.style.left = Math.max(110, Math.min(box.clientWidth-110, px)) + "px"; tip.style.top = py + "px";
 }
-box.addEventListener("pointermove", onHover); box.addEventListener("pointerleave", ()=> $("tip").hidden = true);
+const mxOf = ev => ev.clientX - box.getBoundingClientRect().left;
+box.addEventListener("pointerdown", ev=>{ if (!chartGeom) return; drag = {a: nearest(mxOf(ev))}; try { box.setPointerCapture(ev.pointerId); } catch(e){} drawFx(drag.a); });
+box.addEventListener("pointermove", ev=>{ if (!chartGeom) return; drawFx(nearest(mxOf(ev))); });
+box.addEventListener("pointerup", ev=>{ if (drag){ const i = nearest(mxOf(ev)); if (i===drag.a) drag = null; else { drawFx(i); drag.done = true; } } });
+box.addEventListener("pointerleave", ()=>{ if (drag && drag.done) return; drag = null; $("tip").hidden = true; drawFx(null); });
+box.addEventListener("pointerenter", ()=>{ if (drag && drag.done){ drag = null; } });
+/* performance strip */
+const PERF = ["D","W","M","YTD","Y","5"];
+function renderPerf(){
+  const g = gramCur(), cells = PERF.map(r=>{ const pts = histPts(r, cur); if (!pts || pts.length<2 || g==null) return `<div><span>${t(RANGE_KEY[r])}</span><b>—</b><small>&nbsp;</small></div>`;
+    const d = (g/pts[0][1]-1)*100, ad = g-pts[0][1];
+    return `<div><span>${t(RANGE_KEY[r])}</span><b class="${d>=0?"up":"down"}">${pct(d,1)}</b><small>${ad>=0?"+":"−"}${um(Math.abs(ad))}</small></div>`; });
+  const mx = (histPts("MAX", cur)||[]).concat(histPts("Y", cur)||[]); let rec = `<div><span>${t("perfRec")}</span><b>—</b><small>&nbsp;</small></div>`;
+  if (mx.length && g!=null){ const top = mx.reduce((a,p)=> p[1]>a[1]?p:a, mx[0]); const below = (1-g/top[1])*100;
+    rec = `<div><span>${t("perfRec")}</span><b>${um(top[1])}</b><small>${below<0.05 ? t("perfAt") : t("perfBelow", pctN(below,1))} · ${new Date(top[0]).toLocaleDateString(loc(),{month:"short",year:"numeric"})}</small></div>`; }
+  $("perf").innerHTML = cells.join("") + rec;
+}
+function loadPerf(){ PERF.concat(["MAX"]).forEach((r,i)=> setTimeout(()=>loadHist(r, cur), 150*i)); }
 window.addEventListener("resize", ()=> renderChart());
 
 /* ---------------- value calculator ---------------- */
@@ -1064,7 +1197,7 @@ function renderNews(){
 function renderAllTools(){ renderValue(); renderCost(); renderBuy(); }
 function renderEverything(){ renderPrices(); renderChart(); buildCheck(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); renderNews(); }
 applyTexts(); buildCheck(); buildValue(); buildCostTable(); renderCost(); renderTax(); renderBuy(); route();
-(async()=>{ await updateFx(); tries++; await updateMetals(); updateOther(); loadHist("D", cur); if (S.range!=="D") loadHist(S.range, cur); })();
+(async()=>{ await updateFx(); tries++; await updateMetals(); updateOther(); loadHist("D", cur); if (S.range!=="D") loadHist(S.range, cur); loadPerf(); })();
 setInterval(()=>{ tries++; updateMetals(); }, 15000);
 setInterval(updateFx, 10*60*1000);
 setInterval(updateOther, 60*1000);
