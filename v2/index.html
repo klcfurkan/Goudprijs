@@ -168,6 +168,40 @@ details[open] summary{margin-bottom:12px}
 .verdict.mid{color:var(--gold)}
 @media (max-width:560px){.hide-sm{display:none}}
 .faq details{border-bottom:1px solid var(--rule);padding:12px 0}.faq details:last-child{border-bottom:0}.faq summary{font-size:15.5px;color:var(--ink)}.faq p{color:var(--soft);margin-top:8px;max-width:75ch}
+
+/* about */
+.about{gap:0}
+.ab-hero{padding:24px 0 36px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:16px}
+.ab-eyebrow{font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.ab-hero h1{font-size:clamp(32px,5.4vw,56px);letter-spacing:-.02em;max-width:18ch}
+.ab-lead{font-size:clamp(17px,2vw,20px);color:var(--soft);max-width:62ch;line-height:1.6}
+.ab-sign{display:flex;align-items:center;gap:12px;margin-top:6px}
+.ab-avatar{width:46px;height:46px;border-radius:50%;background:var(--ink);color:var(--gold-2);display:grid;place-items:center;font:700 15px var(--font)}
+.ab-block{padding:40px 0;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:16px}
+.ab-block>p{color:var(--soft);max-width:68ch;font-size:16.5px}
+.ab-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:6px 0}
+.ab-facts div{background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.ab-facts b{font:700 clamp(30px,4vw,42px) var(--mono);color:var(--gold);letter-spacing:-.02em}
+.ab-facts span{color:var(--soft);font-size:15px}
+.ab-facts small{font-size:12.5px;margin-top:auto}
+@media (max-width:760px){.ab-facts{grid-template-columns:1fr}}
+.ab-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;counter-reset:st}
+.ab-steps li{counter-increment:st;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:22px 22px 22px 70px;position:relative}
+.ab-steps li::before{content:counter(st);position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:50%;background:var(--gold-bg);color:var(--gold);display:grid;place-items:center;font:700 15px var(--mono)}
+.ab-steps b{font-size:17px}.ab-steps p{color:var(--soft);margin-top:6px;font-size:15px}
+@media (max-width:760px){.ab-steps{grid-template-columns:1fr}}
+.ab-formula{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:20px}
+.ab-formula span,.ab-formula b{padding:10px 14px;border-radius:10px;background:var(--bg);font-weight:600}
+.ab-formula b{background:var(--gold-bg);color:var(--ink)}
+.ab-formula i{font-style:normal;font:700 20px var(--mono);color:var(--muted)}
+.ab-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+@media (max-width:760px){.ab-two{grid-template-columns:1fr}}
+.ab-list{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:10px}
+.ab-list li{padding-left:30px;position:relative;color:var(--soft)}
+.ab-list li::before{content:"✕";position:absolute;left:0;top:0;color:var(--down);font-weight:700}
+.ab-next li::before{content:"→";color:var(--gold)}
+.ab-end{padding:40px 0 10px;display:flex;flex-direction:column;gap:12px}
+.ab-quote{font-size:clamp(20px,2.6vw,26px);font-weight:600;max-width:40ch;line-height:1.35}
 .links{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .links a{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px}
 .links a:hover{border-color:var(--gold-2)}
@@ -347,14 +381,52 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
   </section>
 
   <!-- ABOUT -->
-  <section class="view" id="v-about" hidden>
-    <div class="head"><h1 data-t="aboutTitle"></h1></div>
-    <div class="grid g2">
-      <div class="card result" style="grid-column:1/-1"><h3 data-t="aboutAuthor"></h3><p data-t="aboutAuthorBody1"></p><p data-t="aboutAuthorBody2"></p><p data-t="aboutAuthorBody3"></p><p class="small muted"><span data-t="aboutContact"></span> <a href="mailto:info@fairvio.nl">info@fairvio.nl</a></p></div>
-      <div class="card result"><h3 data-t="aboutWho"></h3><p data-t="aboutWhoBody"></p></div>
-      <div class="card result"><h3 data-t="aboutMoney"></h3><p data-t="aboutMoneyBody"></p></div>
-      <div class="card result"><h3 data-t="aboutData"></h3><p data-t="aboutDataBody"></p></div>
-      <div class="card result"><h3 data-t="aboutLegal"></h3><p data-t="aboutLegalBody"></p></div>
+  <section class="view about" id="v-about" hidden>
+    <div class="ab-hero">
+      <span class="ab-eyebrow" data-t="abEyebrow"></span>
+      <h1 data-t="abTitle"></h1>
+      <p class="ab-lead" data-t="abLead"></p>
+      <div class="ab-sign"><span class="ab-avatar">FK</span><span><b>Furkan Kilic</b><br><span class="muted small" data-t="abRole"></span></span></div>
+    </div>
+
+    <div class="ab-block">
+      <h2 data-t="abWhyTitle"></h2>
+      <p data-t="abWhyText"></p>
+      <div class="ab-facts">
+        <div><b data-t="abF1n"></b><span data-t="abF1t"></span><small><a href="https://nos.nl/artikel/2587780-consumentenprogramma-kassa-goudwisselkantoor-taxeert-ver-onder-de-waarde" target="_blank" rel="noopener">NOS · Kassa</a></small></div>
+        <div><b data-t="abF2n"></b><span data-t="abF2t"></span><small><a href="https://www.test.de/presse/pressemitteilungen/Goldverkauf-Preisunterschiede-von-bis-zu-einem-Drittel-6105525-0/" target="_blank" rel="noopener">Stiftung Warentest</a></small></div>
+        <div><b data-t="abF3n"></b><span data-t="abF3t"></span><small><a href="https://www.vrt.be/vrtnws/nl/2026/01/22/8-op-10-malafide-goudhandelaars-in-antwerpen-blijkt-uit-steekpro/" target="_blank" rel="noopener">VRT NWS</a></small></div>
+      </div>
+      <p data-t="abWhyText2"></p>
+    </div>
+
+    <div class="ab-block">
+      <h2 data-t="abDoTitle"></h2>
+      <ol class="ab-steps">
+        <li><b data-t="abDo1t"></b><p data-t="abDo1"></p></li>
+        <li><b data-t="abDo2t"></b><p data-t="abDo2"></p></li>
+        <li><b data-t="abDo3t"></b><p data-t="abDo3"></p></li>
+        <li><b data-t="abDo4t"></b><p data-t="abDo4"></p></li>
+      </ol>
+    </div>
+
+    <div class="ab-block">
+      <h2 data-t="abCalcTitle"></h2>
+      <p data-t="abCalcText"></p>
+      <div class="ab-formula"><span data-t="abFw"></span><i>×</i><span data-t="abFp"></span><i>×</i><span data-t="abFg"></span><i>=</i><b data-t="abFr"></b></div>
+      <p class="small muted" data-t="abCalcEx"></p>
+      <p data-t="abSources"></p>
+    </div>
+
+    <div class="ab-block ab-two">
+      <div><h2 data-t="abNotTitle"></h2><ul class="ab-list"><li data-t="abNot1"></li><li data-t="abNot2"></li><li data-t="abNot3"></li><li data-t="abNot4"></li></ul></div>
+      <div><h2 data-t="abNextTitle"></h2><ul class="ab-list ab-next"><li data-t="abNext1"></li><li data-t="abNext2"></li><li data-t="abNext3"></li><li data-t="abNext4"></li></ul></div>
+    </div>
+
+    <div class="ab-end">
+      <p class="ab-quote" data-t="abQuote"></p>
+      <p><span data-t="abContact"></span> <a href="mailto:info@fairvio.nl">info@fairvio.nl</a></p>
+      <p class="xs muted" data-t="abLegal"></p>
     </div>
   </section>
 </main>
@@ -636,6 +708,49 @@ nUpd:{nl:"Nieuws bijgewerkt {0}",en:"News updated {0}",de:"Nachrichten aktualisi
 aboutTitle:{nl:"Over Fairvio",en:"About Fairvio",de:"Über Fairvio",tr:"Fairvio hakkında"},
 aboutWho:{nl:"Wie zit erachter?",en:"Who is behind it?",de:"Wer steckt dahinter?",tr:"Arkasında kim var?"},
 aboutWhoBody:{nl:"Fairvio is gemaakt door Furkan Kilic uit Nederland. Het doel: eerlijke, begrijpelijke informatie over goud en geld, in je eigen taal. Fairvio is in opbouw; dit is een eerste versie.",en:"Fairvio is made by Furkan Kilic from the Netherlands. The goal: honest, clear information about gold and money, in your own language. Fairvio is under construction; this is an early version.",de:"Fairvio wird von Furkan Kilic aus den Niederlanden gemacht. Das Ziel: ehrliche, verständliche Informationen über Gold und Geld, in deiner Sprache. Fairvio befindet sich im Aufbau; dies ist eine frühe Version.",tr:"Fairvio, Hollanda'dan Furkan Kilic tarafından yapıldı. Amaç: altın ve para hakkında dürüst, anlaşılır bilgi, kendi dilinde. Fairvio yapım aşamasında; bu ilk sürümdür."},
+abEyebrow:{nl:"Over Fairvio",en:"About Fairvio",de:"Über Fairvio",tr:"Fairvio hakkında"},
+abTitle:{nl:"Goud is echt geld. Jij verdient eerlijke informatie.",en:"Gold is real money. You deserve honest information.",de:"Gold ist echtes Geld. Du verdienst ehrliche Informationen.",tr:"Altın gerçek paradır. Dürüst bilgiyi hak ediyorsun."},
+abLead:{nl:"Bijna iedereen heeft wel iets van goud: een ketting van oma, een ring, een paar munten, een armband van de bruiloft. Maar zodra je wilt weten wat het waard is, of je eerlijk behandeld wordt, of wat het je kost, wordt het vaag. Fairvio maakt het helder. In je eigen taal, met de cijfers van nu.",en:"Almost everyone owns some gold: grandma's necklace, a ring, a few coins, a bracelet from a wedding. But the moment you want to know what it's worth, whether you're treated fairly or what it costs you, things get vague. Fairvio makes it clear. In your own language, with today's numbers.",de:"Fast jeder besitzt etwas Gold: die Kette der Oma, einen Ring, ein paar Münzen, ein Armband von der Hochzeit. Doch sobald du wissen willst, was es wert ist, ob du fair behandelt wirst oder was es dich kostet, wird es unklar. Fairvio macht es klar. In deiner Sprache, mit den Zahlen von heute.",tr:"Neredeyse herkesin biraz altını var: anneanneden kalan bir kolye, bir yüzük, birkaç çeyrek, düğünden kalan bir bilezik. Ama ne ettiğini, adil davranılıp davranılmadığını ya da sana neye mal olduğunu öğrenmek istediğin anda her şey bulanıklaşıyor. Fairvio bunu netleştirir. Kendi dilinde, bugünün rakamlarıyla."},
+abRole:{nl:"Maker van Fairvio",en:"Founder of Fairvio",de:"Gründer von Fairvio",tr:"Fairvio'nun kurucusu"},
+abWhyTitle:{nl:"Waarom Fairvio bestaat",en:"Why Fairvio exists",de:"Warum es Fairvio gibt",tr:"Fairvio neden var"},
+abWhyText:{nl:"Ik zag hoe vaak mensen bij goud in het duister tasten. Je loopt een winkel binnen, je krijgt een bedrag genoemd, en je hebt geen idee of dat eerlijk is. Consumententests in drie landen laten zien hoe groot dat probleem is:",en:"I saw how often people are left in the dark with gold. You walk into a shop, you're quoted an amount, and you have no idea if it's fair. Consumer tests in three countries show how big that problem is:",de:"Ich habe gesehen, wie oft Menschen beim Gold im Dunkeln tappen. Du gehst in ein Geschäft, bekommst einen Betrag genannt und hast keine Ahnung, ob er fair ist. Verbrauchertests in drei Ländern zeigen, wie groß das Problem ist:",tr:"İnsanların altın konusunda ne kadar sık karanlıkta kaldığını gördüm. Bir dükkâna giriyorsun, sana bir fiyat söyleniyor ve bunun adil olup olmadığını bilmiyorsun. Üç ülkedeki tüketici testleri bu sorunun ne kadar büyük olduğunu gösteriyor:"},
+abF1n:{nl:"€ 350",en:"€350",de:"350 €",tr:"350 €"},
+abF1t:{nl:"bood een opkoper in een test van Kassa voor een ketting die een taxateur op € 1.301 schatte.",en:"was offered by a gold buyer in a Dutch TV test for a necklace an appraiser valued at €1,301.",de:"bot ein Ankäufer in einem niederländischen TV-Test für eine Kette, die ein Gutachter auf 1.301 € schätzte.",tr:"Hollanda'da bir TV testinde bir alıcı, eksperin 1.301 € değer biçtiği bir kolye için teklif etti."},
+abF2n:{nl:"⅓",en:"⅓",de:"⅓",tr:"⅓"},
+abF2t:{nl:"verschil in prijs tussen goudopkopers in een Duitse test van Stiftung Warentest.",en:"difference in price between gold buyers in a German Stiftung Warentest study.",de:"Preisunterschied zwischen Goldankäufern in einem Test der Stiftung Warentest.",tr:"Alman tüketici kuruluşu Stiftung Warentest'in testinde altın alıcıları arasındaki fiyat farkı."},
+abF3n:{nl:"8 op 10",en:"8 in 10",de:"8 von 10",tr:"10'da 8"},
+abF3t:{nl:"Antwerpse goudhandelaars boden in een steekproef van de VRT ver onder de echte waarde.",en:"Antwerp gold dealers offered far below the real value in a Belgian VRT spot check.",de:"Antwerpener Goldhändler boten in einer Stichprobe des belgischen Senders VRT weit unter dem echten Wert.",tr:"Belçika kanalı VRT'nin yaptığı denetimde Antwerpen'deki altın alıcıları gerçek değerin çok altında teklif verdi."},
+abWhyText2:{nl:"Het antwoord op 'wat is mijn goud waard?' komt nu meestal van iemand die er zelf aan verdient. Dat wil ik veranderen. Niet door te zeggen wat je moet doen, maar door je de cijfers te geven die de winkel ook heeft.",en:"The answer to 'what is my gold worth?' usually comes from someone who profits from it. I want to change that. Not by telling you what to do, but by giving you the same numbers the shop has.",de:"Die Antwort auf „Was ist mein Gold wert?“ kommt meist von jemandem, der selbst daran verdient. Das möchte ich ändern. Nicht indem ich dir sage, was du tun sollst, sondern indem ich dir dieselben Zahlen gebe, die auch der Händler hat.",tr:"'Altınım ne eder?' sorusunun cevabı genelde bundan kendisi kazanan birinden geliyor. Bunu değiştirmek istiyorum. Sana ne yapman gerektiğini söyleyerek değil, dükkânın elindeki rakamların aynısını sana vererek."},
+abDoTitle:{nl:"Wat Fairvio anders doet",en:"What Fairvio does differently",de:"Was Fairvio anders macht",tr:"Fairvio'yu farklı kılan ne"},
+abDo1t:{nl:"Eerlijk rekenen, open en bloot",en:"Honest maths, out in the open",de:"Ehrlich rechnen, offen und transparent",tr:"Dürüst ve açık hesap"},
+abDo1:{nl:"Elke berekening laat zien hoe hij werkt: welk gewicht, welk gehalte, welke prijs. Je kunt alles nacontroleren.",en:"Every calculation shows how it works: which weight, which purity, which price. You can check everything.",de:"Jede Berechnung zeigt, wie sie funktioniert: welches Gewicht, welcher Feingehalt, welcher Preis. Du kannst alles nachprüfen.",tr:"Her hesaplama nasıl yapıldığını gösterir: hangi ağırlık, hangi ayar, hangi fiyat. Her şeyi kendin kontrol edebilirsin."},
+abDo2t:{nl:"In jouw taal, voor jouw goud",en:"In your language, for your gold",de:"In deiner Sprache, für dein Gold",tr:"Kendi dilinde, kendi altının için"},
+abDo2:{nl:"Nederlands, Duits, Turks en Engels. Van 14 karaat ringen tot Krugerrands, çeyreks en 22 karaat bilezikken. Niemand hoeft van taal te wisselen om zijn eigen goud te begrijpen.",en:"Dutch, German, Turkish and English. From 14 carat rings to Krugerrands, çeyrek coins and 22 carat bangles. Nobody should need another language to understand their own gold.",de:"Niederländisch, Deutsch, Türkisch und Englisch. Vom 14-Karat-Ring bis zu Krügerrand, Çeyrek und 22-Karat-Armreifen. Niemand soll die Sprache wechseln müssen, um sein eigenes Gold zu verstehen.",tr:"Hollandaca, Almanca, Türkçe ve İngilizce. 14 ayar yüzükten Krugerrand'a, çeyrekten 22 ayar bileziğe kadar. Kimse kendi altınını anlamak için dil değiştirmek zorunda kalmamalı."},
+abDo3t:{nl:"Niemand koopt een betere plek",en:"Nobody buys a better spot",de:"Niemand kauft sich einen besseren Platz",tr:"Kimse daha iyi bir yer satın alamaz"},
+abDo3:{nl:"De volgorde van een lijst en de uitkomst van een berekening zijn nooit te koop. Wat het goedkoopst is, staat bovenaan. Punt.",en:"The order of a list and the result of a calculation are never for sale. Whatever is cheapest comes first. Full stop.",de:"Die Reihenfolge einer Liste und das Ergebnis einer Berechnung sind nie käuflich. Was am günstigsten ist, steht oben. Punkt.",tr:"Bir listenin sırası ve bir hesaplamanın sonucu asla satılık değildir. En ucuz olan en üstte durur. Nokta."},
+abDo4t:{nl:"Altijd de cijfers van nu",en:"Always today's numbers",de:"Immer die Zahlen von heute",tr:"Her zaman bugünün rakamları"},
+abDo4:{nl:"De goudprijs wordt elke 15 seconden bijgewerkt, wisselkoersen komen van de Europese Centrale Bank, en belastingregels zijn die van 2026.",en:"The gold price updates every 15 seconds, exchange rates come from the European Central Bank, and tax rules are those of 2026.",de:"Der Goldpreis wird alle 15 Sekunden aktualisiert, Wechselkurse kommen von der Europäischen Zentralbank, und die Steuerregeln sind die von 2026.",tr:"Altın fiyatı 15 saniyede bir güncellenir, döviz kurları Avrupa Merkez Bankası'ndan gelir ve vergi kuralları 2026'nın kurallarıdır."},
+abCalcTitle:{nl:"Hoe we rekenen",en:"How we calculate",de:"Wie wir rechnen",tr:"Nasıl hesaplıyoruz"},
+abCalcText:{nl:"De waarde van goud is geen geheim. Het is een simpele som die iedereen kan maken:",en:"The value of gold is no secret. It's a simple sum anyone can do:",de:"Der Wert von Gold ist kein Geheimnis. Es ist eine einfache Rechnung, die jeder machen kann:",tr:"Altının değeri bir sır değil. Herkesin yapabileceği basit bir hesap:"},
+abFw:{nl:"Gewicht in gram",en:"Weight in grams",de:"Gewicht in Gramm",tr:"Gram cinsinden ağırlık"},
+abFp:{nl:"Gehalte (bijv. 0,585)",en:"Purity (e.g. 0.585)",de:"Feingehalt (z. B. 0,585)",tr:"Ayar oranı (örn. 0,916)"},
+abFg:{nl:"Goudprijs per gram",en:"Gold price per gram",de:"Goldpreis pro Gramm",tr:"Gram altın fiyatı"},
+abFr:{nl:"Goudwaarde",en:"Gold value",de:"Goldwert",tr:"Altın değeri"},
+abCalcEx:{nl:"Voorbeeld: een ring van 10 gram 14 karaat bevat 5,85 gram puur goud. Bij een goudprijs van € 113 per gram is het goud € 661 waard. Een eerlijk bod ligt daar een paar procent onder.",en:"Example: a 10 gram 14 carat ring contains 5.85 grams of pure gold. At €113 per gram, the gold is worth €661. A fair offer is a few percent below that.",de:"Beispiel: Ein 10-Gramm-Ring aus 14 Karat enthält 5,85 Gramm Feingold. Bei 113 € pro Gramm ist das Gold 661 € wert. Ein faires Angebot liegt ein paar Prozent darunter.",tr:"Örnek: 20 gramlık 22 ayar bir bilezik 18,32 gram saf altın içerir. Gram fiyatı 113 € ise altının değeri 2.070 €'dur. Adil bir teklif bunun yüzde birkaç altındadır."},
+abSources:{nl:"Onze bronnen: de live goud-, zilver-, platina- en palladiumprijs van gold-api.com (met Binance als reserve), wisselkoersen van de Europese Centrale Bank, koershistorie van Binance, belastingregels van de belastingdiensten zelf, en nieuws uit openbare feeds van onder meer NOS, BBC, ECB, de Federal Reserve, DW en AA.",en:"Our sources: live gold, silver, platinum and palladium prices from gold-api.com (with Binance as backup), exchange rates from the European Central Bank, price history from Binance, tax rules from the tax authorities themselves, and news from public feeds including NOS, BBC, ECB, the Federal Reserve, DW and AA.",de:"Unsere Quellen: Live-Preise für Gold, Silber, Platin und Palladium von gold-api.com (mit Binance als Reserve), Wechselkurse der Europäischen Zentralbank, Kurshistorie von Binance, Steuerregeln der Finanzbehörden selbst und Nachrichten aus öffentlichen Feeds u. a. von NOS, BBC, EZB, Federal Reserve, DW und AA.",tr:"Kaynaklarımız: gold-api.com'dan canlı altın, gümüş, platin ve paladyum fiyatları (yedek olarak Binance), Avrupa Merkez Bankası'ndan döviz kurları, Binance'ten fiyat geçmişi, vergi idarelerinin kendi vergi kuralları ve NOS, BBC, ECB, Federal Reserve, DW ve AA gibi açık kaynaklardan haberler."},
+abNotTitle:{nl:"Wat Fairvio níét is",en:"What Fairvio is not",de:"Was Fairvio nicht ist",tr:"Fairvio ne değildir"},
+abNot1:{nl:"Geen winkel: we verkopen geen goud.",en:"Not a shop: we don't sell gold.",de:"Kein Shop: Wir verkaufen kein Gold.",tr:"Dükkân değil: altın satmıyoruz."},
+abNot2:{nl:"Geen opkoper: we kopen niets van je.",en:"Not a buyer: we don't buy anything from you.",de:"Kein Ankäufer: Wir kaufen dir nichts ab.",tr:"Alıcı değil: senden hiçbir şey satın almıyoruz."},
+abNot3:{nl:"Geen bank: we bewaren geen geld of goud.",en:"Not a bank: we hold no money or gold.",de:"Keine Bank: Wir verwahren weder Geld noch Gold.",tr:"Banka değil: para ya da altın saklamıyoruz."},
+abNot4:{nl:"Geen adviseur: we geven informatie, de keuze is aan jou.",en:"Not an adviser: we give information, the choice is yours.",de:"Kein Berater: Wir geben Informationen, die Entscheidung liegt bei dir.",tr:"Danışman değil: bilgi veriyoruz, karar senin."},
+abNextTitle:{nl:"Waar we naartoe gaan",en:"Where we're heading",de:"Wohin wir gehen",tr:"Nereye gidiyoruz"},
+abNext1:{nl:"Echte, actuele prijzen van handelaren naast elkaar, inclusief verzending.",en:"Real, current dealer prices side by side, including shipping.",de:"Echte, aktuelle Händlerpreise nebeneinander, inklusive Versand.",tr:"Satıcıların gerçek ve güncel fiyatları yan yana, kargo dahil."},
+abNext2:{nl:"Een prijsalarm: een seintje als goud boven of onder jouw prijs komt.",en:"A price alert: a heads-up when gold goes above or below your price.",de:"Ein Preisalarm: eine Nachricht, wenn Gold über oder unter deinen Preis geht.",tr:"Fiyat alarmı: altın senin belirlediğin fiyatın üstüne ya da altına çıkınca haber."},
+abNext3:{nl:"Uitleg per munt en per karaat, in elke taal.",en:"Guides per coin and per carat, in every language.",de:"Erklärungen pro Münze und pro Karat, in jeder Sprache.",tr:"Her sikke ve her ayar için açıklamalar, her dilde."},
+abNext4:{nl:"Meer landen en talen, te beginnen met Frans.",en:"More countries and languages, starting with French.",de:"Mehr Länder und Sprachen, zuerst Französisch.",tr:"Daha fazla ülke ve dil, önce Fransızca."},
+abQuote:{nl:"“Iedereen verdient het om te weten wat zijn goud écht waard is.” — Furkan",en:"“Everyone deserves to know what their gold is really worth.” — Furkan",de:"„Jeder verdient es zu wissen, was sein Gold wirklich wert ist.“ — Furkan",tr:"“Herkes altınının gerçekte ne ettiğini bilmeyi hak ediyor.” — Furkan"},
+abContact:{nl:"Mis je iets of klopt er iets niet? Mail me:",en:"Missing something or spotted a mistake? Email me:",de:"Fehlt dir etwas oder stimmt etwas nicht? Schreib mir:",tr:"Eksik ya da yanlış bir şey mi var? Bana yaz:"},
+abLegal:{nl:"Alles op Fairvio is informatie, geen financieel of belastingadvies. Prijzen kunnen vertraagd zijn; controleer bij de aanbieder voordat je koopt of verkoopt. Als een link ooit een vergoeding oplevert, staat dat er duidelijk bij.",en:"Everything on Fairvio is information, not financial or tax advice. Prices may be delayed; check with the provider before you buy or sell. If a link ever earns us a fee, it will be clearly marked.",de:"Alles auf Fairvio ist Information, keine Finanz- oder Steuerberatung. Preise können verzögert sein; prüfe beim Anbieter, bevor du kaufst oder verkaufst. Falls ein Link uns jemals eine Vergütung bringt, ist er klar gekennzeichnet.",tr:"Fairvio'daki her şey bilgidir, finansal veya vergi tavsiyesi değildir. Fiyatlar gecikmeli olabilir; alım satım yapmadan önce sağlayıcıya danış. Bir bağlantı bize ücret kazandırırsa bu açıkça belirtilir."},
 aboutAuthor:{nl:"Over de maker: Furkan Kilic",en:"About the maker: Furkan Kilic",de:"Über den Macher: Furkan Kilic",tr:"Kurucu hakkında: Furkan Kilic"},
 aboutAuthorBody1:{nl:"Ik ben Furkan Kilic en ik heb Fairvio opgezet omdat goud voor veel mensen een vraagteken is, terwijl het om echt geld gaat. Wat is mijn ketting waard? Krijg ik een eerlijk bod? Betaal ik belasting als ik verkoop? Wie die vragen opzoekt, belandt vaak bij een partij die er zelf aan verdient.",en:"I'm Furkan Kilic and I started Fairvio because gold is a question mark for many people, even though real money is at stake. What is my necklace worth? Am I getting a fair offer? Do I pay tax when I sell? Anyone searching for answers often ends up with a party that profits from the answer.",de:"Ich bin Furkan Kilic und habe Fairvio gegründet, weil Gold für viele Menschen ein Fragezeichen ist, obwohl es um echtes Geld geht. Was ist meine Kette wert? Bekomme ich ein faires Angebot? Zahle ich beim Verkauf Steuern? Wer danach sucht, landet oft bei jemandem, der selbst daran verdient.",tr:"Ben Furkan Kilic. Fairvio'yu kurdum, çünkü altın gerçek para olmasına rağmen birçok insan için bir soru işareti. Kolyem ne eder? Adil bir teklif mi alıyorum? Satarken vergi öder miyim? Bu soruları araştıran çoğu kişi, cevaptan kendisi kazanan birine ulaşıyor."},
 aboutAuthorBody2:{nl:"Ik wil dat iedereen, in zijn eigen taal, met dezelfde informatie aan tafel zit als de winkel. Daarom laat Fairvio zien hoe we rekenen, welke bronnen we gebruiken en wat we niet weten. Geen mooie praatjes, geen angst, wel heldere cijfers.",en:"I want everyone, in their own language, to have the same information as the shop. That's why Fairvio shows how we calculate, which sources we use and what we don't know. No sales talk, no fear, just clear numbers.",de:"Ich möchte, dass jeder, in seiner eigenen Sprache, mit denselben Informationen verhandelt wie der Händler. Darum zeigt Fairvio, wie wir rechnen, welche Quellen wir nutzen und was wir nicht wissen. Keine schönen Worte, keine Angst, sondern klare Zahlen.",tr:"Herkesin, kendi dilinde, dükkânla aynı bilgiye sahip olmasını istiyorum. Bu yüzden Fairvio nasıl hesapladığımızı, hangi kaynakları kullandığımızı ve neyi bilmediğimizi gösterir. Satış lafları yok, korku yok, sadece net rakamlar."},
