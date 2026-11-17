@@ -72,7 +72,12 @@ section.view{display:flex;flex-direction:column;gap:20px}
 .stat .k{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
 .stat .v{font:600 clamp(20px,2.6vw,26px) var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .stat .s{font-size:13px;color:var(--muted)}
-.stat.hero .v{font-size:clamp(30px,5vw,44px);color:var(--ink)}
+.stat.hero{grid-column:span 2;gap:6px}
+.stat.hero .v{font-size:clamp(34px,6vw,54px);color:var(--ink)}
+.herohead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+button.tile{font:inherit;color:inherit;text-align:left;cursor:pointer;align-items:flex-start}
+button.tile:hover{border-color:var(--gold-2)}
+button.tile .s b{color:var(--gold)}
 .up{color:var(--up)} .down{color:var(--down)}
 .pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--card);border:1px solid var(--rule)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
@@ -203,10 +208,14 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
       <span class="xs muted" id="srcText"></span>
     </div>
     <div class="grid g4">
-      <div class="card stat hero"><span class="k" data-t="perGram"></span><span class="v" id="pGram">—</span><span class="s" id="pGramS"></span></div>
-      <div class="card stat"><span class="k" data-t="perOz"></span><span class="v" id="pOz">—</span><span class="s" data-t="ozNote"></span></div>
-      <div class="card stat"><span class="k" data-t="perKg"></span><span class="v" id="pKg">—</span><span class="s" data-t="kgNote"></span></div>
-      <div class="card stat"><span class="k" data-t="ch24"></span><span class="v" id="pCh">—</span><span class="s" id="pChS"></span></div>
+      <div class="card stat hero">
+        <div class="herohead"><span class="k" id="heroK"></span><div class="seg" id="heroSeg" role="group" aria-label="Unit"></div></div>
+        <span class="v" id="heroV">—</span>
+        <span class="s" id="heroS"></span>
+        <span class="s" id="heroCh"></span>
+      </div>
+      <button class="card stat tile" id="tileA" type="button"></button>
+      <button class="card stat tile" id="tileB" type="button"></button>
     </div>
     <div class="card">
       <div class="charthead">
@@ -341,6 +350,7 @@ footer.wrap{border-top:1px solid var(--rule);padding-top:24px;padding-bottom:40p
   <section class="view" id="v-about" hidden>
     <div class="head"><h1 data-t="aboutTitle"></h1></div>
     <div class="grid g2">
+      <div class="card result" style="grid-column:1/-1"><h3 data-t="aboutAuthor"></h3><p data-t="aboutAuthorBody1"></p><p data-t="aboutAuthorBody2"></p><p data-t="aboutAuthorBody3"></p><p class="small muted"><span data-t="aboutContact"></span> <a href="mailto:info@fairvio.nl">info@fairvio.nl</a></p></div>
       <div class="card result"><h3 data-t="aboutWho"></h3><p data-t="aboutWhoBody"></p></div>
       <div class="card result"><h3 data-t="aboutMoney"></h3><p data-t="aboutMoneyBody"></p></div>
       <div class="card result"><h3 data-t="aboutData"></h3><p data-t="aboutDataBody"></p></div>
@@ -626,6 +636,11 @@ nUpd:{nl:"Nieuws bijgewerkt {0}",en:"News updated {0}",de:"Nachrichten aktualisi
 aboutTitle:{nl:"Over Fairvio",en:"About Fairvio",de:"Über Fairvio",tr:"Fairvio hakkında"},
 aboutWho:{nl:"Wie zit erachter?",en:"Who is behind it?",de:"Wer steckt dahinter?",tr:"Arkasında kim var?"},
 aboutWhoBody:{nl:"Fairvio is gemaakt door Furkan Kilic uit Nederland. Het doel: eerlijke, begrijpelijke informatie over goud en geld, in je eigen taal. Fairvio is in opbouw; dit is een eerste versie.",en:"Fairvio is made by Furkan Kilic from the Netherlands. The goal: honest, clear information about gold and money, in your own language. Fairvio is under construction; this is an early version.",de:"Fairvio wird von Furkan Kilic aus den Niederlanden gemacht. Das Ziel: ehrliche, verständliche Informationen über Gold und Geld, in deiner Sprache. Fairvio befindet sich im Aufbau; dies ist eine frühe Version.",tr:"Fairvio, Hollanda'dan Furkan Kilic tarafından yapıldı. Amaç: altın ve para hakkında dürüst, anlaşılır bilgi, kendi dilinde. Fairvio yapım aşamasında; bu ilk sürümdür."},
+aboutAuthor:{nl:"Over de maker: Furkan Kilic",en:"About the maker: Furkan Kilic",de:"Über den Macher: Furkan Kilic",tr:"Kurucu hakkında: Furkan Kilic"},
+aboutAuthorBody1:{nl:"Ik ben Furkan Kilic en ik heb Fairvio opgezet omdat goud voor veel mensen een vraagteken is, terwijl het om echt geld gaat. Wat is mijn ketting waard? Krijg ik een eerlijk bod? Betaal ik belasting als ik verkoop? Wie die vragen opzoekt, belandt vaak bij een partij die er zelf aan verdient.",en:"I'm Furkan Kilic and I started Fairvio because gold is a question mark for many people, even though real money is at stake. What is my necklace worth? Am I getting a fair offer? Do I pay tax when I sell? Anyone searching for answers often ends up with a party that profits from the answer.",de:"Ich bin Furkan Kilic und habe Fairvio gegründet, weil Gold für viele Menschen ein Fragezeichen ist, obwohl es um echtes Geld geht. Was ist meine Kette wert? Bekomme ich ein faires Angebot? Zahle ich beim Verkauf Steuern? Wer danach sucht, landet oft bei jemandem, der selbst daran verdient.",tr:"Ben Furkan Kilic. Fairvio'yu kurdum, çünkü altın gerçek para olmasına rağmen birçok insan için bir soru işareti. Kolyem ne eder? Adil bir teklif mi alıyorum? Satarken vergi öder miyim? Bu soruları araştıran çoğu kişi, cevaptan kendisi kazanan birine ulaşıyor."},
+aboutAuthorBody2:{nl:"Ik wil dat iedereen, in zijn eigen taal, met dezelfde informatie aan tafel zit als de winkel. Daarom laat Fairvio zien hoe we rekenen, welke bronnen we gebruiken en wat we niet weten. Geen mooie praatjes, geen angst, wel heldere cijfers.",en:"I want everyone, in their own language, to have the same information as the shop. That's why Fairvio shows how we calculate, which sources we use and what we don't know. No sales talk, no fear, just clear numbers.",de:"Ich möchte, dass jeder, in seiner eigenen Sprache, mit denselben Informationen verhandelt wie der Händler. Darum zeigt Fairvio, wie wir rechnen, welche Quellen wir nutzen und was wir nicht wissen. Keine schönen Worte, keine Angst, sondern klare Zahlen.",tr:"Herkesin, kendi dilinde, dükkânla aynı bilgiye sahip olmasını istiyorum. Bu yüzden Fairvio nasıl hesapladığımızı, hangi kaynakları kullandığımızı ve neyi bilmediğimizi gösterir. Satış lafları yok, korku yok, sadece net rakamlar."},
+aboutAuthorBody3:{nl:"Fairvio groeit stap voor stap. Mis je iets, of klopt er iets niet? Laat het me weten, dan verbeter ik het.",en:"Fairvio grows step by step. Missing something, or is something wrong? Let me know and I'll improve it.",de:"Fairvio wächst Schritt für Schritt. Fehlt dir etwas oder stimmt etwas nicht? Sag es mir, dann verbessere ich es.",tr:"Fairvio adım adım büyüyor. Eksik ya da yanlış bir şey mi var? Bana yaz, düzelteyim."},
+aboutContact:{nl:"Contact:",en:"Contact:",de:"Kontakt:",tr:"İletişim:"},
 aboutMoney:{nl:"Hoe verdienen we?",en:"How do we earn money?",de:"Wie verdienen wir Geld?",tr:"Nasıl para kazanıyoruz?"},
 aboutMoneyBody:{nl:"Nu nog niet. Later kan een aanbieder ons een vergoeding geven als je via een link klant wordt. Dat verandert nooit de uitkomst van een calculator of de volgorde van een lijst. Elke betaalde link wordt duidelijk gemarkeerd.",en:"Not yet. Later a provider may pay us a fee if you become a customer via a link. That never changes a calculator's result or the order of a list. Every paid link will be clearly marked.",de:"Noch gar nicht. Später kann ein Anbieter uns eine Vergütung zahlen, wenn du über einen Link Kunde wirst. Das ändert nie das Ergebnis eines Rechners oder die Reihenfolge einer Liste. Jeder bezahlte Link wird klar gekennzeichnet.",tr:"Şimdilik kazanmıyoruz. İleride bir bağlantı üzerinden müşteri olursan sağlayıcı bize ücret ödeyebilir. Bu hiçbir zaman hesaplayıcının sonucunu ya da listenin sırasını değiştirmez. Her ücretli bağlantı açıkça belirtilir."},
 aboutData:{nl:"Waar komen de cijfers vandaan?",en:"Where do the numbers come from?",de:"Woher kommen die Zahlen?",tr:"Rakamlar nereden geliyor?"},
@@ -693,7 +708,7 @@ const parseNum = s => { s = String(s||"").trim().replace(/\s/g,""); if (!s) retu
   else if (s.includes(",")) s = s.replace(",","."); return parseFloat(s); };
 
 /* ---------------- data ---------------- */
-const S = { unit:"g", oz:null, ag:null, pt:null, src:null, at:null, ok:false, fx:null /* units of cur per USD */, rates:null /* per EUR */, hist:{}, range:"D", news:null, newsErr:false, newsCat:"all" };
+const S = { unit:"kg", oz:null, ag:null, pt:null, src:null, at:null, ok:false, fx:null /* units of cur per USD */, rates:null /* per EUR */, hist:{}, range:"D", news:null, newsErr:false, newsCat:"all" };
 async function getJSON(url, ms=9000){
   const ctl = new AbortController(); const tm = setTimeout(()=>ctl.abort(), ms);
   try { const r = await fetch(url, {signal:ctl.signal, cache:"no-store"}); if (!r.ok) throw new Error(r.status); return await r.json(); }
@@ -777,7 +792,7 @@ function applyTexts(){
   $("tabs").innerHTML = VIEWS.map(v=>`<a href="#${v}" data-v="${v}">${t("nav_"+v)}</a>`).join("");
   $("rangeSeg").innerHTML = RANGE_ORDER.map(r=>`<button data-r="${r}" aria-pressed="${r===S.range}">${t(RANGE_KEY[r])}</button>`).join("");
   renderFaq();
-  $("unitSeg").innerHTML = ["g","oz","kg"].map(u=>`<button data-u="${u}" aria-pressed="${u===S.unit}">${t({g:"uG",oz:"uOZ",kg:"uKG"}[u])}</button>`).join("");
+  $("unitSeg").innerHTML = ["kg","g","oz"].map(u=>`<button data-u="${u}" aria-pressed="${u===S.unit}">${t({g:"uG",oz:"uOZ",kg:"uKG"}[u])}</button>`).join("");
   $("toolLinks").innerHTML = ["value","cost","tax","buy"].map(v=>`<a href="#${v}"><b>${t("nav_"+v)}</b><span>${t("tool_"+v)}</span></a>`).join("");
   $("taxSeg").innerHTML = TAX_COUNTRIES.map(c=>`<button data-tc="${c}" aria-pressed="${c===taxC}">${t("c"+c)}</button>`).join("");
   $("chartFoot").textContent = t("chartFoot");
@@ -792,7 +807,7 @@ document.addEventListener("click", e=>{
   else if (b.dataset.c){ cur = b.dataset.c; savePref(); applyTexts(); renderEverything(); loadHist(S.range, cur); if (S.range!=="D") loadHist("D", cur); loadPerf(); }
   else if (b.dataset.th){ theme = b.dataset.th; try { localStorage.setItem("fairvio-theme", theme); } catch(e){} applyTheme(); applyTexts(); renderChart(); }
   else if (b.dataset.r){ S.range = b.dataset.r; saveChartPref(); applyTexts(); renderChart(); loadHist(S.range, cur); }
-  else if (b.dataset.u){ S.unit = b.dataset.u; saveChartPref(); applyTexts(); renderChart(); }
+  else if (b.dataset.u){ S.unit = b.dataset.u; saveChartPref(); applyTexts(); renderPrices(); renderChart(); }
   else if (b.dataset.tc){ taxC = b.dataset.tc; if (taxC==="AT" && TX.prod!=="phys" && TX.prod!=="etf") TX.prod = "phys"; applyTexts(); renderTax(); }
   else if (b.dataset.nc){ S.newsCat = b.dataset.nc; renderNews(); }
 });
@@ -800,12 +815,17 @@ window.addEventListener("hashchange", route);
 
 /* ---------------- home ---------------- */
 function renderPrices(){
-  const g = gramCur(), o = ozCur();
-  $("pGram").textContent = money(g); $("pOz").textContent = money(o); $("pKg").textContent = money(g==null?null:g*1000, 0);
-  $("pGramS").textContent = t("gramNote");
+  const g = gramCur();
+  const UL = {kg:["perKg","kgNote"], g:["perGram","gramNote"], oz:["perOz","ozNote"]}, val = u => g==null ? null : g*UNITS[u], fmtU = u => money(val(u), u==="kg"?0:2);
+  $("heroK").textContent = t(UL[S.unit][0]); $("heroV").textContent = fmtU(S.unit); $("heroS").textContent = t(UL[S.unit][1]);
+  $("heroSeg").innerHTML = ["kg","g","oz"].map(u=>`<button data-u="${u}" aria-pressed="${u===S.unit}">${t({g:"uG",oz:"uOZ",kg:"uKG"}[u])}</button>`).join("");
+  const others = ["kg","g","oz"].filter(u=>u!==S.unit);
+  [["tileA",others[0]],["tileB",others[1]]].forEach(([id,u])=>{ const el = $(id); el.dataset.u = u;
+    el.innerHTML = `<span class="k">${t(UL[u][0])}</span><span class="v">${fmtU(u)}</span><span class="s">${t(UL[u][1])}</span>`; });
   const d = histPts("D", cur);
-  if (d && d.length>2 && g!=null){ const ch = (g/d[0][1]-1)*100, abs = g-d[0][1]; $("pCh").textContent = pct(ch); $("pCh").className = "v " + (ch>=0?"up":"down"); $("pChS").textContent = (abs>=0?"+":"") + money(abs) + " / g"; }
-  else { $("pCh").textContent = "—"; $("pCh").className = "v"; $("pChS").textContent = ""; }
+  if (d && d.length>2 && g!=null){ const ch = (g/d[0][1]-1)*100, abs = (g-d[0][1])*UNITS[S.unit];
+    $("heroCh").innerHTML = `<b class="${ch>=0?"up":"down"}">${pct(ch)} · ${abs>=0?"+":"−"}${money(Math.abs(abs), S.unit==="kg"?0:2)}</b> ${t("ch24").toLowerCase()}`; }
+  else $("heroCh").textContent = "";
   const pu = perUsd(cur);
   for (const [k,id] of [["ag","pAg"],["pt","pPt"],["pd","pPd"]]){ const v = S[k] && pu ? S[k]*pu : null;
     $(id).textContent = money(v); $(id+"S").textContent = v==null ? "" : t("perOzShort") + " · " + money(v/OZ) + " / g · " + money(v/OZ*1000, 0) + " / kg"; }
